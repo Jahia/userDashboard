@@ -77,7 +77,6 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.render.RenderContext;
@@ -115,8 +114,7 @@ public class ChangePasswordAction extends Action {
                 json.put("focusField","password");
             } else {
                 String oldPassword = req.getParameter("oldpassword").trim();
-                JCRUserNode user = (JCRUserNode) resource.getNode();
-                if(!user.verifyPassword(oldPassword))
+                if(!getCurrentUser().verifyPassword(oldPassword))
                 {
                     String userMessage = Messages.get("resources.userDashboard","mySettings.errors.oldPassword.matching", renderContext.getUILocale());
                     json.put("errorMessage",userMessage);
@@ -124,6 +122,7 @@ public class ChangePasswordAction extends Action {
                 }
                 else{
                     JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
+                    JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
 
                     PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
                     if (!evalResult.isSuccess()) {
@@ -136,7 +135,6 @@ public class ChangePasswordAction extends Action {
                     } else {
                         // change password
                         user.setPassword(passwd);
-                        session.save();
                         json.put("errorMessage", Messages.get("resources.userDashboard","mySettings.passwordChanged", renderContext.getUILocale()));
                         json.put("result", "success");
                     }
