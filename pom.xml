@@ -5,7 +5,7 @@
     =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
     ==========================================================================================
 
-        Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+        Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
 
         THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
         1/GPL OR 2/JSEL
@@ -77,17 +77,19 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.5-SNAPSHOT</version>
+    <version>7.0.0.4</version>
   </parent>
   <artifactId>userDashboard</artifactId>
+  <version>7.0.1-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Jahia User Dashboards</name>
   <description>User Dashboards</description>
-  <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/modules/userDashboard</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/modules/userDashboard</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/modules/userDashboard</url>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/userDashboard.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/userDashboard.git</developerConnection>
+        <url>scm:git:git@github.com:Jahia/userDashboard.git</url>
+		<tag>JAHIA-7-0-X-X-BRANCH</tag>
+    </scm>
   <repositories>
     <repository>
       <releases>
