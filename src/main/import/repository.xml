@@ -121,8 +121,7 @@
                               j:titleKey="system.myWebProjects"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
-                        <pagecontent j:id="user-sites"
-                                     jcr:primaryType="jnt:contentList">
+                        <pagecontent jcr:primaryType="jnt:contentList">
                             <websites-list-in-edit-mode administrationlink="true"
                                                         contribute="true"
                                                         delete="true"
