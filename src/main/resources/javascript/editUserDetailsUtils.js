@@ -279,7 +279,8 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
     var phoneValidation = true;
     var emailValidation = true;
 
-    var phoneRegex = /^[0-9]{1,45}$/;
+    var phoneRegex = /^\+?[0-9_\- \(\)]*$/;
+
     var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
     $.each($("." + cssClass + ".phone"), function () {

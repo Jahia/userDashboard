@@ -20,6 +20,7 @@
  - j:country (boolean)
  - j:phoneNumber (boolean)
  - j:mobileNumber (boolean)
+ - j:altNumber (boolean)
  - j:email (boolean)
  - j:skypeID (boolean)
  - j:twitterID (boolean)
