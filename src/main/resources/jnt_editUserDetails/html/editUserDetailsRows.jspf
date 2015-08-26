@@ -298,6 +298,14 @@
                                 </c:if>
                             </div>
                         </c:if>
+                        <c:if test="${currentNode.properties['j:altNumber'].boolean}">
+                            <div>
+                                <c:if test="${(not empty user.properties['j:altNumber'].string)}">
+                                    <strong><fmt:message key='jnt_editUserDetails.j_altNumber'/>&nbsp;:</strong>
+                                    &nbsp;${user.properties['j:altNumber'].string}
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
                     <div class="pull-right" style="margin-left:15px;">
                         <div class="pull-left">
@@ -389,6 +397,15 @@
                     <div class="controls">
                         <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
                         <input class="addressField phone" type="text" name="j:mobileNumber" value="${mobileNumberValue}" <c:if test="${not user:isPropertyEditable(user,'j:mobileNumber')}">disabled="disabled"</c:if>/>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${currentNode.properties['j:altNumber'].boolean}">
+                <div class="control-group">
+                    <label class="control-label" for="altNumber"><fmt:message key='jnt_editUserDetails.j_altNumber'/></label>
+                    <div class="controls">
+                        <c:set var="altNumberValue" value="${not empty user.properties['j:altNumber'] ? fn:escapeXml(user.properties['j:altNumber'].string) : ''}"/>
+                        <input class="addressField phone" type="text" name="j:altNumber" value="${altNumberValue}" <c:if test="${not user:isPropertyEditable(user,'j:altNumber')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>

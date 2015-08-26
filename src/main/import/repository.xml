@@ -72,6 +72,7 @@
                                          j:lastName="true"
                                          j:linkedinID="true"
                                          j:mobileNumber="true"
+                                         j:altNumber="true"
                                          j:organization="true"
                                          j:phoneNumber="true"
                                          j:picture="true"

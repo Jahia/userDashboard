@@ -182,7 +182,7 @@
                         </c:if>
                     </div>
                 </c:if>
-                <c:if test="${fn:contains(publicPropertiesAsString, 'j:phoneNumber') or fn:contains(publicPropertiesAsString, 'j:mobileNumber')
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:phoneNumber') or fn:contains(publicPropertiesAsString, 'j:mobileNumber') or fn:contains(publicPropertiesAsString, 'j:altNumber')
                                                                                     or fn:contains(publicPropertiesAsString, 'j:email') or fn:contains(publicPropertiesAsString, 'j:address')
                                                                                     or fn:contains(publicPropertiesAsString, 'j:zipCode') or fn:contains(publicPropertiesAsString, 'j:city')
                                                                                     or fn:contains(publicPropertiesAsString, 'j:country')}">
@@ -217,6 +217,16 @@
                                         <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
                                             <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
                                                 &nbsp;${user.properties['j:mobileNumber'].string}
+                                            </c:if>
+                                        </c:if>
+                                    </div>
+                                </c:if>
+                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:altNumber')}">
+                                    <div>
+                                        <strong><fmt:message key='jnt_editUserDetails.j_altNumber'/>&nbsp;:</strong>
+                                        <c:if test="${(not empty user.properties['j:altNumber'].string)}">
+                                            <c:if test="${(not empty user.properties['j:altNumber'].string)}">
+                                                &nbsp;${user.properties['j:altNumber'].string}
                                             </c:if>
                                         </c:if>
                                     </div>

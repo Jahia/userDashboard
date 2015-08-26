@@ -255,10 +255,11 @@
                     <div><c:if test="${!empty user.properties['j:country']}">${fn:escapeXml(user.properties['j:country'].string)}</c:if></div>
                 </div>
             </c:if>
-            <c:if test="${(!empty user.properties['j:phoneNumber']) or (!empty user.properties['j:mobileNumber']) or (!empty user.properties['j:email'])}">
+            <c:if test="${(!empty user.properties['j:phoneNumber']) or (!empty user.properties['j:mobileNumber']) or (!empty user.properties['j:altNumber']) or (!empty user.properties['j:email'])}">
                 <div class="span4">
                     <div><c:if test="${!empty user.properties['j:phoneNumber']}">${fn:escapeXml(user.properties['j:phoneNumber'].string)}</c:if></div>
                     <div><c:if test="${!empty user.properties['j:mobileNumber']}">${fn:escapeXml(user.properties['j:mobileNumber'].string)}</c:if></div>
+                    <div><c:if test="${!empty user.properties['j:altNumber']}">${fn:escapeXml(user.properties['j:altNumber'].string)}</c:if></div>
                     <div><c:if test="${!empty user.properties['j:email']}">${fn:escapeXml(user.properties['j:email'].string)}</c:if></div>
                 </div>
             </c:if>
@@ -311,6 +312,12 @@
                     <div class="controls">
                         <input type="text" name="mobileNumber" value="<c:if test="${!empty user.properties['j:mobileNumber']}">${fn:escapeXml(user.properties['j:mobileNumber'].string)}</c:if>"/>
                     </div>
+            </c:if>
+            <c:if test="${user:isPropertyEditable(user,'j:altNumber')}">
+                <label class="control-label" for="altNumber"><fmt:message key='jnt_editUserDetails.j_altNumber'/> : </label>
+                <div class="controls">
+                    <input type="text" name="altNumber" value="<c:if test="${!empty user.properties['j:altNumber']}">${fn:escapeXml(user.properties['j:altNumber'].string)}</c:if>"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:email')}">
                     <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/> : </label>

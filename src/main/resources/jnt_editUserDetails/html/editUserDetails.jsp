@@ -351,6 +351,16 @@
     </li>
 </c:if>
 
+    <c:if test="${currentNode.properties['j:altNumber'].boolean}">
+        <li>
+            <span class="label"><fmt:message key='jnt_editUserDetails.j_altNumber'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:altNumber')}"> jcr:id="j:altNumber" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_altNumber" <c:if test="${empty fields['j:altNumber']}">init:data="<%= getPublicPropertiesData(pageContext, "j:altNumber")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:altNumber'] and user:isPropertyEditable(user,'j:altNumber')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:altNumber']}">${fn:escapeXml(fields['j:altNumber'])}</c:if></span>
+        </li>
+    </c:if>
+
 <c:if test="${currentNode.properties['j:email'].boolean}">
     <li>
         <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
