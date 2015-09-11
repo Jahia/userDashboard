@@ -17,24 +17,78 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="workspace" type="java.lang.String"--%>
 
-<c:set var="displayPath" value="${currentUser.localPath}/files"/>
+<template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
+<template:addResources type="css" resources="files.css"/>
 
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="javascript" resources="bootbox.min.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="myFilesDashboard.js"/>
+
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
+<c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+<c:set var="apiPath" value="${url.context}/modules/api/jcr/v1/default/${currentResource.locale}"/>
+
+<c:set var="displayPath" value="${currentUser.localPath}/files"/>
 <c:if test="${not empty param['path']}">
     <c:set var="displayPath" value="${functions:decodeUrlParam(param['path'])}"/>
 </c:if>
+
+<jcr:node var="folderNode" path="${displayPath}"/>
+<script type="text/javascript">
+
+    var apiPath = '${apiPath}';
+
+    var currentNodePath = '${functions:escapeJavaScript(displayPath)}';
+    var currentFolderId = '${not empty folderNode ? folderNode.identifier : ""}';
+    var userNodeId = '${renderContext.mainResource.node.identifier}';
+
+    var myFilesDeleteBox = "<fmt:message key="myFiles.deleteBox"/>";
+    var myFilesDeleteError = "<fmt:message key="myFiles.deleteError"/>";
+    var myFilesUpdateTagsError = "<fmt:message key="myFiles.updateTagsError"/>";
+    var myFilesRenameFolderError = "<fmt:message key="myFiles.renameFolderError"/>";
+    var myFilesRenameErrorCharacters = "<fmt:message key="myFiles.renameErrorCharacters"/>";
+    var myFilesRenameFileError = "<fmt:message key="myFiles.renameFileError"/>";
+    var myFilesUploadedFiles = "<fmt:message key="myFiles.uploadedFiles"/>";
+    var myFilesUploadedFileErrorCharacters = "<fmt:message key="myFiles.uploadedFileErrorCharacters"/>";
+    var myFilesAlertInfoCharacters = "<fmt:message key="myFiles.alertInfoCharacters"/>";
+    var myFilesCreateNewFolder = "<fmt:message key="myFiles.createNewFolder"/>";
+    var myFilesCreateFolderError = "<fmt:message key="myFiles.createFolderError"/>";
+    var myFilesCreateFolderErrorCharacters = "<fmt:message key="myFiles.createFolderErrorCharacters"/>";
+    var labelDelete = "<fmt:message key="label.delete"/>";
+    var labelCancel = "<fmt:message key="label.cancel"/>";
+    var labelError = "<fmt:message key="label.error"/>";
+    var labelRename = "<fmt:message key="label.rename"/>";
+    var labelNewDirName = "<fmt:message key="newDirName.label"/>";
+    var labelNewName = "<fmt:message key="newName.label"/>";
+    var labelName = "<fmt:message key="label.name"/>";
+    var labelStatus = "<fmt:message key="label.status"/>";
+    var labelMessage = "<fmt:message key="label.message"/>";
+    var labelOK = "<fmt:message key="label.ok"/>";
+    var labelAddFile = "<fmt:message key="addFile.label"/>";
+    var labelUploadFile = "<fmt:message key="uploadFile.label"/>";
+    var labelAdd = "<fmt:message key="label.add"/>";
+    var labelCreateFolder = "<fmt:message key="label.createFolder"/>";
+
+    var addFileIndex = 0;
+    var index = 0;
+    var fileUp = [];
+</script>
 
 <c:choose>
     <c:when test="${not empty param['view']}">
         <c:set var="displayView" value="${functions:decodeUrlParam(param['view'])}"/>
         <c:if test="${displayView eq 'icon'}">
-            <template:module path="${displayPath}" templateType="html" view="userDashboard-icon"/>
+            <%@include file="myFilesDashboard.folder-icon.jspf" %>
         </c:if>
         <c:if test="${displayView eq 'slider'}">
-            <template:module path="${displayPath}" templateType="html" view="userDashboard-slider"/>
+            <%@include file="myFilesDashboard.folder-slider.jspf" %>
         </c:if>
     </c:when>
     <c:otherwise>
-        <template:module path="${displayPath}" templateType="html" view="userDashboard"/>
+        <c:set var="displayView" value=""/>
+        <%@include file="myFilesDashboard.folder.jspf" %>
     </c:otherwise>
 </c:choose>
 

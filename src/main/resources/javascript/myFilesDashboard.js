@@ -149,7 +149,7 @@ function endAddFile(fileName, addFileIndex, status, messageError){
     }
 }
 
-function bbAddFile(){
+function bbAddFile(rootFolderMissing){
     bootbox.dialog({
         message: "<label>" + labelAddFile + "&nbsp;:&nbsp;</label><button class='btn btn-primary pull-right' onclick='addInputForAddFile()' ><i class='icon-plus icon-white'></i>&nbsp;" + labelAddFile + "</button><form id='fileFormUpload' enctype='multipart/form-data'><input name='file' type='file' id='file" + addFileIndex + "' /><br /></form><br /><br /><div class='alert alert-info'><h4>" + myFilesAlertInfoCharacters + "&nbsp;:</h4><br />: / \\ | \" < > [ ] * </div>",
         title: labelUploadFile,
@@ -163,28 +163,12 @@ function bbAddFile(){
             label: labelAdd,
                 className: "btn-success",
                 callback: function() {
-                    for(var i = 0 ; i <= addFileIndex ; i++){
-                        if($('#file' + i).val() != ''){
-                            $.ajaxFileUpload({
-                                url: apiPath + '/paths' + currentNodePath,
-                                secureuri:false,
-                                fileElementId: 'file' + i,
-                                dataType: 'json',
-                                success: function(result){
-                                    if(result.name){
-                                        endAddFile(result.name, addFileIndex, 'success', '');
-                                    }else{
-                                        endAddFile(result.subElements[0], addFileIndex, 'error', myFilesUploadedFileErrorCharacters + '<br />' + result.message);
-                                    }
-                                },
-                                error: function(result){
-                                    endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
-                                }
-                            });
-                        }
-                        else{
-                            endAddFile('', addFileIndex, '', '');
-                        }
+                    if(rootFolderMissing) {
+                        bbCreateFolter("files", userNodeId, function(result) {
+                            bbCreateFile();
+                        })
+                    } else {
+                        bbCreateFile();
                     }
                 }
             }
@@ -192,7 +176,7 @@ function bbAddFile(){
     });
 }
 
-function bbAddFolder(id){
+function bbAddFolder(rootFolderMissing){
     bootbox.dialog({
         message: "<label>" + labelName + "&nbsp;:&nbsp;</label><input type='text' id='nameFolder'/><br /><br /><div class='alert alert-info'><h4>" + myFilesAlertInfoCharacters + "&nbsp;:</h4><br />: / \\ | \" < > [ ] * </div>",
         title: myFilesCreateNewFolder,
@@ -209,18 +193,21 @@ function bbAddFolder(id){
                     var regex = /[:<>[\]*|"\\]/;
 
                     if(!regex.test($('#nameFolder').val())){
-                        $.ajax({
-                            url: apiPath + '/nodes/' + id,
-                            type: 'PUT',
-                            contentType: 'application/json',
-                            data: "{\"children\":{\"" + $('#nameFolder').val() + "\":{\"name\":\"" + $('#nameFolder').val() + "\",\"type\":\"jnt:folder\"}}}",
-                            success: function(){
+                        if(rootFolderMissing) {
+                            bbCreateFolter("files", userNodeId, function(result) {
+                                bbCreateFolter($('#nameFolder').val(), result.children.files.id, function(result){
+                                    window.location.reload();
+                                }, function (result) {
+                                    bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
+                                })
+                            })
+                        } else {
+                            bbCreateFolter($('#nameFolder').val(), currentFolderId, function(){
                                 window.location.reload();
-                            },
-                            error: function(result){
+                            }, function (result) {
                                 bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
-                            }
-                        })
+                            })
+                        }
                     }else{
                         bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderErrorCharacters);
                     }
@@ -228,4 +215,49 @@ function bbAddFolder(id){
             }
         }
     });
+}
+
+function bbCreateFile() {
+    for(var i = 0 ; i <= addFileIndex ; i++){
+        if($('#file' + i).val() != ''){
+            $.ajaxFileUpload({
+                url: apiPath + '/paths' + currentNodePath,
+                secureuri:false,
+                fileElementId: 'file' + i,
+                dataType: 'json',
+                success: function(result){
+                    if(result.name){
+                        endAddFile(result.name, addFileIndex, 'success', '');
+                    }else{
+                        endAddFile(result.subElements[0], addFileIndex, 'error', myFilesUploadedFileErrorCharacters + '<br />' + result.message);
+                    }
+                },
+                error: function(result){
+                    endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
+                }
+            });
+        }
+        else{
+            endAddFile('', addFileIndex, '', '');
+        }
+    }
+}
+
+function bbCreateFolter(folderName, parentId, successCB, errorCB) {
+    $.ajax({
+        url: apiPath + '/nodes/' + parentId,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: "{\"children\":{\"" + folderName + "\":{\"name\":\"" + folderName + "\",\"type\":\"jnt:folder\"}}}",
+        success: function(result){
+            if(successCB) {
+                successCB(result);
+            }
+        },
+        error: function(result){
+            if(errorCB) {
+                errorCB(result);
+            }
+        }
+    })
 }
