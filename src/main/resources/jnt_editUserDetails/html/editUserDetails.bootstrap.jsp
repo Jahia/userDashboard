@@ -69,6 +69,8 @@
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.${renderContext.UILocale}.js"/>
+<template:addResources type="javascript" resources="jquery.validate.min.js"/>
+
 
 
 <template:addCacheDependency node="${user}"/>
@@ -101,6 +103,20 @@
             '${key}' : '${functions:escapeJavaScript(message)}'<c:if test="${!loopStatus.last}">,</c:if>
             </c:forTokens>
         };
+        
+        /**
+        * QA-5792
+        * A jahia basic phone pattern validation 
+        */
+        $.validator.addMethod("phone", function(phone_number, element) {
+        	phone_number = phone_number.replace(/\(|\)|\s+|-/g, "");
+        	return this.optional(element) || phone_number.length > 9 &&
+        		phone_number.match(/^\+?([0-9_\- \(\)])*$/);
+        }, '<fmt:message key="mySettings.errors.phone.format"/>');
+        
+     	// QA-5792: moved from editUserDetailsUtils.js.verifyAndSubmitAddress
+        var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
+        var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
         var currentCssClass ="";
 
@@ -175,6 +191,30 @@
                 $(".btnLessAbout").hide();
                 $(".btnMoreAbout").show();
             });
+            
+            $('#editDetailsForm').validate({
+            	rules:{
+            		phone: true,
+            		email:{
+            			pattern:emailRegex
+            		}
+            	},
+            	message: {
+            		email:'<fmt:message key="failure.invalid.emailAddress"/>'
+            	},
+            	highlight: function (element) {
+                    $(element).closest('.control-group').removeClass('success').addClass('error');
+                },
+                success: function (element) {
+                    element.addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+                }
+            });
+            
+            /*$('.phone').validate({
+            	
+            });*/
+            
+            
         });
     </script>
 </template:addResources>
