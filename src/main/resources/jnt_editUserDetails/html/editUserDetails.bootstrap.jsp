@@ -114,7 +114,8 @@
         		phone_number.match(/^\+?([0-9_\- \(\)])*$/);
         }, '<fmt:message key="mySettings.errors.phone.format"/>');
         
-
+		// QA-5792: email regex pattern
+        var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         var currentCssClass ="";
 
         /**
@@ -189,6 +190,7 @@
                 $(".btnMoreAbout").show();
             });
             
+            // QA-5792: apply jquery validation
             $('#editDetailsForm').validate({
             	rules:{
             		phone: true,
