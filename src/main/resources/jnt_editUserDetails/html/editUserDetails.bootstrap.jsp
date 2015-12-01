@@ -103,6 +103,8 @@
             </c:forTokens>
         };
         
+        // QA-5792: moved from editUserDetailsUtils.js.verifyAndSubmitAddress
+        var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
         /**
         * QA-5792
         * A jahia basic phone pattern validation 
@@ -110,11 +112,13 @@
         $.validator.addMethod("phone", function(phone_number, element) {
         	phone_number = phone_number.replace(/\(|\)|\s+|-/g, "");
         	return this.optional(element) || phone_number.length > 9 &&
-        		phone_number.match(/^\+?([0-9_\- \(\)])*$/);
+        		phone_number.match(phoneRegex);
         }, '<fmt:message key="mySettings.errors.phone.format"/>');
         
+        
         var currentCssClass ="";
-
+		var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		
         /**
          * @author rahmed (JAHIA)
          * This function updates a Form Row properties and verify the phones and email fields if the Row cssClass is 'AddressField'
