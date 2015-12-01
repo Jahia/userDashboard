@@ -114,9 +114,6 @@
         		phone_number.match(/^\+?([0-9_\- \(\)])*$/);
         }, '<fmt:message key="mySettings.errors.phone.format"/>');
         
-     	// QA-5792: moved from editUserDetailsUtils.js.verifyAndSubmitAddress
-        var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
-        var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
         var currentCssClass ="";
 
