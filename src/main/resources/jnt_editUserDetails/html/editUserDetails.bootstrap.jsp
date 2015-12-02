@@ -105,6 +105,7 @@
         
         // QA-5792: moved from editUserDetailsUtils.js.verifyAndSubmitAddress
         var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
+        
         /**
         * QA-5792
         * A jahia basic phone pattern validation 
@@ -114,7 +115,6 @@
         	return this.optional(element) || phone_number.length > 9 &&
         		phone_number.match(phoneRegex);
         }, '<fmt:message key="mySettings.errors.phone.format"/>');
-        
         
         var currentCssClass ="";
 		var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -190,9 +190,8 @@
                 $(".btnLessAbout").hide();
                 $(".btnMoreAbout").show();
             });
-        });
         
-        $('#editDetailsForm').validate({
+	        $('#editDetailsForm').validate({
             	rules:{
             		phone: true,
             		email:{
@@ -209,7 +208,6 @@
                     element.addClass('valid').closest('.control-group').removeClass('error').addClass('success');
                 }
             });
-            
         });
     </script>
 </template:addResources>
