@@ -112,7 +112,7 @@
         */
         $.validator.addMethod("phone", function(phone_number, element) {
         	phone_number = phone_number.replace(/\(|\)|\s+|-/g, "");
-        	return this.optional(element) || phone_number.length > 9 &&
+        	return (this.optional(element) == true) || phone_number.length > 9 &&
         		phone_number.match(phoneRegex);
         }, '<fmt:message key="mySettings.errors.phone.format"/>');
         
