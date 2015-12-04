@@ -313,6 +313,12 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
     var phoneValidation=true;
     var emailValidation=true;
 
+    // QA-5792: NOTE: Any change done the below variables and condition should be copied
+    // and correctly translated in the /userDashboard/src/main/resources/jnt_editUserDetails/html/editUserDetails.bootstrap.jsp
+    // at the QA-5792 marks:
+    // variables: phoneRegex and emailRegex
+    // conditions: && $(this).val().length < 5 for phone
+    
     var phoneRegex = /^[0-9]{1,45}$/;
     var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 

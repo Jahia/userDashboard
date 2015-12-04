@@ -178,7 +178,7 @@
                 $(".btnMoreAbout").show();
             });
             
-            // QA-5792: moved from editUserDetailsUtils.js.verifyAndSubmitAddress
+            // QA-5792: copied from editUserDetailsUtils.js.verifyAndSubmitAddress
 	        var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
 	        /**
 	        * QA-5792
@@ -187,7 +187,11 @@
 	        $.validator.addMethod("phone", function(phone_number, element) {
 	        	phone_number = phone_number.replace(/\(|\)|\s+|-/g, "");
 	        	// the phone min length is 5 instead of 9
-	        	return this.optional(element) || (this.optional(element) == true) || (phone_number.length > 4 &&
+	        	// NOTE: the phone min length is 5 instead of 9
+	        	// There is a validation before submit inside /userDashboard/src/main/resources/javascript/editUserDetailsUtils.js
+	        	// in function verifyAndSubmitAddress that set the phone min length to 5 ($(this).val().length < 5).
+	        	// Any change of phone length filter should be done inside editUserDetailsUtils.js.verifyAndSubmitAddress
+	        	return (this.optional(element) == true) || (phone_number.length > 4 &&
 	        		phone_number.match(phoneRegex));
 	        }, '<fmt:message key="mySettings.errors.phone.format"/>');
 	        
