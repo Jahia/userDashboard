@@ -80,7 +80,7 @@
     <version>7.0.0.4</version>
   </parent>
   <artifactId>userDashboard</artifactId>
-  <version>7.0.1-SNAPSHOT</version>
+  <version>7.0.1</version>
   <packaging>bundle</packaging>
   <name>Jahia User Dashboards</name>
   <description>User Dashboards</description>
@@ -88,7 +88,7 @@
         <connection>scm:git:git@github.com:Jahia/userDashboard.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/userDashboard.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/userDashboard.git</url>
-		<tag>JAHIA-7-0-X-X-BRANCH</tag>
+		<tag>7_0_1</tag>
     </scm>
   <repositories>
     <repository>
