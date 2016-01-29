@@ -33,7 +33,8 @@
 </div>
 
 <div class="clearfix">
-    <p class="text-center jahia-admin-copyright"><fmt:message key="jahia.copyright" /> <fmt:message key="jahia.company" /></p>
+    <p class="text-center jahia-admin-copyright"><fmt:message key="jahia.copyright" />&nbsp;<fmt:message
+            key="jahia.company" /></p>
 </div>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
