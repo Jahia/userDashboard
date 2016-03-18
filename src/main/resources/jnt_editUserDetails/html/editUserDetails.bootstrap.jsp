@@ -339,7 +339,7 @@
                                         </div>
                                         <c:if test="${user:isPropertyEditable(user,'j:about')}">
                                             <div id="about_form" class="hide span10">
-                                                <textarea id="about_editor">${user.properties['j:about'].string}</textarea>
+                                                <textarea id="about_editor"><c:out value="${user.properties['j:about'].string}"/></textarea>
                                                 <script type="text/javascript">
                                                     if(editor==null) { editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"}); }
                                                 </script>
