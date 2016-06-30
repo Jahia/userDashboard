@@ -70,7 +70,7 @@
                             <fmt:message key='jnt_user.j_about'/>
                         </h1>
                         <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
-                            ${user.properties['j:about'].string}
+                            ${fn:escapeXml(user.properties['j:about'].string)}
                         </div>
                         <br />
                         <button class="hide btn btn-small btn-primary btnMoreAbout">
@@ -92,12 +92,12 @@
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:firstName')}">
                             <c:if test="${(not empty user.properties['j:firstName'].string)}">
-                                ${user.properties['j:firstName'].string}&nbsp;
+                                ${fn:escapeXml(user.properties['j:firstName'].string)}&nbsp;
                             </c:if>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:lastName')}">
                             <c:if test="${(not empty user.properties['j:lastName'].string)}">
-                                ${user.properties['j:lastName'].string}&nbsp;
+                                ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
                             </c:if>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:gender')}">
@@ -108,14 +108,14 @@
 
                                         <c:if test="${(not empty user.properties['j:gender'].string)}">
                                             <strong><fmt:message key='jnt_user.j_gender'/>&nbsp;:</strong>
-                                            &nbsp;${user.properties['j:gender'].string}
+                                            &nbsp;${fn:escapeXml(user.properties['j:gender'].string)}
                                         </c:if>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <strong><fmt:message key='jnt_user.j_gender'/>&nbsp;:</strong>
                                     <c:if test="${(not empty user.properties['j:gender'].string)}">
-                                        &nbsp;${user.properties['j:gender'].string}
+                                        &nbsp;${fn:escapeXml(user.properties['j:gender'].string)}
                                     </c:if>
                                 </c:otherwise>
                             </c:choose>
@@ -127,12 +127,12 @@
                     <div class="box-1">
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:function')}">
                             <c:if test="${(not empty user.properties['j:function'].string)}">
-                                ${user.properties['j:function'].string}
+                                ${fn:escapeXml(user.properties['j:function'].string)}
                             </c:if>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:organization')}">
                             <c:if test="${(not empty user.properties['j:organization'].string)}">
-                                &nbsp;<fmt:message key='mySettings.at'/>&nbsp;${user.properties['j:organization'].string}
+                                &nbsp;<fmt:message key='mySettings.at'/>&nbsp;${fn:escapeXml(user.properties['j:organization'].string)}
                             </c:if>
                         </c:if>
                     </div>
@@ -196,7 +196,7 @@
                                         <c:if test="${(not empty user.properties['j:email'].string)}">
                                             <c:if test="${(not empty user.properties['j:email'].string)}">
                                                 <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
-                                                &nbsp;${user.properties['j:email'].string}
+                                                &nbsp;${fn:escapeXml(user.properties['j:email'].string)}
                                             </c:if>
                                         </c:if>
                                     </div>
@@ -206,7 +206,7 @@
                                         <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
                                         <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
                                             <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
-                                                &nbsp;${user.properties['j:phoneNumber'].string}
+                                                &nbsp;${fn:escapeXml(user.properties['j:phoneNumber'].string)}
                                             </c:if>
                                         </c:if>
                                     </div>
@@ -216,7 +216,7 @@
                                         <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
                                         <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
                                             <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
-                                                &nbsp;${user.properties['j:mobileNumber'].string}
+                                                &nbsp;${fn:escapeXml(user.properties['j:mobileNumber'].string)}
                                             </c:if>
                                         </c:if>
                                     </div>
@@ -226,7 +226,7 @@
                                         <strong><fmt:message key='jnt_editUserDetails.j_altNumber'/>&nbsp;:</strong>
                                         <c:if test="${(not empty user.properties['j:altNumber'].string)}">
                                             <c:if test="${(not empty user.properties['j:altNumber'].string)}">
-                                                &nbsp;${user.properties['j:altNumber'].string}
+                                                &nbsp;${fn:escapeXml(user.properties['j:altNumber'].string)}
                                             </c:if>
                                         </c:if>
                                     </div>
@@ -241,25 +241,25 @@
 
                                             <c:if test="${fn:contains(publicPropertiesAsString, 'j:address')}">
                                                 <c:if test="${(not empty user.properties['j:address'].string)}">
-                                                    ${user.properties['j:address'].string}
+                                                    ${fn:escapeXml(user.properties['j:address'].string)}
                                                 </c:if>
                                             </c:if>
 
                                             <c:if test="${fn:contains(publicPropertiesAsString, 'j:zipCode')}">
                                                 <c:if test="${(not empty user.properties['j:zipCode'].string)}">
-                                                    ${user.properties['j:zipCode'].string}
+                                                    ${fn:escapeXml(user.properties['j:zipCode'].string)}
                                                 </c:if>
                                             </c:if>
                                             <br />
                                             <c:if test="${fn:contains(publicPropertiesAsString, 'j:city')}">
                                                 <c:if test="${(not empty user.properties['j:city'].string)}">
-                                                    ${user.properties['j:city'].string}
+                                                    ${fn:escapeXml(user.properties['j:city'].string)}
                                                 </c:if>
                                             </c:if>
                                             <br />
                                             <c:if test="${fn:contains(publicPropertiesAsString, 'j:country')}">
                                                 <c:if test="${(not empty user.properties['j:country'].string)}">
-                                                    ${user.properties['j:country'].string}
+                                                    ${fn:escapeXml(user.properties['j:country'].string)}
                                                 </c:if>
                                             </c:if>
                                         </div>

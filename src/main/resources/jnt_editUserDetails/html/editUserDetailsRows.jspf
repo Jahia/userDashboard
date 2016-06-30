@@ -278,7 +278,7 @@
                             <div>
                                 <c:if test="${(not empty user.properties['j:email'].string)}">
                                 <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
-                                 &nbsp;${user.properties['j:email'].string}
+                                 &nbsp;${fn:escapeXml(user.properties['j:email'].string)}
                                 </c:if>
                             </div>
                         </c:if>
@@ -286,7 +286,7 @@
                             <div>
                                 <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
                                     <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
-                                    &nbsp;${user.properties['j:phoneNumber'].string}
+                                    &nbsp;${fn:escapeXml(user.properties['j:phoneNumber'].string)}
                                 </c:if>
                             </div>
                         </c:if>
@@ -294,7 +294,7 @@
                             <div>
                                 <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
                                     <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
-                                    &nbsp;${user.properties['j:mobileNumber'].string}
+                                    &nbsp;${fn:escapeXml(user.properties['j:mobileNumber'].string)}
                                 </c:if>
                             </div>
                         </c:if>
@@ -302,7 +302,7 @@
                             <div>
                                 <c:if test="${(not empty user.properties['j:altNumber'].string)}">
                                     <strong><fmt:message key='jnt_editUserDetails.j_altNumber'/>&nbsp;:</strong>
-                                    &nbsp;${user.properties['j:altNumber'].string}
+                                    &nbsp;${fn:escapeXml(user.properties['j:altNumber'].string)}
                                 </c:if>
                             </div>
                         </c:if>
@@ -316,22 +316,22 @@
                         <div class="pull-right">
                             <c:if test="${currentNode.properties['j:address'].boolean}">
                                 <c:if test="${(not empty user.properties['j:address'].string)}">
-                                    <div>${user.properties['j:address'].string}</div>
+                                    <div>${fn:escapeXml(user.properties['j:address'].string)}</div>
                                 </c:if>
                             </c:if>
                             <c:if test="${currentNode.properties['j:zipCode'].boolean}">
                                 <c:if test="${(not empty user.properties['j:zipCode'].string)}">
-                                    <div>${user.properties['j:zipCode'].string}</div>
+                                    <div>${fn:escapeXml(user.properties['j:zipCode'].string)}</div>
                                 </c:if>
                             </c:if>
                             <c:if test="${currentNode.properties['j:city'].boolean}">
                                 <c:if test="${(not empty user.properties['j:city'].string)}">
-                                    <div>${user.properties['j:city'].string}</div>
+                                    <div>${fn:escapeXml(user.properties['j:city'].string)}</div>
                                 </c:if>
                             </c:if>
                             <c:if test="${currentNode.properties['j:country'].boolean}">
                                 <c:if test="${(not empty user.properties['j:country'].string)}">
-                                    <div>${user.properties['j:country'].string}</div>
+                                    <div>${fn:escapeXml(user.properties['j:country'].string)}</div>
                                 </c:if>
                             </c:if>
                         </div>
