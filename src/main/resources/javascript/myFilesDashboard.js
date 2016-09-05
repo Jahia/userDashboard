@@ -192,17 +192,18 @@ function bbAddFolder(rootFolderMissing){
                 callback: function() {
                     var regex = /[:<>[\]*|"\\]/;
 
-                    if(!regex.test($('#nameFolder').val())){
+                    var folderName = $('#nameFolder').val();
+                    if(!regex.test(folderName)){
                         if(rootFolderMissing) {
                             bbCreateFolter("files", userNodeId, function(result) {
-                                bbCreateFolter($('#nameFolder').val(), result.children.files.id, function(result){
+                                bbCreateFolter(folderName, result.children.files.id, function(result){
                                     window.location.reload();
                                 }, function (result) {
                                     bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
                                 })
                             })
                         } else {
-                            bbCreateFolter($('#nameFolder').val(), currentFolderId, function(){
+                            bbCreateFolter(folderName, currentFolderId, function(){
                                 window.location.reload();
                             }, function (result) {
                                 bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
