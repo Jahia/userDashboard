@@ -287,7 +287,7 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
     
     var phoneRegex = /^\+?[0-9_\- \(\)]*$/;
 
-    var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    var emailRegex = /^(?:[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z-]{2,})?$/;
 
     $.each($("." + cssClass + ".phone"), function () {
         if ($(this).val().length > 0 && $(this).val().length < 5) {

@@ -196,7 +196,7 @@
 	        }, '<fmt:message key="mySettings.errors.phone.format"/>');
 	        
 			// QA-5792: email regex pattern from editUserDetailsUtils.js.verifyAndSubmitAddress
-	        var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	        var emailRegex = /^(?:[A-Za-z0-9\._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})?$/;
             
             // QA-5792: apply jquery validation
             $('#editDetailsForm').validate({
