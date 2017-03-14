@@ -197,14 +197,16 @@
 	        
 			// QA-5792: email regex pattern from editUserDetailsUtils.js.verifyAndSubmitAddress
 	        var emailRegex = /^(?:[A-Za-z0-9\._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})?$/;
+
+            $.validator.methods.email = function(value, element) {
+                return this.optional(element) || emailRegex.test(value);
+            }
             
             // QA-5792: apply jquery validation
             $('#editDetailsForm').validate({
             	rules:{
             		phone: true,
-            		email:{
-            			pattern: emailRegex
-            		}
+            		email: true
             	},
             	message: {
             		email:'<fmt:message key="failure.invalid.emailAddress"/>'
