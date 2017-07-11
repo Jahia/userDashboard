@@ -464,19 +464,19 @@
                 <div class="control-group">
                     <label class="control-label" for="passwordField"><fmt:message key="mySettings.oldPassword"/></label>
                     <div class="controls">
-                        <input type="password" id="oldPasswordField" name="oldpassword"/>
+                        <input type="password" id="oldPasswordField" name="oldpassword" autocomplete="off"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="passwordField"><fmt:message key="label.password"/></label>
                     <div class="controls">
-                        <input type="password" id="passwordField" name="password"/>
+                        <input type="password" id="passwordField" name="password" autocomplete="new-password"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/></label>
                     <div class="controls">
-                        <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+                        <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="new-password"/>
                     </div>
                 </div>
                 <div class="form-actions">

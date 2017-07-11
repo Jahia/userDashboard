@@ -440,11 +440,11 @@
                     </c:if>
                 </c:forEach>
                 <p>
-                    <input type="password" id="password" name="password" autocomplete="off"/></p>
+                    <input type="password" id="password" name="password" autocomplete="new-password"/></p>
                 </p>
                 <p>
                     <span class="label"><fmt:message key="label.confirmPassword"/></span>
-                    <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="off"/>
+                    <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="new-password"/>
                 </p>
                 <div>
                     <button id="passwordokbutton" ><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>
