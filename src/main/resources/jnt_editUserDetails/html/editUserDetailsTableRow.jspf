@@ -366,13 +366,13 @@
             </c:forEach>
             <label class="control-label" for="passwordField"><fmt:message key="label.password"/> : </label>
             <div class="controls">
-                <input type="password" id="passwordField" name="password" autocomplete="new-password"/>
+                <input type="password" id="passwordField" name="password" autocomplete="off"/>
             </div>
             <div id="passwordError" class="controls hide"></div>
 
             <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/> : </label>
             <div class="controls">
-                <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="new-password"/>
+                <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="off"/>
             </div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="changePassword()">
