@@ -193,7 +193,7 @@
                                                         edit="true"
                                                         editproperties="false"
                                                         export="true"
-                                                        j:view="bootstrapSites..settingsBootstrap3GoogleMaterialStyle"
+                                                        j:view="bootstrapSites.settingsBootstrap3GoogleMaterialStyle"
                                                         jcr:mixinTypes="jmix:renderable"
                                                         jcr:primaryType="jnt:listSites"
                                                         live="true"
