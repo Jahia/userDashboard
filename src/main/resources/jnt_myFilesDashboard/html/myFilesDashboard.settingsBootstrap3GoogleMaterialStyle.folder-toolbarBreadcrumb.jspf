@@ -1,0 +1,96 @@
+<div class="row">
+    <div class="col-md-12">
+        <ul class="breadcrumb">
+            <c:set var="compare" value="${currentUser.localPath}/files"/>
+            <c:choose>
+                <c:when test="${not empty folderNode && folderNode.path ne compare}">
+                    <li>
+                        <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                            <c:param name="view" value="${functions:encodeUrlParam(displayView)}"/>
+                        </c:url>
+                        <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">
+                            <i class="icon-home"></i> Home
+                        </a>
+                    </li>
+                    <c:set value="${fn:substringAfter(folderNode.path, compare)}" var="sub"/>
+                    <c:set value="${fn:split(sub, '/')}" var="split"/>
+                    <c:forEach items="${split}" var="folder" varStatus="folderIndex">
+                        <c:set value="${folderUrl}/${folder}" var="folderUrl"/>
+                        <c:choose>
+                            <c:when test="${folderIndex.last}">
+                                <li class="active">
+                                    <span class="divider"></span>
+                                        ${folder}
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li>
+                                    <span class="divider"></span>
+                                    <c:set var="folderPath" value="${compare}${folderUrl}"/>
+                                    <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                                        <c:param name="path" value="${functions:encodeUrlParam(folderPath)}"/>
+                                        <c:param name="view" value="${functions:encodeUrlParam(displayView)}"/>
+                                    </c:url>
+                                    <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">${folder}</a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li class="active">
+                        <i class="icon-home"></i>&nbsp;<fmt:message key="label.home"/>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-left btn-group">
+            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFile(${empty folderNode})"
+                    title="<fmt:message key="uploadFile.label"/>">
+                <i class="material-icons">add</i>
+                <i class="material-icons">insert_drive_file</i>
+            </button>
+            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFolder(${empty folderNode})"
+                    title="<fmt:message key="label.createFolder"/>">
+                <i class="material-icons">add</i>
+                <i class="material-icons">folder</i>
+            </button>
+        </div>
+        <div class="pull-right btn-group">
+            <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                <c:if test="${not empty folderNode}">
+                    <c:param name="path" value="${functions:encodeUrlParam(folderNode.path)}"/>
+                </c:if>
+            </c:url>
+            <a class="waves-effect waves-teal btn-flat" href="<c:out value='${link}' escapeXml='false'/>"
+               title="<fmt:message key="myFiles.detailledView"/>">
+                <i class="material-icons">view_list</i>
+            </a>
+            <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+                <c:param name="view" value="${functions:encodeUrlParam('icon')}"/>
+                <c:if test="${not empty folderNode}">
+                    <c:param name="path" value="${functions:encodeUrlParam(folderNode.path)}"/>
+                </c:if>
+            </c:url>
+            <a class="waves-effect waves-teal btn-flat" href="<c:out value='${link}' escapeXml='false'/>"
+               title="<fmt:message key="myFiles.iconView"/>">
+                <i class="material-icons">view_comfy</i>
+            </a>
+            <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+                <c:param name="view" value="${functions:encodeUrlParam('slider')}"/>
+                <c:if test="${not empty folderNode}">
+                    <c:param name="path" value="${functions:encodeUrlParam(folderNode.path)}"/>
+                </c:if>
+            </c:url>
+            <a class="waves-effect waves-teal btn-flat" href="<c:out value='${link}' escapeXml='false'/>"
+               title="<fmt:message key="myFiles.slideView"/>">
+                <i class="material-icons">view_module</i>
+            </a>
+        </div>
+    </div>
+</div>
