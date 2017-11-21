@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div id="namesRow" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-user"></i>&nbsp;<fmt:message key="mySettings.name"/></h2>
+                <h2><i class="material-icons">person</i>&nbsp;<fmt:message key="mySettings.name"/></h2>
             </div>
             <div class="panel-body">
                 <div id="names" class="row">
@@ -122,7 +122,7 @@
     <div class="col-md-12">
         <div id="professionRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key="mySettings.profession"/></h2>
+                <h2><i class="material-icons">business_center</i>&nbsp;<fmt:message key="mySettings.profession"/></h2>
             </div>
             <div class="panel-body">
                 <div id="profession" class="row">
@@ -190,7 +190,7 @@
     <div class="col-md-12">
         <div id="socialRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-globe"></i>&nbsp;<fmt:message key="mySettings.social"/></h2>
+                <h2><i class="material-icons">language</i>&nbsp;<fmt:message key="mySettings.social"/></h2>
             </div>
             <div class="panel-body">
                 <div id="social" class="row">
@@ -311,7 +311,7 @@
     <div class="col-md-12">
         <div id="AddressRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-envelope"></i>&nbsp;<fmt:message key="mySettings.address"/></h2>
+                <h2><i class="material-icons">email</i>&nbsp;<fmt:message key="mySettings.address"/></h2>
             </div>
             <div class="panel-body">
                 <div id="address" class="row">
@@ -494,7 +494,7 @@
     <div class="col-md-12">
         <div id="passwordRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-lock"></i>&nbsp;<fmt:message key="label.password"/></h2>
+                <h2><i class="material-icons">lock</i>&nbsp;<fmt:message key="label.password"/></h2>
             </div>
             <div class="panel-body">
                 <div id="password" class="row">
@@ -583,7 +583,7 @@
     <div class="col-md-12">
         <div id="otherRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-info-sign"></i>&nbsp;<fmt:message key="mySettings.other"/></h2>
+                <h2><i class="material-icons">info</i>&nbsp;<fmt:message key="mySettings.other"/></h2>
             </div>
             <div class="panel-body">
                 <div id="other" class="row">
@@ -678,7 +678,7 @@
     <div class="col-md-12">
         <div id="privacyRows" class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="icon-eye-close"></i>&nbsp;<fmt:message key="mySettings.privacy"/></h2>
+                <h2><i class="material-icons">remove_circle</i>&nbsp;<fmt:message key="mySettings.privacy"/></h2>
             </div>
             <div class="panel-body">
                 <div id="privacy" class="row">
