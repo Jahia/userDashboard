@@ -56,18 +56,18 @@
 
 <%-- CSS inclusions --%>
 <%--<template:addResources type="css" resources="admin-bootstrap.css"/>--%>
-<template:addResources type="css" resources="bootstrap-datetimepicker.min.css"/>
-<template:addResources type="css" resources="bootstrap-switch.css"/>
+<template:addResources type="css" resources="bootstrap-2/bootstrap-datetimepicker.min.css"/>
+<template:addResources type="css" resources="bootstrap-2/bootstrap-switch.css"/>
 
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap.js"/>
-<template:addResources type="javascript" resources="bootstrap-switch.js"/>
+<template:addResources type="javascript" resources="bootstrap-2/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="ckeditor.js"/>
 <template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
+<template:addResources type="javascript" resources="bootstrap-2/bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="jquery.validate.min.js"/>
 
