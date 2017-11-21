@@ -198,7 +198,8 @@
                         <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                             <c:choose>
                                 <c:when test="${not empty user.properties['j:facebookID'].string}">
-                                    <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                    <a href="${user.properties['j:facebookID'].string}"><img src="<c:url
+                                    value='${url.currentModule}/img/fb_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
                                     <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
@@ -208,7 +209,8 @@
                         <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:linkedinID'].string}">
-                                    <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                                    <a href="${user.properties['j:linkedinID'].string}"><img src="<c:url
+                                    value='${url.currentModule}/img/in_logo_20_20.png' />"/></a>&nbsp;&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
                                     <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
@@ -218,7 +220,8 @@
                         <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:skypeID'].string}">
-                                    <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                    <a href="skype:${user.properties['j:skypeID'].string}?userinfo"><img src="<c:url
+                                    value='${url.currentModule}/img/skype_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
                                     <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
@@ -228,7 +231,8 @@
                         <c:if test="${currentNode.properties['j:twitterID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:twitterID'].string}">
-                                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                    <a href="http://twitter.com/${user.properties['j:twitterID'].string}"><img
+                                        src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
                                     <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
