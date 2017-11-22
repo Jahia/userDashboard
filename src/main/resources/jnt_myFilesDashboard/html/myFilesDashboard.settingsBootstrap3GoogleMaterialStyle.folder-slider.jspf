@@ -23,61 +23,61 @@
             <div class="carousel-inner">
                 <c:set value="${0}" var="index"/>
                 <c:if test="${not empty folderNode}">
-                <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:file')}" var="node" varStatus="status">
-                <c:if test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
-                <c:choose>
-                <c:when test="${index eq 0}">
-                <div class="active item" style="height: 600px" data-pause="hover">
-                    </c:when>
-                    <c:otherwise>
-                    <div class="item" style="height: 600px" data-pause="hover">
-                        </c:otherwise>
-                        </c:choose>
-                        <img src="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
-                             width="${node.properties['j:width'].string}" height="${node.properties['j:height'].string}" alt="${node.name}"
-                             style="margin: auto;"/>
-                        <div class="carousel-caption">
-                            <div class="pull-right">
-                                <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>"
-                                   onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
-                                   style="text-decoration: none;">
-                                    <i class="material-icons">delete</i>
-                                </a>
-                                <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>"
-                                   onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
-                                   style="text-decoration: none;">
-                                    <i class="material-icons">mode_edit</i>&nbsp;&nbsp;
-                                </a>
-                                <a class="pull-right" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
-                                   title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
-                                    <i class="material-icons">file_download</i>&nbsp;&nbsp;
-                                </a>
-                            </div>
-                            <h4>${node.name}</h4>
-                            <p>
-                                <fmt:message
-                                        key="label.size"/>&nbsp;:&nbsp;${functions:humanReadableByteCount(node.fileContent.contentLength)}
-                                <br/>
-                                <fmt:message
-                                        key="myFiles.dimension"/>&nbsp;:&nbsp;${node.properties['j:width'].string}x${node.properties['j:height'].string}
-                            </p>
+                    <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:file')}" var="node" varStatus="status">
+                        <c:if test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
+                            <div class="${index eq 0 ? "active" : ""} item" style="height: 600px" data-pause="hover">
+                                <img src="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
+                                     width="${node.properties['j:width'].string}"
+                                     height="${node.properties['j:height'].string}" alt="${node.name}"
+                                     style="margin: auto;"/>
+                                <div class="carousel-caption">
+                                    <div class="pull-right">
+                                        <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>"
+                                           onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
+                                           style="text-decoration: none;">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                        <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>"
+                                           onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
+                                           style="text-decoration: none;">
+                                            <i class="material-icons">mode_edit</i>&nbsp;&nbsp;
+                                        </a>
+                                        <a class="pull-right"
+                                           href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
+                                           title="<fmt:message key="label.download"/>" style="text-decoration: none;"
+                                           download>
+                                            <i class="material-icons">file_download</i>&nbsp;&nbsp;
+                                        </a>
+                                    </div>
+                                    <h4>${node.name}</h4>
+                                    <p>
+                                        <fmt:message
+                                                key="label.size"/>&nbsp;:&nbsp;${functions:humanReadableByteCount(node.fileContent.contentLength)}
+                                        <br/>
+                                        <fmt:message
+                                                key="myFiles.dimension"/>&nbsp;:&nbsp;${node.properties['j:width'].string}x${node.properties['j:height'].string}
+                                    </p>
 
-                        </div>
-                    </div>
-                    <c:set value="${index + 1}" var="index"/>
-                    </c:if>
+                                </div>
+                            </div>
+                            <c:set value="${index + 1}" var="index"/>
+                        </c:if>
                     </c:forEach>
-                    </c:if>
-                    <c:if test="${index eq 0}">
-                        <div class="active item" style="height: 600px" data-pause="hover">
-                            <fmt:message key="myFiles.slideView.noImage"/>
-                        </div>
-                    </c:if>
-                </div>
-                <a class="carousel-control left" href="#carouselView" data-slide="prev">&lsaquo;</a>
-                <a class="carousel-control right" href="#carouselView" data-slide="next">&rsaquo;</a>
+                </c:if>
+                <c:if test="${index eq 0}">
+                    <div class="active item" style="height: 600px" data-pause="hover">
+                        <fmt:message key="myFiles.slideView.noImage"/>
+                    </div>
+                </c:if>
             </div>
+            <a class="left carousel-control" href="#carouselView" role="button" data-slide="prev">
+                <i class="material-icons"  style="top: 50%; position: relative;">keyboard_arrow_left</i>
+            </a>
+            <a class="right carousel-control" href="#carouselView" role="button" data-slide="next" >
+                <i class="material-icons"  style="top: 50%; position: relative;">keyboard_arrow_right</i>
+            </a>
         </div>
     </div>
+</div>
 </div>
 
