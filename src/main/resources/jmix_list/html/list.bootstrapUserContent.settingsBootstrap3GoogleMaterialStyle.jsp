@@ -76,7 +76,7 @@
 
 <div class="page-header">
     <c:set var="mainNode" value="${renderContext.mainResource.node}"/>
-    <h2><fmt:message key="myPages.label"/> - ${fn:escapeXml(mainNode.displayableName)}</h2>
+    <h2><fmt:message key="system.myPages"/></h2>
 </div>
 
 <div class="panel panel-default">
