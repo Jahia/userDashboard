@@ -24,7 +24,7 @@
                        resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js, workInProgress.js, jquery.metadata.js"/>
 <template:addResources type="javascript"
                        resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js, settings/dataTables.initializer.js"/>
-<template:addResources type="javascript" resources="moment-with-langs.min.js"/>
+<template:addResources type="javascript" resources="moment-with-langs.min.js, bootstrap-filestyle.min.js"/>
 <template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting"
@@ -54,21 +54,19 @@
         });
 
         $(document).ready(function () {
-            $('#userContent_table').dataTable({
-                "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                "iDisplayLength": 25,
-                "sPaginationType": "bootstrap",
-                "bFilter": true,
-                "aaSorting": [],
+            var dtOptions = {
                 "aoColumns": [
                     null,
                     null,
                     {"sType": "date-pages"},
                     {"sType": "date-pages"},
                     {"sType": "date-pages"}
-                ]
-            });
+                ]};
+            dataTablesSettings.init('userContent_table', 25, null, null, dtOptions);
         });
+
+
+
     </script>
 </template:addResources>
 
@@ -83,7 +81,7 @@
     <div class="panel-body">
         <c:if test="${not empty moduleMap.currentList}">
             <fieldset>
-                <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userContent_table">
+                <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-striped  table-bordered" id="userContent_table">
                     <thead>
                     <tr>
                         <th>
