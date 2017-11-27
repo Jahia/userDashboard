@@ -24,12 +24,11 @@
                        resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js, workInProgress.js, jquery.metadata.js"/>
 <template:addResources type="javascript"
                        resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js, settings/dataTables.initializer.js"/>
-<template:addResources type="javascript" resources="moment-with-langs.min.js, bootstrap-filestyle.min.js"/>
+<template:addResources type="javascript" resources="moment-with-langs.min.js,bootstrap-filestyle.min.js"/>
 <template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting"
                                                                        value="${functions:escapeJavaScript(i18nWaiting)}"/>
-
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -37,23 +36,22 @@
         });
     </script>
     <script type="text/javascript">
-        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-            "date-pages-pre": function (a) {
-                var ukDatea = $(a).text().split('by');
-                var momentread = moment(ukDatea[0].trim(), "DD, MMMM YYYY HH:mm");
-                return momentread;
-            },
-
-            "date-pages-asc": function (a, b) {
-                return (a.diff(b) < 0) ? -1 : ((a.diff(b) > 0) ? 1 : 0);
-            },
-
-            "date-pages-desc": function (a, b) {
-                return (a.diff(b) < 0) ? 1 : ((a.diff(b) > 0) ? -1 : 0);
-            }
-        });
-
         $(document).ready(function () {
+            jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+                "date-pages-pre": function (a) {
+                    var ukDatea = $(a).text().split('by');
+                    var momentread = moment(ukDatea[0].trim(), "DD, MMMM YYYY HH:mm");
+                    return momentread;
+                },
+
+                "date-pages-asc": function (a, b) {
+                    return (a.diff(b) < 0) ? -1 : ((a.diff(b) > 0) ? 1 : 0);
+                },
+
+                "date-pages-desc": function (a, b) {
+                    return (a.diff(b) < 0) ? 1 : ((a.diff(b) > 0) ? -1 : 0);
+                }
+            });
             var dtOptions = {
                 "aoColumns": [
                     null,
@@ -62,7 +60,7 @@
                     {"sType": "date-pages"},
                     {"sType": "date-pages"}
                 ]};
-            dataTablesSettings.init('userContent_table', 25, null, null, dtOptions);
+            dataTablesSettings.init('userContent_table', 25, null, null, null, dtOptions);
         });
 
 
