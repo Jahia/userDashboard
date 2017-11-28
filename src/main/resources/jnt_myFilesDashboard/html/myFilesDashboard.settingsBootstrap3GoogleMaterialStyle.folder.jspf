@@ -3,7 +3,7 @@
         $(document).ready(function () {
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
-            dataTablesSettings.init('myFilesDataTables', 25, null, null);
+            dataTablesSettings.init('myFilesDataTables', 25, [], null, null);
         });
     </script>
 </template:addResources>

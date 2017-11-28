@@ -36,7 +36,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            dataTablesSettings.init('userSites_table', 10, null, null);
+            dataTablesSettings.init('userSites_table', 10, [], null, null);
 
             $(".checkAll").click(function () {
                 $(".sitecheckbox").each(function (index) {
