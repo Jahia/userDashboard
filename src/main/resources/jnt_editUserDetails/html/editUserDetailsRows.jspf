@@ -597,7 +597,7 @@
                     <div class="controls">
                         <select class="otherField" name="jahia.ui.theme">
                             <option
-                                    <c:if test="${prefTheme eq 'default' or ''}">selected</c:if>
+                                    <c:if test="${not(prefTheme eq 'jahia-anthracite' or '')}">selected</c:if>
                                     value="default">default
                             </option>
                             <option

@@ -663,7 +663,7 @@
                                 <label class="control-label" for="preferredTheme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
                                 <select class="form-control otherField" name="jahia.ui.theme">
                                     <option
-                                            <c:if test="${prefTheme eq 'default' or ''}">selected</c:if>
+                                            <c:if test="${not(prefTheme eq 'jahia-anthracite' or '')}">selected</c:if>
                                                 value="default">default</option>
                                     <option
                                             <c:if test="${prefTheme eq 'jahia-anthracite'}">selected</c:if>
