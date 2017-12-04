@@ -606,6 +606,11 @@
                                 ${functions:displayLocaleNameWith(prefLang, prefLang)}
                             </div>
                         </c:if>
+                        <div>
+                            <strong><fmt:message key="jnt_user.jahia.ui.theme"/> : </strong>
+                            <jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
+                            <span>${prefTheme}</span>
+                        </div>
                         <c:if test="${currentNode.properties['age'].boolean}">
                             <div>
                             <c:if test="${not empty birthDate}">
@@ -654,6 +659,17 @@
                                     </c:forEach>
                                 </select>
                             </div>
+                            <div class="form-group label-floating">
+                                <label class="control-label" for="preferredTheme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
+                                <select class="form-control otherField" name="jahia.ui.theme">
+                                    <option
+                                            <c:if test="${prefTheme eq 'default' or ''}">selected</c:if>
+                                                value="default">default</option>
+                                    <option
+                                            <c:if test="${prefTheme eq 'jahia-anthracite'}">selected</c:if>
+                                                value="jahia-anthracite">jahia-anthracite</option>
+                                </select>
+                            </div>
                         </div>
                     </c:if>
                     <br>
@@ -692,7 +708,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
+                            <c:forTokens
+                                    items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
                                          delims="," var="key" varStatus="loopStatus">
                                 <c:set var="bundleKey" value="jnt_user.${fn:replace(key,':','_')}"/>
                                 <tr>

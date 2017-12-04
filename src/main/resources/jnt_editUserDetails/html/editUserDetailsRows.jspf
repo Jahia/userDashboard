@@ -549,6 +549,12 @@
                      </c:if>
                     </div>
                 </c:if>
+                <div>
+                    <strong><fmt:message key="jnt_user.jahia.ui.theme"/> : </strong>
+                    <jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
+                    <span>${prefTheme}</span>
+                </div>
+
             </div>
             <div class="pull-right">
                 <button id="datePickerParent" class="btn btn-primary" type="button" onclick="switchRow('other')">
@@ -586,6 +592,20 @@
                     </div>
                 </div>
             </c:if>
+                <div class="control-group">
+                    <label class="control-label" for="preferredTheme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
+                    <div class="controls">
+                        <select class="otherField" name="jahia.ui.theme">
+                            <option
+                                    <c:if test="${prefTheme eq 'default' or ''}">selected</c:if>
+                                    value="default">default
+                            </option>
+                            <option
+                                    <c:if test="${prefTheme eq 'jahia-anthracite'}">selected</c:if>
+                                    value="jahia-anthracite">jahia-anthracite</option>
+                        </select>
+                    </div>
+                </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
                 <button class="btn btn-success" type="button" onclick="updateProperties('otherField')">
@@ -617,7 +637,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
+                    <c:forTokens
+                            items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
                                  delims="," var="key" varStatus="loopStatus">
                         <c:set var="bundleKey" value="jnt_user.${fn:replace(key,':','_')}"/>
                         <tr>
