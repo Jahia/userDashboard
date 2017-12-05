@@ -608,7 +608,6 @@
                         </c:if>
                         <div>
                             <strong><fmt:message key="jnt_user.jahia.ui.theme"/> : </strong>
-                            <jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
                             <span>${prefTheme}</span>
                         </div>
                         <c:if test="${currentNode.properties['age'].boolean}">
@@ -662,12 +661,8 @@
                             <div class="form-group label-floating">
                                 <label class="control-label" for="preferredTheme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
                                 <select class="form-control otherField" name="jahia.ui.theme">
-                                    <option
-                                            <c:if test="${not(prefTheme eq 'jahia-anthracite' or '')}">selected</c:if>
-                                                value="default">default</option>
-                                    <option
-                                            <c:if test="${prefTheme eq 'jahia-anthracite'}">selected</c:if>
-                                                value="jahia-anthracite">jahia-anthracite</option>
+                                    <option ${selectAnthracite} value="jahia-anthracite" >jahia-anthracite</option>
+                                    <option ${selectDefault} value="default">default</option>
                                 </select>
                             </div>
                         </div>

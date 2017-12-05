@@ -85,6 +85,18 @@
     <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
 </c:forEach>
 
+<jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
+<c:choose>
+    <c:when test="${prefTheme eq 'jahia-anthracite'}">
+        <c:set value="selected" var="selectAnthracite"></c:set>
+        <c:set value="" var="selectDefault"></c:set>
+    </c:when>
+    <c:otherwise>
+        <c:set value="" var="selectAnthracite"></c:set>
+        <c:set value="selected" var="selectDefault"></c:set>
+    </c:otherwise>
+</c:choose>
+
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>

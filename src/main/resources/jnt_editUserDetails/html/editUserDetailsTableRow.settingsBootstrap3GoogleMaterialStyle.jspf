@@ -411,7 +411,6 @@
 
         <div>
             <span><fmt:message key="jnt_user.jahia.ui.theme"/> : </span>
-            <jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
             <span>${prefTheme}</span>
         </div>
 
