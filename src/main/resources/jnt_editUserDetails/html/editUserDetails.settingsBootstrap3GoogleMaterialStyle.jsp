@@ -61,7 +61,6 @@
 
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
-<template:addResources type="javascript" resources="admin-bootstrap.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="ckeditor.js"/>
@@ -158,11 +157,9 @@
                 });
             });
 
-            $(function() {
-                $('#birthDate').datetimepicker({
-                    locale: '${renderContext.UILocale}',
-                    format: 'YYYY-MM-DD'
-                });
+            $('#birthDate').datetimepicker({
+                locale: '${renderContext.UILocale}',
+                format: 'YYYY-MM-DD'
             });
 
             // Activating the privacy checkboxes buttons
