@@ -126,7 +126,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank">
+                            <a href="<c:url value='/engines/manager.jsp?conf=filemanager-anthracite&site=${node.identifier}'/>" target="_blank">
                                 <i class="material-icons">search</i>
                             </a>
                         </c:when>
@@ -138,7 +138,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>"
+                            <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager-anthracite&site=${node.identifier}'/>"
                                target="_blank">
                                 <i class="material-icons">search</i>
                             </a>
@@ -303,7 +303,7 @@
                         <td>
                         <c:choose>
                             <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                                <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank">
+                                <a href="<c:url value='/engines/manager.jsp?conf=filemanager-anthracite&site=${node.identifier}'/>" target="_blank">
                                     <i class="material-icons">search</i>
                                 </a>
                             </c:when>
@@ -316,7 +316,7 @@
                         <td>
                             <c:choose>
                                 <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                                    <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>"
+                                    <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager-anthracite&site=${node.identifier}'/>"
                                        target="_blank">
                                         <i class="material-icons">search</i>
                                     </a>
