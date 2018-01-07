@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -52,7 +52,7 @@
         <version>7.1.0.0</version>
     </parent>
     <artifactId>userDashboard</artifactId>
-	<version>7.1.8-SNAPSHOT</version>
+	<version>7.1.8</version>
     <packaging>bundle</packaging>
     <name>Jahia User Dashboards</name>
     <description>User Dashboards</description>
@@ -60,7 +60,7 @@
         <connection>scm:git:git@github.com:Jahia/userDashboard.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/userDashboard.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/userDashboard.git</url>
-      <tag>HEAD</tag>
+      <tag>7_1_8</tag>
   </scm>
 
     <properties>
