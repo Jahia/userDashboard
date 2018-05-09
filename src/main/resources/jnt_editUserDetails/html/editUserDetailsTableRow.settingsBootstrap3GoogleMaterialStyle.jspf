@@ -462,12 +462,8 @@
                     <label class="control-label" for="jahia.ui.theme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
                     <div class="controls">
                         <select name="jahia.ui.theme">
-                            <option
-                                    <c:if test="${not(prefTheme eq 'jahia-anthracite' or '')}">selected</c:if>
-                                    value="default">default</option>
-                            <option
-                                    <c:if test="${prefTheme eq 'jahia-anthracite'}">selected</c:if>
-                                    value="jahia-anthracite">jahia-anthracite</option>
+                            <option ${selectAnthracite} value="jahia-anthracite" >jahia-anthracite</option>
+                            <option ${selectDefault} value="default">default</option>
                         </select>
                     </div>
                 </div>
