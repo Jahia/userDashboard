@@ -230,7 +230,7 @@ function bbCreateFile() {
                     if(result.name){
                         endAddFile(result.name, addFileIndex, 'success', '');
                     }else{
-                        endAddFile(result.subElements[0], addFileIndex, 'error', myFilesUploadedFileErrorCharacters + '<br />' + result.message);
+                        endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
                     }
                 },
                 error: function(result){
