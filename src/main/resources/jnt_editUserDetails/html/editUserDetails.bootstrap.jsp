@@ -84,10 +84,7 @@
 <c:forEach items="${publicProperties}" var="value">
     <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
 </c:forEach>
-<jcr:nodeProperty node="${user}" name="jahia.ui.theme" var="prefTheme"/>
-<c:if test="${empty prefTheme}">
-    <c:set var="prefTheme" value="${functions:getUITheme(pageContext.request)}"/>
-</c:if>
+<c:set var="prefTheme" value="${user:getUITheme(user)}"/>
 <c:choose>
     <c:when test="${prefTheme eq 'jahia-anthracite'}">
         <c:set value="selected" var="selectAnthracite"></c:set>
