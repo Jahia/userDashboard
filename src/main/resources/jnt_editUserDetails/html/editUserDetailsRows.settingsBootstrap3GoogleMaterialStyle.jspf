@@ -101,9 +101,9 @@
                             <div class="clear"></div>
                             <br>
                             <div class="form-actions" style="float:right; margin-right:-180px">
-                                <button type="button" class="btn btn-danger"
+                                <button type="button" class="btn btn-default"
                                         onclick="switchRow('names')"><fmt:message key="cancel"/></button>
-                                <button type="button" onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
+                                <button type="button" onclick="updateProperties('namesField')" class="btn btn-primary btn-raised"><fmt:message key="save"/></button>
                                 <div class="namesField errorMessage"></div>
                                 <div class="namesField otherErrorsMessage hide">
                                     <div><fmt:message key="mySettings.errors.otherErrors"/></div>
@@ -170,9 +170,9 @@
                     <br>
                     <div class="clear"></div>
                     <div class="form-actions" style="float:right; margin-right:-180px">
-                        <button type="button" class="btn btn-danger" onclick="switchRow('profession')"><fmt:message
+                        <button type="button" class="btn btn-default" onclick="switchRow('profession')"><fmt:message
                                 key="cancel"/></button>
-                        <button class="btn btn-success" type="button" onclick="updateProperties('professionField')">
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('professionField')">
                             <fmt:message key="save"/>
                         </button>
                         <div class="professionField errorMessage"></div>
@@ -291,8 +291,8 @@
                     <br>
                     <div class="clear"></div>
                     <div class="form-actions" style="float:right; margin-right:-180px">
-                        <button type="button" class="btn btn-danger" onclick="switchRow('social')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-success" type="button" onclick="updateProperties('socialField')">
+                        <button type="button" class="btn btn-default" onclick="switchRow('social')"><fmt:message key="cancel"/></button>
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('socialField')">
                             <fmt:message key="save"/>
                         </button>
                         <div class="socialField errorMessage"></div>
@@ -472,8 +472,8 @@
                     </c:if>
                     <br>
                     <div class="form-actions" style="float:right; margin-right:-180px">
-                        <button type="button" class="btn btn-danger" onclick="switchRow('address')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-success" type="button" onclick="updateProperties('addressField')">
+                        <button type="button" class="btn btn-default" onclick="switchRow('address')"><fmt:message key="cancel"/></button>
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('addressField')">
                             <fmt:message key="save"/>
                         </button>
                         <div class="addressField errorMessage"></div>
@@ -556,10 +556,10 @@
                                 <fmt:message key="mySettings.errors.password.not.matching"/>
                             </c:set>
 
-                            <button type="button" class="btn btn-danger"
+                            <button type="button" class="btn btn-default"
                                     onclick="switchRow('password')"><fmt:message key="cancel"/></button>
                             <button id="passwordChangeButton"
-                                    class="btn btn-success"
+                                    class="btn btn-primary btn-raised"
                                     type="button"
                                     onclick="changePassword('${functions:escapeJavaScript(oldPasswordMandatory)}','${functions:escapeJavaScript(ConfirmationMandatory)}','${functions:escapeJavaScript(passwordMandatory)}', '${functions:escapeJavaScript(PasswordNotMatching)}')">
                                 <fmt:message key="save"/>
@@ -669,8 +669,8 @@
                     </c:if>
                     <br>
                     <div class="form-actions" style="float:right; margin-right:-180px">
-                        <button type="button" class="btn btn-danger" onclick="switchRow('other')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-success" type="button" onclick="updateProperties('otherField')">
+                        <button type="button" class="btn btn-default" onclick="switchRow('other')"><fmt:message key="cancel"/></button>
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('otherField')">
                             <fmt:message key="save"/>
                         </button>
                         <div class="otherField errorMessage"></div>
@@ -768,8 +768,8 @@
                         </div>
                     </div>
                     <div class="form-actions" style="float:right;">
-                        <button type="button" class="btn btn-danger" onclick="switchRow('privacy')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-success" type="button" onclick="editVisibility(visibilityNumber,'','','${user.identifier}', '${currentResource.locale}');">
+                        <button type="button" class="btn btn-default" onclick="switchRow('privacy')"><fmt:message key="cancel"/></button>
+                        <button class="btn btn-primary btn-raised" type="button" onclick="editVisibility(visibilityNumber,'','','${user.identifier}', '${currentResource.locale}');">
                             <fmt:message key="save"/>
                         </button>
                         <div class="otherField errorMessage"></div>

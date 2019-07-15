@@ -58,9 +58,41 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
+        <jcr:node var="root" path="/"/>
+
+
+        <c:if test="${jcr:hasPermission(root, 'adminVirtualSites')}">
+            <a href="<c:url value='/cms/admin/default/en/settings.webProjectSettings.html'/>" class="btn btn-primary btn-raised">
+                <fmt:message key="myWebProjects.goToCreateNewSite"/>
+            </a>
+        </c:if>
+
+        <c:if test="${moduleMap.end > 0 and moduleMap.end > moduleMap.begin}">
+            <c:if test="${renderContext.user.root && currentNode.properties.export.boolean}">
+                <c:url var="exportUrl" value="/cms/export/default/sites_export_${now}.zip"/>
+                <fmt:message key="label.manageSite.exportLive" var="exportLiveTitle"/>
+                <button class="btn btn-default" id="exportLiveButton"
+                        onclick="exportSite('${exportUrl}',true, '${exportLiveTitle}')">
+                        ${exportLiveTitle}
+                </button>
+
+                <c:url var="stagingExportUrl" value="/cms/export/default/sites_staging_export_${now}.zip"/>
+                <fmt:message key="label.manageSite.exportStaging" var="exportStagingTitle"/>
+                <button class="btn btn-default" id="exportStagingButton"
+                        onclick="exportSite('${stagingExportUrl}',false, '${exportStagingTitle}')">
+                        ${exportStagingTitle}
+                </button>
+            </c:if>
+
+            <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+                <button class="btn btn-danger" id="deleteSiteButton" onclick="deleteSiteBootstrap()">
+                    <fmt:message key="label.manageSite.deleteSite"/>
+                </button>
+            </c:if>
+        </c:if>
+
         <fieldset>
-            <jcr:node var="root" path="/"/>
-            <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userSites_table">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped" id="userSites_table">
                 <thead>
                 <tr>
                     <th>
@@ -108,28 +140,6 @@
                 <%@include file="sitesTableRow.settingsBootstrap3GoogleMaterialStyle.jspf" %>
                 </tbody>
             </table>
-            <c:if test="${moduleMap.end > 0 and moduleMap.end > moduleMap.begin}">
-                <c:if test="${renderContext.user.root && currentNode.properties.export.boolean}">
-                    <c:url var="stagingExportUrl" value="/cms/export/default/sites_staging_export_${now}.zip"/>
-                    <fmt:message key="label.manageSite.exportStaging" var="exportStagingTitle"/>
-                    <fmt:message key="label.manageSite.exportLive" var="exportLiveTitle"/>
-                    <button class="btn btn-default btn-sm btn-primary" id="exportStagingButton"
-                            onclick="exportSite('${stagingExportUrl}',false, '${exportStagingTitle}')">
-                            ${exportStagingTitle}
-                    </button>
-                    <c:url var="exportUrl" value="/cms/export/default/sites_export_${now}.zip"/>
-                    <button class="btn btn-default btn-sm btn-primary" id="exportLiveButton"
-                            onclick="exportSite('${exportUrl}',true, '${exportLiveTitle}')">
-                            ${exportLiveTitle}
-                    </button>
-                </c:if>
-
-                <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
-                    <button class="btn btn-default btn-sm btn-primary" id="deleteSiteButton" onclick="deleteSiteBootstrap()">
-                        <fmt:message key="label.manageSite.deleteSite"/>
-                    </button>
-                </c:if>
-            </c:if>
         </fieldset>
 
         <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
@@ -153,19 +163,18 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">&times;</button>
-                            <h3 id="modalDeleteSite" class="modal-title"><fmt:message key="label.manageSite.deleteSite"/></h3>
-                            <div class="model-body">
-                                <p>
-                                        <fmt:message key="label.delete.confirm"/>
-                                <ol id="dialog-delete-confirm-body"></ol>
-                                </p>
-                            </div>
+                            <h4 id="modalDeleteSite" class="modal-title"><fmt:message key="label.manageSite.deleteSite"/></h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <fmt:message key="label.delete.confirm"/>
+                            <ol id="dialog-delete-confirm-body"></ol>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-default btn-sm btn-primary" data-dismiss="modal" aria-hidden="true">
+                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">
                                 <fmt:message key="cancel"/>
                             </button>
-                            <button class="btn btn-default btn-sm btn-danger" id="confirmDeleteSite" type="submit">
+                            <button class="btn btn-danger btn-raised" id="confirmDeleteSite" type="submit">
                                 <fmt:message key="label.manageSite.deleteSite"/>
                             </button>
                         </div>
@@ -182,15 +191,13 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">&times;</button>
-                            <h3 class="modal-title" id="modal-nothing-selected"><fmt:message key="label.manageSite.deleteSite"/></h3>
-                            <div class="modal-body">
-                                <p>
-                                    <fmt:message key="label.manageSites.noSiteSelected"/>
-                                </p>
-                            </div>
+                            <h4 class="modal-title" id="modal-nothing-selected"><fmt:message key="label.manageSite.deleteSite"/></h4>
+                        </div>
+                        <div class="modal-body">
+                            <fmt:message key="label.manageSites.noSiteSelected"/>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-default btn-sm btn-primary" data-dismiss="modal" aria-hidden="true">Ok</button>
+                            <button class="btn btn-primary btn-raised" data-dismiss="modal" aria-hidden="true">Ok</button>
                         </div>
                     </div>
                 </div>
@@ -202,12 +209,6 @@
                 <input type="hidden" name="exportformat" value="site"/>
                 <input type="hidden" name="live" value="true"/>
             </form>
-        </c:if>
-
-        <c:if test="${jcr:hasPermission(root, 'adminVirtualSites')}">
-            <a href="<c:url value='/cms/admin/default/en/settings.webProjectSettings.html'/>" class="btn btn-primary pull-right">
-                <fmt:message key="myWebProjects.goToCreateNewSite"/>
-            </a>
         </c:if>
 
     </div>
