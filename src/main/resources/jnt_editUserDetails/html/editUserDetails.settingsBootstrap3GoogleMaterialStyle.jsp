@@ -282,7 +282,7 @@
                                                         </div>
                                                         <div id="pictureEditButton">
                                                             <c:if test="${user:isPropertyEditable(user,'j:picture')}">
-                                                                <button class="btn btn-primary" type="button"
+                                                                <button class="btn btn-default btn-raised" type="button"
                                                                         style="margin-left: -7px"
                                                                         onclick="$('#about').hide();$('#about_form').hide();$('#image_form').show();$('#image').hide()">
                                                                     <fmt:message key="mysettings.picture.edit"/>
@@ -307,7 +307,7 @@
                                                             <br />
                                                         </div>
                                                         <div id="about-button-part">
-                                                            <button class="btn btn-primary pull-right" type="button"
+                                                            <button class="btn btn-primary btn-raised pull-right" type="button"
                                                                     onclick="switchRow('about')">
                                                                 <fmt:message key="label.clickToEdit"/>
                                                             </button>
@@ -334,12 +334,12 @@
                                                             <input type="text" readonly class="form-control" placeholder="Browse..">
                                                         </div>
                                                         <div class="form-actions">
-                                                            <button type="button" class="btn btn-danger"
+                                                            <button type="button" class="btn btn-default"
                                                                     onclick="$('#about').show();$('#image_form').hide();$('#image').show()"><fmt:message key="cancel"/></button>
-                                                            <button id="DeletePictureButton" class="btn btn-warning" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), formError)">
+                                                            <button id="DeletePictureButton" class="btn btn-danger" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), formError)">
                                                                 <fmt:message key="mySettings.picture.delete"/>
                                                             </button>
-                                                            <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, formError );">
+                                                            <button id="imageUploadButton" class="btn btn-primary btn-raised" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, formError );">
                                                                 <fmt:message key="save"/>
                                                             </button>
                                                             <div>
@@ -364,10 +364,10 @@
                                                         <br />
                                                         <div class="pull-right">
                                                             <div>
-                                                                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
+                                                                <button type="button" class="btn btn-default" onclick="ajaxReloadCallback(null,'cancel')">
                                                                     <fmt:message key="cancel"/>
                                                                 </button>
-                                                                <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError);">
+                                                                <button class="btn btn-primary btn-raised" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError);">
                                                                     <fmt:message key="save"/>
                                                                 </button>
                                                             </div>
