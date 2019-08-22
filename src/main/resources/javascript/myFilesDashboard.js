@@ -2,83 +2,89 @@
  * Created by dgaillard on 19/03/14.
  */
 
-function bbShowVideo(name, path, type){
-    bootbox.alert("<h1>" + name + "</h1><br />" + "<video width='320' height='240' controls><source src='" + path + "' type='" + type + "'></video><br /><p>" + myFilesVideo1 + "&nbsp;<a href='" + path + "' download>" + myFilesVideo2 + "</a>&nbsp;" + myFilesVideo3 + "</p>", function(){});
+function bbShowVideo(name, path, type) {
+    bootbox.alert('<h1>' + name + '</h1><br />' + '<video width="320" height="240" controls><source src="' + path + '" type="' + type + '"></video><br /><p>' + myFilesVideo1 + '&nbsp;<a href="' + path + '" download>' + myFilesVideo2 + '</a>&nbsp;' + myFilesVideo3 + '</p>', function () {
+    });
 }
 
-function bbShowAudio(name, path, type){
-    bootbox.alert("<h1>" + name + "</h1><br />" + "<audio controls><source src='" + path + "' type='" + type + "'></audio><br /><p>" + myFilesAudio1 + "&nbsp;<a href='" + path + "' download>" + myFilesAudio2 + "</a>&nbsp;" + myFilesAudio3 + "</p>", function(){});
+function bbShowAudio(name, path, type) {
+    bootbox.alert('<h1>' + name + '</h1><br />' + '<audio controls><source src="' + path + '" type="' + type + '"></audio><br /><p>' + myFilesAudio1 + '&nbsp;<a href="' + path + '" download>' + myFilesAudio2 + '</a>&nbsp;' + myFilesAudio3 + '</p>', function () {
+    });
 }
 
-function bbShowImage(name, path, width, height){
-    bootbox.alert("<h1>" + name + "</h1><br />" + "<img src='" + path + "' alt='" + name + "' height='" + height + "' width='" + width + "'>", function(){});
+function bbShowImage(name, path, width, height) {
+    bootbox.alert('<h1>' + name + '</h1><br />' + '<img src="' + path + '" alt="' + name + '" height="' + height + '" width="' + width + '">', function () {
+    });
 }
 
-function addInputForAddFile(){
-    addFileIndex ++;
-    $('#fileFormUpload').append("<input type='file' name='file' id='file" + addFileIndex + "' /><br />");
+function addInputForAddFile() {
+    addFileIndex++;
+    $('#fileFormUpload').append('<input type="file" name="file" id="file' + addFileIndex + '" /><br />');
 }
 
-function bbDelete(name, id){
+function bbDelete(name, id) {
     bootbox.dialog({
-        message: "<p>" + myFilesDeleteBox + "&nbsp;" + name + " ?</p>",
-        title: labelDelete + "&nbsp;:&nbsp;" + name,
+        message: '<p>' + myFilesDeleteBox + '&nbsp;' + name + ' ?</p>',
+        title: labelDelete + '&nbsp;:&nbsp;' + name,
         buttons: {
-        danger: {
-            label: labelCancel,
-                className: "btn-danger",
-                callback: function() {}
-        },
-        success: {
-            label: labelDelete,
-                className: "btn-success",
-                callback: function() {
+            danger: {
+                label: labelCancel,
+                className: 'btn-danger',
+                callback: function () {
+                }
+            },
+            success: {
+                label: labelDelete,
+                className: 'btn-success',
+                callback: function () {
                     $.ajax({
                         url: apiPath + '/nodes/' + id,
                         type: 'DELETE',
-                        success: function(){
+                        success: function () {
                             window.location.reload();
                         },
-                        error: function(result){
-                            bootbox.alert(myFilesDeleteError + "&nbsp;:&nbsp;" + name + "<br />" + result.responseJSON.localizedMessage, function() {});
+                        error: function (result) {
+                            bootbox.alert(myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + result.responseJSON.localizedMessage, function () {
+                            });
                         }
-                    })
+                    });
                 }
             }
         }
     });
 }
 
-function bbRenameFolder(name, id){
+function bbRenameFolder(name, id) {
     bootbox.dialog({
-        message: "<label>" + labelNewDirName + "&nbsp;:&nbsp;</label><input type='text' id='renameFolder'/>",
-        title: labelRename + " : " + name,
+        message: '<label>' + labelNewDirName + '&nbsp;:&nbsp;</label><input type="text" id="renameFolder"/>',
+        title: labelRename + ' : ' + name,
         buttons: {
-        danger: {
-            label: labelCancel,
-                className: "btn-danger",
-                callback: function() {}
-        },
-        success: {
-            label: labelRename,
-                className: "btn-success",
-                callback: function() {
+            danger: {
+                label: labelCancel,
+                className: 'btn-danger',
+                callback: function () {
+                }
+            },
+            success: {
+                label: labelRename,
+                className: 'btn-success',
+                callback: function () {
                     var regex = /[:<>[\]*|"\\]/;
 
-                    if(!regex.test($('#renameFolder').val())){
+                    if (!regex.test($('#renameFolder').val())) {
                         $.ajax({
                             url: apiPath + '/nodes/' + id + '/moveto/' + $('#renameFolder').val(),
                             type: 'POST',
                             contentType: 'application/json',
-                            success: function(){
+                            success: function () {
                                 window.location.reload();
                             },
-                            error: function(result){
-                                bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesRenameFolderError + "&nbsp;:<br /><br />" + result.responseJSON.localizedMessage);
+                            error: function (result) {
+                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameFolderError + '&nbsp;:<br /><br />' + result.responseJSON.localizedMessage);
                             }
-                        })
-                    }else{
-                        bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesRenameErrorCharacters);
+                        });
+                    } else {
+                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameErrorCharacters);
                     }
                 }
             }
@@ -86,41 +92,42 @@ function bbRenameFolder(name, id){
     });
 }
 
-function bbRenameFile(name, id){
+function bbRenameFile(name, id) {
     bootbox.dialog({
-        message: "<label>" + labelNewName + "&nbsp;:&nbsp;</label><input type='text' id='renameFile'/>",
-        title: labelRename + " : " + name,
+        message: '<label>' + labelNewName + '&nbsp;:&nbsp;</label><input type="text" id="renameFile"/>',
+        title: labelRename + ' : ' + name,
         buttons: {
-        danger: {
-            label: labelCancel,
-                className: "btn-danger",
-                callback: function() {}
-        },
-        success: {
-            label: labelRename,
-                className: "btn-success",
-                callback: function() {
+            danger: {
+                label: labelCancel,
+                className: 'btn-danger',
+                callback: function () {
+                }
+            },
+            success: {
+                label: labelRename,
+                className: 'btn-success',
+                callback: function () {
                     var regex = /[:<>[\]*|"\\]/;
                     var fileExt = '';
 
-                    if(name.split('.').pop() != name){
+                    if (name.split('.').pop() != name) {
                         fileExt = '.' + name.split('.').pop();
                     }
 
-                    if(!regex.test($('#renameFile').val())){
+                    if (!regex.test($('#renameFile').val())) {
                         $.ajax({
                             url: apiPath + '/nodes/' + id + '/moveto/' + $('#renameFile').val() + fileExt,
                             type: 'POST',
                             contentType: 'application/json',
-                            success: function(){
+                            success: function () {
                                 window.location.reload();
                             },
-                            error: function(result){
-                                bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesRenameFileError + "&nbsp;:<br /><br />" + result.responseJSON.localizedMessage);
+                            error: function (result) {
+                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameFileError + '&nbsp;:<br /><br />' + result.responseJSON.localizedMessage);
                             }
-                        })
-                    }else{
-                        bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesRenameErrorCharacters);
+                        });
+                    } else {
+                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameErrorCharacters);
                     }
                 }
             }
@@ -128,45 +135,46 @@ function bbRenameFile(name, id){
     });
 }
 
-function endAddFile(fileName, addFileIndex, status, messageError){
+function endAddFile(fileName, addFileIndex, status, messageError) {
     index += 1;
-    if(fileName != ''){
+    if (fileName != '') {
         fileUp.push([fileName, status, messageError]);
     }
-    if(index == addFileIndex+1){
-        var table = "<table class='table table-hover table-bordered'><thead><tr><th>" + labelName + "</th><th>" + labelStatus + "</th><th>" + labelMessage + "</th></tr></thead><tbody>";
-        for(var j = 0 ; j < fileUp.length ; j++){
-            if(fileUp[j][1] == 'error'){
-                table += "<tr><td>" + fileUp[j][0] + "</td><td><span class='label label-important'>" + labelError + "</span></td><td>" + fileUp[j][2] + "</td></tr>";
-            }else{
-                table += "<tr><td>" + fileUp[j][0] + "</td><td><span class='label label-success'>" + labelOK + "</span></td><td>" + fileUp[j][2] + "</td></tr>";
+    if (index == addFileIndex + 1) {
+        var table = '<table class="table table-hover table-bordered"><thead><tr><th>' + labelName + '</th><th>' + labelStatus + '</th><th>' + labelMessage + '</th></tr></thead><tbody>';
+        for (var j = 0; j < fileUp.length; j++) {
+            if (fileUp[j][1] == 'error') {
+                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="label label-important">' + labelError + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
+            } else {
+                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="label label-success">' + labelOK + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
             }
-        };
-        table += "</tbody></table>";
-        bootbox.alert("<h1>" + myFilesUploadedFiles + "</h1><br />" + table, function(){
+        }
+        table += '</tbody></table>';
+        bootbox.alert('<h1>' + myFilesUploadedFiles + '</h1><br />' + table, function () {
             window.location.reload();
         });
     }
 }
 
-function bbAddFile(rootFolderMissing){
+function bbAddFile(rootFolderMissing) {
     bootbox.dialog({
-        message: "<label>" + labelAddFile + "&nbsp;:&nbsp;</label><button class='btn btn-primary pull-right' onclick='addInputForAddFile()' ><i class='icon-plus icon-white'></i>&nbsp;" + labelAddFile + "</button><form id='fileFormUpload' enctype='multipart/form-data'><input name='file' type='file' id='file" + addFileIndex + "' /><br /></form><br /><br /><div class='alert alert-info'><h4>" + myFilesAlertInfoCharacters + "&nbsp;:</h4><br />: / \\ | \" < > [ ] * </div>",
+        message: '<label>' + labelAddFile + '&nbsp;:&nbsp;</label><button class="btn btn-primary pull-right" onclick="addInputForAddFile()" ><i class="icon-plus icon-white"></i>&nbsp;' + labelAddFile + '</button><form id="fileFormUpload" enctype="multipart/form-data"><input name="file" type="file" id="file' + addFileIndex + '" /><br /></form><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
         title: labelUploadFile,
         buttons: {
-        danger: {
-            label: labelCancel,
-                className: "btn-danger",
-                callback: function() {}
-        },
-        success: {
-            label: labelAdd,
-                className: "btn-success",
-                callback: function() {
-                    if(rootFolderMissing) {
-                        bbCreateFolter("files", userNodeId, function(result) {
+            danger: {
+                label: labelCancel,
+                className: 'btn-danger',
+                callback: function () {
+                }
+            },
+            success: {
+                label: labelAdd,
+                className: 'btn-success',
+                callback: function () {
+                    if (rootFolderMissing) {
+                        bbCreateFolter('files', userNodeId, function (result) {
                             bbCreateFile();
-                        })
+                        });
                     } else {
                         bbCreateFile();
                     }
@@ -176,41 +184,42 @@ function bbAddFile(rootFolderMissing){
     });
 }
 
-function bbAddFolder(rootFolderMissing){
+function bbAddFolder(rootFolderMissing) {
     bootbox.dialog({
-        message: "<label>" + labelName + "&nbsp;:&nbsp;</label><input type='text' id='nameFolder'/><br /><br /><div class='alert alert-info'><h4>" + myFilesAlertInfoCharacters + "&nbsp;:</h4><br />: / \\ | \" < > [ ] * </div>",
+        message: '<label>' + labelName + '&nbsp;:&nbsp;</label><input type="text" id="nameFolder"/><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
         title: myFilesCreateNewFolder,
         buttons: {
-        danger: {
-            label: labelCancel,
-                className: "btn-danger",
-                callback: function() {}
-        },
-        success: {
-            label: labelCreateFolder,
-                className: "btn-success",
-                callback: function() {
+            danger: {
+                label: labelCancel,
+                className: 'btn-danger',
+                callback: function () {
+                }
+            },
+            success: {
+                label: labelCreateFolder,
+                className: 'btn-success',
+                callback: function () {
                     var regex = /[:<>[\]*|"\\]/;
 
                     var folderName = $('#nameFolder').val();
-                    if(!regex.test(folderName)){
-                        if(rootFolderMissing) {
-                            bbCreateFolter("files", userNodeId, function(result) {
-                                bbCreateFolter(folderName, result.children.files.id, function(result){
+                    if (!regex.test(folderName)) {
+                        if (rootFolderMissing) {
+                            bbCreateFolter('files', userNodeId, function (response) {
+                                bbCreateFolter(folderName, response.children.files.id, function () {
                                     window.location.reload();
                                 }, function (result) {
-                                    bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
-                                })
-                            })
+                                    bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + result.responseJSON.message);
+                                });
+                            });
                         } else {
-                            bbCreateFolter(folderName, currentFolderId, function(){
+                            bbCreateFolter(folderName, currentFolderId, function () {
                                 window.location.reload();
                             }, function (result) {
-                                bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderError + "&nbsp;:<br /><br />" + result.responseJSON.message);
-                            })
+                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + result.responseJSON.message);
+                            });
                         }
-                    }else{
-                        bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesCreateFolderErrorCharacters);
+                    } else {
+                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderErrorCharacters);
                     }
                 }
             }
@@ -219,26 +228,25 @@ function bbAddFolder(rootFolderMissing){
 }
 
 function bbCreateFile() {
-    for(var i = 0 ; i <= addFileIndex ; i++){
-        if($('#file' + i).val() != ''){
+    for (var i = 0; i <= addFileIndex; i++) {
+        if ($('#file' + i).val() != '') {
             $.ajaxFileUpload({
                 url: apiPath + '/paths' + currentNodePath,
-                secureuri:false,
+                secureuri: false,
                 fileElementId: 'file' + i,
                 dataType: 'json',
-                success: function(result){
-                    if(result.name){
+                success: function (result) {
+                    if (result.name) {
                         endAddFile(result.name, addFileIndex, 'success', '');
-                    }else{
+                    } else {
                         endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
                     }
                 },
-                error: function(result){
+                error: function (result) {
                     endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
                 }
             });
-        }
-        else{
+        } else {
             endAddFile('', addFileIndex, '', '');
         }
     }
@@ -249,16 +257,16 @@ function bbCreateFolter(folderName, parentId, successCB, errorCB) {
         url: apiPath + '/nodes/' + parentId,
         type: 'PUT',
         contentType: 'application/json',
-        data: "{\"children\":{\"" + folderName + "\":{\"name\":\"" + folderName + "\",\"type\":\"jnt:folder\"}}}",
-        success: function(result){
-            if(successCB) {
+        data: '{"children":{"' + folderName + '":{"name":"' + folderName + '","type":"jnt:folder"}}}',
+        success: function (result) {
+            if (successCB) {
                 successCB(result);
             }
         },
-        error: function(result){
-            if(errorCB) {
+        error: function (result) {
+            if (errorCB) {
                 errorCB(result);
             }
         }
-    })
+    });
 }
