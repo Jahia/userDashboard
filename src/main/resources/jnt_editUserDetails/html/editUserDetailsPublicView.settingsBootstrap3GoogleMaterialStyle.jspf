@@ -17,9 +17,9 @@
                         </c:choose>
                     </div>
                     <div class="col-sm-9 col-md-9">
-                        <h1>
+                        <h4>
                             <fmt:message key='jnt_user.j_about'/>
-                        </h1>
+                        </h4>
                         <div class="aboutMeText lead" style="text-align: justify;">
                                 ${user.properties['j:about'].string}
                         </div>
@@ -51,7 +51,7 @@
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:title') or fn:contains(publicPropertiesAsString, 'j:firstName')
                                                                                         or fn:contains(publicPropertiesAsString, 'j:lastName') or fn:contains(publicPropertiesAsString, 'j:gender')}">
                             <div id="namesRow">
-                                <h3><i class="material-icons">person</i>&nbsp;<fmt:message key="mySettings.name"/></h3>
+                                <h4><i class="material-icons">person</i>&nbsp;<fmt:message key="mySettings.name"/></h4>
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:title')}">
                                     <c:if test="${(not empty user.properties['j:title'].string)}">
                                         <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
@@ -90,7 +90,7 @@
                             </div>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:function') or fn:contains(publicPropertiesAsString, 'j:organization')}">
-                            <h3><i class="material-icons">business_center</i>&nbsp;<fmt:message key='mySettings.profession'/></h3>
+                            <h4><i class="material-icons">business_center</i>&nbsp;<fmt:message key='mySettings.profession'/></h4>
                             <div>
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:function')}">
                                     <c:if test="${(not empty user.properties['j:function'].string)}">
@@ -105,7 +105,7 @@
                             </div>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:facebookID') or fn:contains(publicPropertiesAsString, 'j:skypeID') or fn:contains(publicPropertiesAsString, 'j:twitterID') or fn:contains(publicPropertiesAsString, 'j:linkedinID')}">
-                            <h3><i class="material-icons">language</i>&nbsp;<fmt:message key='mySettings.social'/></h3>
+                            <h4><i class="material-icons">language</i>&nbsp;<fmt:message key='mySettings.social'/></h4>
                             <div>
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:facebookID')}">
                                     <c:choose>
@@ -157,7 +157,7 @@
                                                                                         or fn:contains(publicPropertiesAsString, 'j:email') or fn:contains(publicPropertiesAsString, 'j:address')
                                                                                         or fn:contains(publicPropertiesAsString, 'j:zipCode') or fn:contains(publicPropertiesAsString, 'j:city')
                                                                                         or fn:contains(publicPropertiesAsString, 'j:country')}">
-                            <h3><i class="material-icons">email</i>&nbsp;<fmt:message key='mySettings.address'/></h3>
+                            <h4><i class="material-icons">email</i>&nbsp;<fmt:message key='mySettings.address'/></h4>
                             <div>
                                     <c:if test="${fn:contains(publicPropertiesAsString, 'j:email')}">
                                         <div>
@@ -237,7 +237,7 @@
                             </div>
                         </c:if>
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate') or fn:contains(publicPropertiesAsString, 'preferredLanguage')}">
-                            <h3><i class="material-icons">info</i>&nbsp;<fmt:message key="jnt_user.j_gender.other"/></h3>
+                            <h4><i class="material-icons">info</i>&nbsp;<fmt:message key="jnt_user.j_gender.other"/></h4>
                             <div>
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate')}">
                                     <div>

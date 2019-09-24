@@ -296,9 +296,9 @@
                                                 <c:if test="${currentNode.properties['j:about'].boolean}">
                                                     <div id="about">
                                                         <div id="about-text-part">
-                                                            <h1>
+                                                            <h4>
                                                                 <fmt:message key='jnt_user.j_about'/>
-                                                            </h1>
+                                                            </h4>
                                                             <div id="aboutMeTextDiv" class="aboutMeText lead">
                                                                 <div id="aboutMeTextWrapper">
                                                                         ${user.properties['j:about'].string}
