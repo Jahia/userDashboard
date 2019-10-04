@@ -58,6 +58,7 @@
 <%--<template:addResources type="css" resources="admin-bootstrap.css"/>--%>
 <template:addResources type="css" resources="bootstrap-3/bootstrap-datetimepicker.min.css"/>
 <template:addResources type="css" resources="bootstrap-3/bootstrap-switch.css"/>
+<template:addResources type="css" resources="dashboardAnthracite.css"/>
 
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
