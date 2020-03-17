@@ -46,46 +46,11 @@
                            value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                 </c:if>
                 <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
-                <c:if test="${currentNode.properties.administrationlink.boolean}">
-                    <td>
-                        <c:choose>
-                            <c:when test="${renderContext.settings.distantPublicationServerMode and jcr:hasPermission(node,'siteAdministrationAccess')}">
-                                <c:url var="editUrl"
-                                       value="/cms/settings/default/${node.defaultLanguage}${node.path}.manageLanguages.html"/>
-                                <a target="_blank" href="${editUrl}">
-                                    <i class="material-icons">arrow_forward</i>
-                                </a>
-                            </c:when>
-                            <c:when test="${jcr:hasPermission(node,'siteAdministrationAccess')}">
-                                <a href="<c:url value='${baseEdit}${node.path}.manageModules.html'/>" target="_blank">
-                                    <i class="material-icons">arrow_forward</i>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <i class="material-icons">block</i>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </c:if>
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <td>
                         <c:choose>
                             <c:when test="${jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                                 <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>" target="_parent">
-                                    <i class="material-icons">arrow_forward</i>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <i class="material-icons">block</i>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </c:if>
-                <c:if test="${currentNode.properties.contribute.boolean}">
-                    <td>
-                        <c:choose>
-                            <c:when test="${jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                                <a href="<c:url value='${baseContribute}${node.path}${page}.html'/>" target="_parent">
                                     <i class="material-icons">arrow_forward</i>
                                 </a>
                             </c:when>
@@ -126,7 +91,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=filemanager-anthracite&site=${node.identifier}'/>" target="_blank">
+                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${currentLocale}/media/files?params=(sub:!t)'/>" target="_blank">
                                 <i class="material-icons">search</i>
                             </a>
                         </c:when>
@@ -138,7 +103,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager-anthracite&site=${node.identifier}'/>"
+                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${currentLocale}/content-folders/contents'/>"
                                target="_blank">
                                 <i class="material-icons">search</i>
                             </a>
@@ -231,39 +196,11 @@
                             <c:set var="baseEdit"
                                    value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                         </c:if>
-                        <c:if test="${currentNode.properties.administrationlink.boolean}">
-                            <td>
-                            <c:choose>
-                                <c:when test="${jcr:hasPermission(node,'siteAdministrationAccess')}">
-                                    <a href="<c:url value='${baseEdit}${node.path}.manageModules.html'/>" target="_blank">
-                                        <i class="material-icons">arrow_forward</i>
-                                    </a>
-                                </c:when>
-                                <c:otherwise>
-                                    <i class="material-icons">cancel</i></td>
-                                </c:otherwise>
-                            </c:choose>
-                            </td>
-                        </c:if>
                         <c:if test="${currentNode.properties.edit.boolean}">
                             <td>
                             <c:choose>
                                 <c:when test="${not empty editModeAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
                                     <a href="<c:url value='${baseEdit}${editModeAccessNode.path}.html'/>" target="_blank">
-                                        <i class="material-icons">arrow_forward</i>
-                                    </a>
-                                </c:when>
-                                <c:otherwise>
-                                    <i class="material-icons">cancel</i></td>
-                                </c:otherwise>
-                            </c:choose>
-                            </td>
-                        </c:if>
-                        <c:if test="${currentNode.properties.contribute.boolean}">
-                            <td>
-                            <c:choose>
-                                <c:when test="${not empty contributeModeAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
-                                    <a href="<c:url value='${baseContribute}${contributeModeAccessNode.path}.html'/>" target="_blank">
                                         <i class="material-icons">arrow_forward</i>
                                     </a>
                                 </c:when>
