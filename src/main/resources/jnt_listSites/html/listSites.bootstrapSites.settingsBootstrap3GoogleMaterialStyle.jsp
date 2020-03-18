@@ -98,19 +98,9 @@
                     <th>
                         <fmt:message key='label.site'/>
                     </th>
-                    <c:if test="${currentNode.properties.administrationlink.boolean}">
-                        <th>
-                            <fmt:message key="label.administration"/>
-                        </th>
-                    </c:if>
                     <c:if test="${currentNode.properties.edit.boolean}">
                         <th>
                             <fmt:message key="label.edit"/>
-                        </th>
-                    </c:if>
-                    <c:if test="${currentNode.properties.contribute.boolean}">
-                        <th>
-                            <fmt:message key="label.contribute"/>
                         </th>
                     </c:if>
                     <c:if test="${currentNode.properties.preview.boolean}">
