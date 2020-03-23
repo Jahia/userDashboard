@@ -147,6 +147,11 @@
 
         $(document).ready(function(){
 
+            // Update messages on window according to current uilang, this avoids BACKLOG-12832
+            fetch(window.parent.contextJsParameters.contextPath + '/gwt/resources/i18n/messages_' + window.parent.contextJsParameters.uilang + '.js')
+                .then(function(d) {d.text()
+                    .then(function(d) {window.parent.Function('"use strict";' + d + ' window.jahia_gwt_messages = jahia_gwt_messages')()})});
+
             //Activating the Birthdate Date Picker
             $('body').on('click','#datePickerParent',function (e) {
                 e.preventDefault();
