@@ -50,7 +50,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                                <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>" target="_parent">
+                                <a href="<c:url value='/jahia/page-composer/default/${currentLocale}${node.path}${page}.html'/>" target="_parent">
                                     <i class="material-icons">arrow_forward</i>
                                 </a>
                             </c:when>
