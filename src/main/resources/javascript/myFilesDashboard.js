@@ -145,8 +145,20 @@ function bbAddFolder(rootFolderMissing) {
         }
     });
 }
+
+function contentEditorExitHandler() {
+    window.location.reload();
+}
+
 function editInContentEditor(uuid, locale) {
-    window.top.CE_API.edit(uuid, '', locale, locale);
+    if (window.top.contentEditorEventHandlers && !window.top.contentEditorEventHandlers['filesDashboard']) {
+        window.top.contentEditorEventHandlers['filesDashboard'] = contentEditorExitHandler;
+    } else {
+        window.top.contentEditorEventHandlers = {filesDashboard: contentEditorExitHandler};
+    }
+    if (window.top.CE_API !== undefined) {
+        window.top.CE_API.edit(uuid, '', locale, locale);
+    }
 };
 
 function bbCreateFile() {
