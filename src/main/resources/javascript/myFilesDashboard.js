@@ -54,87 +54,6 @@ function bbDelete(name, id) {
     });
 }
 
-function bbRenameFolder(name, id) {
-    bootbox.dialog({
-        message: '<label>' + labelNewDirName + '&nbsp;:&nbsp;</label><input type="text" id="renameFolder"/>',
-        title: labelRename + ' : ' + name,
-        buttons: {
-            danger: {
-                label: labelCancel,
-                className: 'btn-danger',
-                callback: function () {
-                }
-            },
-            success: {
-                label: labelRename,
-                className: 'btn-success',
-                callback: function () {
-                    var regex = /[:<>[\]*|"\\]/;
-
-                    if (!regex.test($('#renameFolder').val())) {
-                        $.ajax({
-                            url: apiPath + '/nodes/' + id + '/moveto/' + $('#renameFolder').val(),
-                            type: 'POST',
-                            contentType: 'application/json',
-                            success: function () {
-                                window.location.reload();
-                            },
-                            error: function (result) {
-                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameFolderError + '&nbsp;:<br /><br />' + result.responseJSON.localizedMessage);
-                            }
-                        });
-                    } else {
-                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameErrorCharacters);
-                    }
-                }
-            }
-        }
-    });
-}
-
-function bbRenameFile(name, id) {
-    bootbox.dialog({
-        message: '<label>' + labelNewName + '&nbsp;:&nbsp;</label><input type="text" id="renameFile"/>',
-        title: labelRename + ' : ' + name,
-        buttons: {
-            danger: {
-                label: labelCancel,
-                className: 'btn-danger',
-                callback: function () {
-                }
-            },
-            success: {
-                label: labelRename,
-                className: 'btn-success',
-                callback: function () {
-                    var regex = /[:<>[\]*|"\\]/;
-                    var fileExt = '';
-
-                    if (name.split('.').pop() != name) {
-                        fileExt = '.' + name.split('.').pop();
-                    }
-
-                    if (!regex.test($('#renameFile').val())) {
-                        $.ajax({
-                            url: apiPath + '/nodes/' + id + '/moveto/' + $('#renameFile').val() + fileExt,
-                            type: 'POST',
-                            contentType: 'application/json',
-                            success: function () {
-                                window.location.reload();
-                            },
-                            error: function (result) {
-                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameFileError + '&nbsp;:<br /><br />' + result.responseJSON.localizedMessage);
-                            }
-                        });
-                    } else {
-                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesRenameErrorCharacters);
-                    }
-                }
-            }
-        }
-    });
-}
-
 function endAddFile(fileName, addFileIndex, status, messageError) {
     index += 1;
     if (fileName != '') {
@@ -226,6 +145,21 @@ function bbAddFolder(rootFolderMissing) {
         }
     });
 }
+
+function contentEditorExitHandler() {
+    window.location.reload();
+}
+
+function editInContentEditor(uuid, locale) {
+    if (window.top.contentEditorEventHandlers && !window.top.contentEditorEventHandlers['filesDashboard']) {
+        window.top.contentEditorEventHandlers['filesDashboard'] = contentEditorExitHandler;
+    } else {
+        window.top.contentEditorEventHandlers = {filesDashboard: contentEditorExitHandler};
+    }
+    if (window.top.CE_API !== undefined) {
+        window.top.CE_API.edit(uuid, '', locale, locale);
+    }
+};
 
 function bbCreateFile() {
     for (var i = 0; i <= addFileIndex; i++) {
