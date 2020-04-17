@@ -606,10 +606,6 @@
                                 ${functions:displayLocaleNameWith(prefLang, prefLang)}
                             </div>
                         </c:if>
-                        <div>
-                            <strong><fmt:message key="jnt_user.jahia.ui.theme"/> : </strong>
-                            <span>${prefTheme}</span>
-                        </div>
                         <c:if test="${currentNode.properties['age'].boolean}">
                             <div>
                             <c:if test="${not empty birthDate}">
@@ -656,13 +652,6 @@
                                         ${functions:displayLocaleNameWith(adLocale, adLocale)}
                                         </option>
                                     </c:forEach>
-                                </select>
-                            </div>
-                            <div class="form-group label-floating">
-                                <label class="control-label" for="preferredTheme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
-                                <select class="form-control otherField" name="jahia.ui.theme">
-                                    <option ${selectAnthracite} value="jahia-anthracite" >jahia-anthracite</option>
-                                    <option ${selectDefault} value="default">default</option>
                                 </select>
                             </div>
                         </div>
