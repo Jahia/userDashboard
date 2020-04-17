@@ -84,17 +84,6 @@
 <c:forEach items="${publicProperties}" var="value">
     <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
 </c:forEach>
-<c:set var="prefTheme" value="${user:getUITheme(user)}"/>
-<c:choose>
-    <c:when test="${prefTheme eq 'jahia-anthracite'}">
-        <c:set value="selected" var="selectAnthracite"></c:set>
-        <c:set value="" var="selectDefault"></c:set>
-    </c:when>
-    <c:otherwise>
-        <c:set value="" var="selectAnthracite"></c:set>
-        <c:set value="selected" var="selectDefault"></c:set>
-    </c:otherwise>
-</c:choose>
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
@@ -113,7 +102,7 @@
             '${key}' : '${functions:escapeJavaScript(message)}'<c:if test="${!loopStatus.last}">,</c:if>
             </c:forTokens>
         };
-        
+
         var currentCssClass ="";
 
         /**
@@ -187,13 +176,13 @@
                 $(".btnLessAbout").hide();
                 $(".btnMoreAbout").show();
             });
-            
+
             // QA-5792: copied from editUserDetailsUtils.js.verifyAndSubmitAddress
 	        var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
-	        
+
 	        /**
 	        * QA-5792
-	        * A jahia basic phone pattern validation 
+	        * A jahia basic phone pattern validation
 	        */
 	        $.validator.addMethod("phone", function(phone_number, element) {
 	        	phone_number = phone_number.replace(/\(|\)|\s+|-/g, "");
@@ -204,14 +193,14 @@
 	        	return (this.optional(element) == true) || (phone_number.length > 4 &&
 	        		phone_number.match(phoneRegex));
 	        }, '<fmt:message key="mySettings.errors.phone.format"/>');
-	        
+
 			// QA-5792: email regex pattern from editUserDetailsUtils.js.verifyAndSubmitAddress
 	        var emailRegex = /^(?:[A-Za-z0-9\._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})?$/;
 
             $.validator.methods.email = function(value, element) {
                 return this.optional(element) || emailRegex.test(value);
             }
-            
+
             // QA-5792: apply jquery validation
             $('#editDetailsForm').validate({
             	rules:{
@@ -223,17 +212,17 @@
             	},
             	highlight: function (element) {
             		$(element).closest('.control-group').removeClass('success').addClass('error');
-                    
+
                 },
                 success: function (element) {
                     element.addClass('valid').closest('.control-group').removeClass('error').addClass('success');
                 },
                 // unhighligth when validation is not required
                 unhighlight: function (element) {
-				  $(element).closest('.control-group').removeClass('error'); 
+				  $(element).closest('.control-group').removeClass('error');
 				}
             });
-            
+
         });
     </script>
 </template:addResources>

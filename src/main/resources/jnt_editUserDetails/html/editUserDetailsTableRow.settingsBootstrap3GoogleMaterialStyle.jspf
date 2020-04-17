@@ -409,11 +409,6 @@
             </div>
         </c:if>
 
-        <div>
-            <span><fmt:message key="jnt_user.jahia.ui.theme"/> : </span>
-            <span>${prefTheme}</span>
-        </div>
-
         <c:if test="${currentNode.properties['age'].boolean}">
             <div>
                 <span><fmt:message key="jnt_user.age"/>:&nbsp;</span>
@@ -455,15 +450,6 @@
                                     ${function:displayLocaleNameWith(adLocale, adLocale)}
                                 </option>
                             </c:forEach>
-                        </select>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="jahia.ui.theme"><fmt:message key="jnt_user.jahia.ui.theme"/></label>
-                    <div class="controls">
-                        <select name="jahia.ui.theme">
-                            <option ${selectAnthracite} value="jahia-anthracite" >jahia-anthracite</option>
-                            <option ${selectDefault} value="default">default</option>
                         </select>
                     </div>
                 </div>
