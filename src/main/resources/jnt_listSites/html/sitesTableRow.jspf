@@ -18,7 +18,7 @@
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
+            <c:when test="${not empty node and (jcr:hasPermission(node,'jContentAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
                 <c:set var="baseLive" value="${url.baseLive}"/>
                 <c:set var="basePreview" value="${url.basePreview}"/>
                 <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -68,7 +68,7 @@
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <td>
                         <c:choose>
-                            <c:when test="${jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                            <c:when test="${jcr:hasPermission(node,'jContentAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                                 <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>" target="_parent">
                                     <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" " role="presentation"
                                          style="position:relative;"/>
@@ -213,14 +213,14 @@
                 </c:if>
             </c:when>
             <c:otherwise>
-                <c:set var="editModeAccessNode"
-                       value="${jcr:getFirstAllowedNodeForPermission('editModeAccess', node, 'jnt:page')}"/>
+                <c:set var="jContentAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('jContentAccess', node, 'jnt:page')}"/>
                 <c:set var="contributeModeAccessNode"
                        value="${jcr:getFirstAllowedNodeForPermission('contributeModeAccess', node, 'jnt:page')}"/>
                 <c:set var="previewModeAccessNode"
                        value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
                 <c:choose>
-                <c:when test="${node.home.properties['j:published'].boolean or not empty editModeAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
+                <c:when test="${node.home.properties['j:published'].boolean or not empty jContentAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
                     <c:set var="baseLive" value="${url.baseLive}"/>
                     <c:set var="basePreview" value="${url.basePreview}"/>
                     <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -255,8 +255,8 @@
                     <c:if test="${currentNode.properties.edit.boolean}">
                         <td>
                             <c:choose>
-                                <c:when test="${not empty editModeAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
-                                    <a href="<c:url value='${baseEdit}${editModeAccessNode.path}.html'/>" target="_blank">
+                                <c:when test="${not empty jContentAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                    <a href="<c:url value='${baseEdit}${jContentAccessNode.path}.html'/>" target="_blank">
                                         <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" " role="presentation"
                                              style="position:relative;"/>
                                     </a>
