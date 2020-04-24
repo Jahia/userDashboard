@@ -129,14 +129,6 @@
                         </c:choose>
                     </td>
                 </c:if>
-                <td>
-                    <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                         style="position:relative;"/>
-                </td>
-                <td>
-                    <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                         style="position:relative;"/>
-                </td>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <td>
                         <c:choose>
@@ -296,14 +288,6 @@
                             </c:choose>
                         </td>
                     </c:if>
-                    <td>
-                        <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                             style="position:relative;"/>
-                    </td>
-                    <td>
-                        <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                             style="position:relative;"/>
-                    </td>
                 </c:when>
                     <c:otherwise>
                         <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"

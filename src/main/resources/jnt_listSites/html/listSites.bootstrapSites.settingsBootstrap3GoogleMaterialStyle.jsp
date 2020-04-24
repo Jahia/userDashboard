@@ -113,12 +113,6 @@
                             <fmt:message key="label.live.version"/>
                         </th>
                     </c:if>
-                    <th>
-                        <fmt:message key="myWebProjects.files"/>
-                    </th>
-                    <th>
-                        <fmt:message key="label.content"/>
-                    </th>
                     <c:if test="${currentNode.properties.editproperties.boolean}">
                         <th>
                             <fmt:message key="label.manageSite.changeProperties"/>

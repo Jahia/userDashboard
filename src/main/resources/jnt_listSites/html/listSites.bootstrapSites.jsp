@@ -97,16 +97,6 @@
                         <fmt:message key="label.live.version"/>
                     </th>
                 </c:if>
-                <th>
-                    <img src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" "
-                         role="presentation" style="position:relative;"/>
-                    <fmt:message key="myWebProjects.files"/>
-                </th>
-                <th>
-                    <img src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" "
-                         role="presentation" style="position:relative;"/>
-                    <fmt:message key="label.content"/>
-                </th>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <th>
                         <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "

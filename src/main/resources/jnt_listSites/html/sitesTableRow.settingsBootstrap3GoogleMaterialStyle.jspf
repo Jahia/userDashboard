@@ -88,12 +88,6 @@
                         </c:choose>
                     </td>
                 </c:if>
-                <td>
-                    <i class="material-icons">block</i>
-                </td>
-                <td>
-                    <i class="material-icons">block</i>
-                </td>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <td>
                         <c:choose>
@@ -218,12 +212,6 @@
                             </c:choose>
                             </td>
                         </c:if>
-                        <td>
-                            <i class="material-icons">cancel</i></td>
-                        </td>
-                        <td>
-                            <i class="material-icons">search</i>
-                        </td>
                     </c:when>
                     <c:otherwise>
                         <td><i class="material-icons">cancel</i></td>
