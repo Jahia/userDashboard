@@ -89,29 +89,10 @@
                     </td>
                 </c:if>
                 <td>
-                    <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${currentLocale}/media/files?params=(sub:!t)'/>" target="_blank">
-                                <i class="material-icons">search</i>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="material-icons">block</i>
-                        </c:otherwise>
-                    </c:choose>
+                    <i class="material-icons">block</i>
                 </td>
                 <td>
-                    <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${currentLocale}/content-folders/contents'/>"
-                               target="_blank">
-                                <i class="material-icons">search</i>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="material-icons">block</i>
-                        </c:otherwise>
-                    </c:choose>
+                    <i class="material-icons">block</i>
                 </td>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <td>
@@ -238,30 +219,10 @@
                             </td>
                         </c:if>
                         <td>
-                        <c:choose>
-                            <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                                <a href="<c:url value='/engines/manager.jsp?conf=filemanager-anthracite&site=${node.identifier}'/>" target="_blank">
-                                    <i class="material-icons">search</i>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <i class="material-icons">cancel</i></td>
-                            </c:otherwise>
-                        </c:choose>
-
+                            <i class="material-icons">cancel</i></td>
                         </td>
                         <td>
-                            <c:choose>
-                                <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                                    <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager-anthracite&site=${node.identifier}'/>"
-                                       target="_blank">
-                                        <i class="material-icons">search</i>
-                                    </a>
-                                </c:when>
-                                <c:otherwise>
-                                    <i class="material-icons">search</i>
-                                </c:otherwise>
-                            </c:choose>
+                            <i class="material-icons">search</i>
                         </td>
                     </c:when>
                     <c:otherwise>

@@ -130,32 +130,12 @@
                     </td>
                 </c:if>
                 <td>
-                    <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank">
-                                <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
-                                     role="presentation" style="position:relative;"/>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                                 style="position:relative;"/>
-                        </c:otherwise>
-                    </c:choose>
+                    <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                         style="position:relative;"/>
                 </td>
                 <td>
-                    <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                            <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>" target="_blank">
-                                <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
-                                     role="presentation" style="position:relative;"/>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                                 style="position:relative;"/>
-                        </c:otherwise>
-                    </c:choose>
+                    <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                         style="position:relative;"/>
                 </td>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <td>
@@ -317,33 +297,12 @@
                         </td>
                     </c:if>
                     <td>
-                        <c:choose>
-                            <c:when test="${jcr:hasPermission(node, 'fileManager')}">
-                                <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank">
-                                    <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
-                                         role="presentation" style="position:relative;" />
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                                     style="position:relative;"/>
-                            </c:otherwise>
-                        </c:choose>
-
+                        <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                             style="position:relative;"/>
                     </td>
                     <td>
-                        <c:choose>
-                            <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
-                                <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>" target="_blank">
-                                    <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
-                                         role="presentation" style="position:relative;" />
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
-                                     style="position:relative;"/>
-                            </c:otherwise>
-                        </c:choose>
+                        <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                             style="position:relative;"/>
                     </td>
                 </c:when>
                     <c:otherwise>
