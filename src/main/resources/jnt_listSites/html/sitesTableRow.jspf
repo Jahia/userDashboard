@@ -131,7 +131,7 @@
                 </c:if>
                 <td>
                     <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'fileManager')}">
+                        <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
                             <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank">
                                 <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
                                      role="presentation" style="position:relative;"/>
@@ -145,7 +145,7 @@
                 </td>
                 <td>
                     <c:choose>
-                        <c:when test="${jcr:hasPermission(node, 'editorialContentManager')}">
+                        <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
                             <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>" target="_blank">
                                 <img src="<c:url value='/icons/search.png'/>" width="16" height="16" alt=" "
                                      role="presentation" style="position:relative;"/>
