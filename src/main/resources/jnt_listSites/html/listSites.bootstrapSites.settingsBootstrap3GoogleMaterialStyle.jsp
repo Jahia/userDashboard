@@ -83,12 +83,6 @@
                         ${exportStagingTitle}
                 </button>
             </c:if>
-
-            <c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
-                <button class="btn btn-danger" id="deleteSiteButton" onclick="deleteSiteBootstrap()">
-                    <fmt:message key="label.manageSite.deleteSite"/>
-                </button>
-            </c:if>
         </c:if>
 
         <fieldset>
