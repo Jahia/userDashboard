@@ -1,22 +1,3 @@
-function deleteSiteBootstrap() {
-    var sitecheckbox = $('.sitecheckbox:checked');
-    if (sitecheckbox.length == 0) {
-        $('#nothing-selected').modal('show');
-    }
-    else {
-        $(".addedInput").remove();
-        $(".addedLI").remove();
-
-        sitecheckbox.each(function (index) {
-            $('<li class="addedLI">' + $(this).attr('name') + '</li>').appendTo("#dialog-delete-confirm-body")
-            $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#deleteSiteForm")
-        });
-
-        $("#dialog-delete-confirm").modal('show')
-    }
-
-}
-
 function modalSiteEditProperties(node) {
     $("#editSiteDiv"+node).modal('show');
     return false;
