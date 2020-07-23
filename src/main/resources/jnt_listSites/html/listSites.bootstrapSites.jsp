@@ -136,61 +136,6 @@
     </c:if>
 </fieldset>
 
-<c:if test="${currentNode.properties.delete.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
-    <script>
-        $(document).ready(function(){
-            $('#confirmDeleteSite').on('click', function (){
-                $('#dialog-delete-confirm').modal('hide');
-
-                workInProgress('${i18nWaiting}');
-
-                $('#deleteSiteForm').ajaxSubmit(function() {
-                    window.location.reload();
-                });
-            });
-        });
-    </script>
-
-    <div id="dialog-delete-confirm" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteSite" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 id="modalDeleteSite"><fmt:message key="label.manageSite.deleteSite"/></h3>
-        </div>
-        <div class="modal-body">
-            <p>
-                <fmt:message key="label.delete.confirm" />
-                <ol id="dialog-delete-confirm-body"></ol>
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">
-                <fmt:message key="cancel" />
-            </button>
-            <button class="btn btn-danger" id="confirmDeleteSite" type="submit">
-                <fmt:message key="label.manageSite.deleteSite"/>
-            </button>
-        </div>
-    </div>
-
-    <form  class="deleteSiteForm ajaxForm" id="deleteSiteForm" action="<c:url value='${url.basePreview}/sites.adminDeleteSite.do'/>">
-    </form>
-
-    <div id="nothing-selected" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal-nothing-selected" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 id="modal-nothing-selected"><fmt:message key="label.manageSite.deleteSite"/></h3>
-        </div>
-        <div class="modal-body">
-            <p>
-                <fmt:message key="label.manageSites.noSiteSelected"/>
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Ok</button>
-        </div>
-    </div>
-</c:if>
-
 <c:if test="${renderContext.user.root && currentNode.properties.export.boolean}">
     <form class="exportForm ajaxForm"  name="export" id="exportForm" method="POST">
         <input type="hidden" name="exportformat" value="site"/>
