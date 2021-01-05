@@ -156,6 +156,9 @@ function editInContentEditor(uuid, locale, uilocale, site) {
     } else {
         window.top.contentEditorEventHandlers = {filesDashboard: contentEditorExitHandler};
     }
+    if (window.parent.jahia && window.parent.jahia.reduxStore) {
+        site = window.parent.jahia.reduxStore.getState().site;
+    }
     if (window.top.CE_API !== undefined) {
         window.top.CE_API.edit(uuid, site, locale, uilocale);
     }
