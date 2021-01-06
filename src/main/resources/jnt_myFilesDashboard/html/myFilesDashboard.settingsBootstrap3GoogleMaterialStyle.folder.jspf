@@ -58,7 +58,7 @@
                                     <i class="material-icons">delete</i>
                                 </a>
                                 <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>"
-                                   onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}');return false;"
+                                   onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}', '${renderContext.UILocale}', '${node.resolveSite.name}');return false;"
                                    style="text-decoration: none;">
                                     <i class="material-icons">mode_edit</i>&nbsp;&nbsp;
                                 </a>
@@ -138,7 +138,7 @@
                                 <i class="material-icons">delete</i>
                             </a>
                             <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>"
-                               onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}');return false"
+                               onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}', '${renderContext.UILocale}', '${node.resolveSite.name}');return false"
                                style="text-decoration: none;">
                                 <i class="material-icons">mode_edit</i>&nbsp;&nbsp;
                             </a>

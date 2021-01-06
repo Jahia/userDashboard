@@ -150,14 +150,17 @@ function contentEditorExitHandler() {
     window.location.reload();
 }
 
-function editInContentEditor(uuid, locale) {
+function editInContentEditor(uuid, locale, uilocale, site) {
     if (window.top.contentEditorEventHandlers && !window.top.contentEditorEventHandlers['filesDashboard']) {
         window.top.contentEditorEventHandlers['filesDashboard'] = contentEditorExitHandler;
     } else {
         window.top.contentEditorEventHandlers = {filesDashboard: contentEditorExitHandler};
     }
+    if (window.parent.jahia && window.parent.jahia.reduxStore) {
+        site = window.parent.jahia.reduxStore.getState().site;
+    }
     if (window.top.CE_API !== undefined) {
-        window.top.CE_API.edit(uuid, '', locale, locale);
+        window.top.CE_API.edit(uuid, site, locale, uilocale);
     }
 };
 

@@ -58,7 +58,7 @@
                             <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>" onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;" >
                                 <i class="icon-trash"></i>
                             </a>
-                            <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}');return false;" style="text-decoration: none;">
+                            <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}', '${renderContext.UILocale}', '${node.resolveSite.name}');return false;" style="text-decoration: none;">
                                 <i class="icon-pencil"></i>&nbsp;&nbsp;
                             </a>
                         </c:if>
@@ -127,7 +127,7 @@
                         <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>" onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                             <i class="icon-trash"></i>
                         </a>
-                        <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}');return false" style="text-decoration: none;">
+                        <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="editInContentEditor('${node.identifier}', '${currentResource.locale}', '${renderContext.UILocale}', '${node.resolveSite.name}');return false" style="text-decoration: none;">
                             <i class="icon-pencil"></i>&nbsp;&nbsp;
                         </a>
                         <a class="pull-right" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
