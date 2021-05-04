@@ -50,7 +50,7 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>8.0.0.0</version>
+        <version>8.0.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>userDashboard</artifactId>
@@ -70,7 +70,7 @@
         <jahia-deploy-on-site>system</jahia-deploy-on-site>
         <jahia-depends>default,contentRetrieval,jcrestapi</jahia-depends>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFCmqVJtrz0kAyOqFGUNBcVadgNRpAhUAjw7e/EW/Uagp8Btq800Wvs7LUOA=</jahia-module-signature>
+        <jahia-module-signature>MC0CFBOUiWJoc8+JdkWi4+SqQFugiLD+AhUAh+/le+4aPIM9zmAqsUGRiGZaShk=</jahia-module-signature>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
     </properties>
 

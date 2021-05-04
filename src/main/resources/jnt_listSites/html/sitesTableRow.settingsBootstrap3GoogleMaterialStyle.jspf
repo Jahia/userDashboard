@@ -22,7 +22,7 @@
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${not empty node and (jcr:hasPermission(node,'jContentAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
+            <c:when test="${not empty node and (jcr:hasPermission(node,'jContentAccess') || jcr:hasPermission(node,'pageComposerAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
                 <c:set var="baseLive" value="${url.baseLive}"/>
                 <c:set var="basePreview" value="${url.basePreview}"/>
                 <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -52,6 +52,11 @@
                     <td>
                         <c:choose>
                             <c:when test="${jcr:hasPermission(node,'jContentAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                                <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${siteLocale}/pages'/>" target="_parent">
+                                    <i class="material-icons">arrow_forward</i>
+                                </a>
+                            </c:when>
+                            <c:when test="${jcr:hasPermission(node,'pageComposerAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                                 <a href="<c:url value='/jahia/page-composer/default/${siteLocale}${node.path}${page}.html'/>" target="_parent">
                                     <i class="material-icons">arrow_forward</i>
                                 </a>
