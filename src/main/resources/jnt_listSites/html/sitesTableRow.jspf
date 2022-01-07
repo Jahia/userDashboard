@@ -217,8 +217,16 @@
                        value="${jcr:getFirstAllowedNodeForPermission('editModeAccess', node, 'jnt:page')}"/>
                 <c:set var="contributeModeAccessNode"
                        value="${jcr:getFirstAllowedNodeForPermission('contributeModeAccess', node, 'jnt:page')}"/>
-                <c:set var="previewModeAccessNode"
-                       value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
+
+                <%-- check home page for read permission otherwise, return first allowed node --%>
+                <c:if test="${jcr:hasPermission(node.home, 'jcr:read_default')}">
+                    <c:set var="previewModeAccessNode" value="${node.home}"/>
+                </c:if>
+                <c:if test="${empty previewModeAccessNode}">
+                    <c:set var="previewModeAccessNode"
+                           value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
+                </c:if>
+
                 <c:choose>
                 <c:when test="${node.home.properties['j:published'].boolean or not empty editModeAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
                     <c:set var="baseLive" value="${url.baseLive}"/>
