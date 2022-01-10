@@ -54,7 +54,7 @@
     </parent>
 
     <artifactId>userDashboard</artifactId>
-    <version>7.2.1-SNAPSHOT</version>
+    <version>7.3.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Jahia User Dashboards</name>
     <description>User Dashboards</description>
