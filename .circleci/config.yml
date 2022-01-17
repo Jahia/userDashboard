@@ -33,7 +33,7 @@ parameters:
     default: "jahia/userDashboard"
   PRIMARY_RELEASE_BRANCH:
     type: string
-    default: "master" # main or master ? set the branch for the main release
+    default: "7_x" # main or master ? set the branch for the main release
   JAHIA_IMAGE:
     type: string
     default: "jahia/jahia-ee-dev:8-SNAPSHOT"
