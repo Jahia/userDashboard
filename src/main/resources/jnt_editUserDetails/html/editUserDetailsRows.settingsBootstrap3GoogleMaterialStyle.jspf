@@ -198,7 +198,7 @@
                         <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                             <c:choose>
                                 <c:when test="${not empty user.properties['j:facebookID'].string}">
-                                    <a href="${user.properties['j:facebookID'].string}"><img src="<c:url
+                                    <a href="https://www.facebook.com/${fn:escapeXml(user.properties['j:facebookID'].string)}"><img src="<c:url
                                     value='${url.currentModule}/img/fb_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
@@ -209,7 +209,7 @@
                         <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:linkedinID'].string}">
-                                    <a href="${user.properties['j:linkedinID'].string}"><img src="<c:url
+                                    <a href="https://www.linkedin.com/in/${fn:escapeXml(user.properties['j:linkedinID'].string)}"><img src="<c:url
                                     value='${url.currentModule}/img/in_logo_20_20.png' />"/></a>&nbsp;&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
@@ -231,7 +231,7 @@
                         <c:if test="${currentNode.properties['j:twitterID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:twitterID'].string}">
-                                    <a href="http://twitter.com/${user.properties['j:twitterID'].string}"><img
+                                    <a href="http://twitter.com/${fn:escapeXml(user.properties['j:twitterID'].string)}"><img
                                         src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>

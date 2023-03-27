@@ -1,3 +1,4 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
         <div class="panel panel-default">
@@ -21,7 +22,7 @@
                             <fmt:message key='jnt_user.j_about'/>
                         </h4>
                         <div class="aboutMeText lead" style="text-align: justify;">
-                                ${user.properties['j:about'].string}
+                                ${fn:escapeXml(user.properties['j:about'].string)}
                         </div>
                         <br/>
                     </div>
@@ -110,18 +111,29 @@
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:facebookID')}">
                                     <c:choose>
                                         <c:when test="${(not empty user.properties['j:facebookID'].string)}">
-                                            <a href="${user.properties['j:facebookID'].string}"><img src="<c:url
-                                            value='${url.currentModule}/img/fb_logo_20_20.png' />"/></a>&nbsp;&nbsp;
+                                            <a href="https://www.facebook.com/${fn:escapeXml(user.properties['j:facebookID'].string)}"><img src="<c:url
+                                    value='${url.currentModule}/img/fb_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                         </c:when>
                                         <c:otherwise>
                                             <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
+                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:linkedinID')}">
+                                    <c:choose>
+                                        <c:when test="${(not empty user.properties['j:linkedinID'].string)}">
+                                            <a href="https://www.linkedin.com/in/${fn:escapeXml(user.properties['j:linkedinID'].string)}"><img src="<c:url
+                                                value='${url.currentModule}/img/in_logo_20_20.png' />"/></a>&nbsp;&nbsp;&nbsp;
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:skypeID')}">
                                     <c:choose>
                                         <c:when test="${(not empty user.properties['j:skypeID'].string)}">
-                                            <a href="skype:${user.properties['j:skypeID'].string}?userinfo"><img src="<c:url
+                                            <a href="skype:${fn:escapeXml(user.properties['j:skypeID'].string)}?userinfo"><img src="<c:url
                                             value='${url.currentModule}/img/skype_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                         </c:when>
                                         <c:otherwise>
@@ -132,22 +144,10 @@
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:twitterID')}">
                                     <c:choose>
                                         <c:when test="${(not empty user.properties['j:twitterID'].string)}">
-                                            <a href="http://twitter.com/${user.properties['j:twitterID'].string}"><img src="<c:url
-                                            value='${url.currentModule}/img/twitter_logo_20_20.png' />"/></a>&nbsp;&nbsp;
+                                            <a href="http://twitter.com/${fn:escapeXml(user.properties['j:twitterID'].string)}"><img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                         </c:when>
                                         <c:otherwise>
                                             <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:if>
-                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:linkedinID')}">
-                                    <c:choose>
-                                        <c:when test="${(not empty user.properties['j:linkedinID'].string)}">
-                                            <a href="${user.properties['j:linkedinID'].string}"><img src="<c:url
-                                            value='${url.currentModule}/img/in_logo_20_20.png' />"/></a>&nbsp;&nbsp;&nbsp;
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
