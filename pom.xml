@@ -42,7 +42,7 @@
         <jahia-deploy-on-site>system</jahia-deploy-on-site>
         <jahia-depends>default,contentRetrieval,jcrestapi</jahia-depends>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MCwCFHuDZFVLMYWuG2p23LiQxHUU3R8TAhRILkVKQM4wjBR3aZNZMI6TToqjqQ==</jahia-module-signature>
+        <jahia-module-signature>MC0CFQCOKAApkVhgd4n0O5vL38Nthnb3FQIUVyJdH8hbXzxO7KuqRxiIWY6/Maw=</jahia-module-signature>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
     </properties>
 
