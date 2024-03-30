@@ -105,7 +105,7 @@
                                                         export="true"
                                                         j:view="bootstrapSites.settingsBootstrap3GoogleMaterialStyle"
                                                         jcr:mixinTypes="jmix:renderable"
-                                                        jcr:primaryType="jnt:listSites"
+                                                        jcr:primaryType="jnt:listProjects"
                                                         live="true"
                                                         preview="true"/>
                         </pagecontent>
