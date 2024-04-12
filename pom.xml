@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>userDashboard</artifactId>
-    <version>8.6.0-SNAPSHOT</version>
+    <version>8.6.0</version>
     <packaging>bundle</packaging>
     <name>Jahia User Dashboards</name>
     <description>User Dashboards</description>
@@ -35,7 +35,7 @@
         <connection>scm:git:git@github.com:Jahia/userDashboard.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/userDashboard.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/userDashboard.git</url>
-        <tag>HEAD</tag>
+        <tag>8_6_0</tag>
     </scm>
 
     <properties>
