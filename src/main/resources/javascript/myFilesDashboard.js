@@ -22,7 +22,7 @@ function addInputForAddFile() {
     $('#fileFormUpload').append('<input type="file" name="file" id="file' + addFileIndex + '" /><br />');
 }
 
-function bbDelete(name, id) {
+function bbDelete(context, name, id) {
     bootbox.dialog({
         message: '<p>' + myFilesDeleteBox + '&nbsp;' + name + ' ?</p>',
         title: labelDelete + '&nbsp;:&nbsp;' + name,
@@ -37,17 +37,19 @@ function bbDelete(name, id) {
                 label: labelDelete,
                 className: 'btn-success',
                 callback: function () {
-                    $.ajax({
-                        url: apiPath + '/nodes/' + id,
-                        type: 'DELETE',
-                        success: function () {
-                            window.location.reload();
-                        },
-                        error: function (result) {
-                            bootbox.alert(myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + result.responseJSON.localizedMessage, function () {
-                            });
-                        }
-                    });
+                    // TODO
+                    var query =`
+                    mutation deleteNode($fileId: String!) {
+                      jcr(workspace: EDIT) {
+                        deleteNode(pathOrId: $fileId)
+                      }
+                    }
+                    `
+                    const variables = {fileId: id};
+                    execGraphQLPromise(context, query, variables)
+                        .then(() => window.location.reload())
+                        .catch(error => bootbox.alert(myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + error, function () {
+                        }));
                 }
             }
         }
@@ -75,7 +77,7 @@ function endAddFile(fileName, addFileIndex, status, messageError) {
     }
 }
 
-function bbAddFile(rootFolderMissing) {
+function bbAddFile(context, rootFolderMissing) {
     bootbox.dialog({
         message: '<label>' + labelAddFile + '&nbsp;:&nbsp;</label><button class="btn btn-primary pull-right" onclick="addInputForAddFile()" ><i class="icon-plus icon-white"></i>&nbsp;' + labelAddFile + '</button><form id="fileFormUpload" enctype="multipart/form-data"><input name="file" type="file" id="file' + addFileIndex + '" /><br /></form><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
         title: labelUploadFile,
@@ -91,11 +93,9 @@ function bbAddFile(rootFolderMissing) {
                 className: 'btn-success',
                 callback: function () {
                     if (rootFolderMissing) {
-                        bbCreateFolter('files', userNodeId, function (result) {
-                            bbCreateFile();
-                        });
+                        createFolder(context, userNodeId, 'files').then(() => bbCreateFile(context));
                     } else {
-                        bbCreateFile();
+                        bbCreateFile(context);
                     }
                 }
             }
@@ -103,7 +103,7 @@ function bbAddFile(rootFolderMissing) {
     });
 }
 
-function bbAddFolder(rootFolderMissing) {
+function bbAddFolder(context, rootFolderMissing) {
     bootbox.dialog({
         message: '<label>' + labelName + '&nbsp;:&nbsp;</label><input type="text" id="nameFolder"/><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
         title: myFilesCreateNewFolder,
@@ -122,20 +122,24 @@ function bbAddFolder(rootFolderMissing) {
 
                     var folderName = $('#nameFolder').val();
                     if (!regex.test(folderName)) {
+                        function errorHandler(error) {
+                            console.log("error", error);
+                            bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + error);
+                        }
+
                         if (rootFolderMissing) {
-                            bbCreateFolter('files', userNodeId, function (response) {
-                                bbCreateFolter(folderName, response.children.files.id, function () {
-                                    window.location.reload();
-                                }, function (result) {
-                                    bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + result.responseJSON.message);
-                                });
-                            });
+                            createFolder(context, userNodeId, 'files')
+                                .then(id => createFolder(context, id, folderName))
+                                .then(() => window.location.reload())
+                                .catch(error => {
+                                    errorHandler(error);
+                                })
                         } else {
-                            bbCreateFolter(folderName, currentFolderId, function () {
-                                window.location.reload();
-                            }, function (result) {
-                                bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + result.responseJSON.message);
-                            });
+                            createFolder(context, currentFolderId, folderName)
+                                .then(() => window.location.reload())
+                                .catch(error => {
+                                    errorHandler(error);
+                                })
                         }
                     } else {
                         bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderErrorCharacters);
@@ -164,46 +168,15 @@ function editInContentEditor(uuid, locale, uilocale, site) {
     }
 };
 
-function bbCreateFile() {
+function bbCreateFile(context) {
     for (var i = 0; i <= addFileIndex; i++) {
         if ($('#file' + i).val() != '') {
-            $.ajaxFileUpload({
-                url: apiPath + '/paths' + currentNodePath,
-                secureuri: false,
-                fileElementId: 'file' + i,
-                dataType: 'json',
-                success: function (result) {
-                    if (result.name) {
-                        endAddFile(result.name, addFileIndex, 'success', '');
-                    } else {
-                        endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
-                    }
-                },
-                error: function (result) {
-                    endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
-                }
-            });
+            const uploadedFile = $('#file' + i).first().prop('files')[0];
+            uploadFile(context, currentFolderId, uploadedFile)
+                .then(() => endAddFile(uploadedFile.name, addFileIndex, 'success', ''))
+                .catch(error => endAddFile(uploadedFile.name, addFileIndex, 'error', error))
         } else {
             endAddFile('', addFileIndex, '', '');
         }
     }
-}
-
-function bbCreateFolter(folderName, parentId, successCB, errorCB) {
-    $.ajax({
-        url: apiPath + '/nodes/' + parentId,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: '{"children":{"' + folderName + '":{"name":"' + folderName + '","type":"jnt:folder"}}}',
-        success: function (result) {
-            if (successCB) {
-                successCB(result);
-            }
-        },
-        error: function (result) {
-            if (errorCB) {
-                errorCB(result);
-            }
-        }
-    });
 }

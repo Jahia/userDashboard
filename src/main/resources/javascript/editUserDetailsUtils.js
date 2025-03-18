@@ -40,19 +40,7 @@ function jahiaAPIStandardCall(urlContext, workspace, locale, way, endOfURI, meth
     return callResult;
 }
 
-
-/**
- * @Author : Jahia(rahmed)
- * This function serialize a form (or some form elements with a given css class) to a JSON String,
- * then it send a Put Request to the JCR Rest API
- * @param formId : the id of the forms containing the elements to serialize
- * @param nodeIdentifier : the identifier of the node on witch do the PUT request
- * @param locale : the current locale for the PUT request
- * @param fieldsClass : the class of the form elements to serialize
- * @param callback : the callback function for the PUT Request (Optional)
- * @param errorCallback : the error function for the PUT request (Optional)
- */
-function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, callback, errorCallback) {
+function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, fullReload = false) {
     var deleteList = [];
     //JSon Serialized String
     var serializedForm;
@@ -60,26 +48,49 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
     var result;
     //Creating the Json String to send with the PUT request
     serializedObject = $(formId).serializeObject(fieldsClass, deleteList);
-    serializedForm = JSON.stringify(serializedObject);
+    deleteProperties = '';
     if (deleteList.length > 0) {
-        var deleteJsonString = '[';
-        //Deleting the properties listed to be deleted
-        for (var currentPropertie = 0; currentPropertie < deleteList.length; currentPropertie++) {
-            if (deleteJsonString.length > 1) {
-                deleteJsonString += ',';
-            }
-            deleteJsonString += '"' + deleteList[currentPropertie] + '"';
-        }
-        deleteJsonString += ']';
-        //Delete the current propertie
-        var endOfURI = nodeIdentifier + '/properties';
-        result = jahiaAPIStandardCall(context, 'default', locale, 'nodes', endOfURI, 'DELETE', deleteJsonString, undefined, errorCallback);
+        deleteProperties = deleteList.map(key => {
+            aliasName = key.replace(/[^a-zA-Z0-9_$]/g, '_');
+            return `
+      ${aliasName}: mutateProperty(name:"${key}") {
+        delete
+      }
+  `;
+        }).join('\n');
     }
-    if (serializedForm != '{"properties":{"undefined":{"value":""}}}' && serializedForm != '{"properties":{}}') {
-        //Post the Serialized form to Jahia
-        return jahiaAPIStandardCall(context, 'default', locale, 'nodes', nodeIdentifier, 'PUT', serializedForm, callback, errorCallback);
+
+    if (serializedObject != '{"properties":{"undefined":{"value":""}}}' && serializedObject != '{"properties":{}}') {
+        const mutateProperties = Object.keys(serializedObject.properties).map(key => {
+            aliasName = key.replace(/[^a-zA-Z0-9_$]/g, '_');
+            return `
+      ${aliasName}: mutateProperty(name:"${key}") {
+        setValue(value:"${serializedObject.properties[key].value}")
+      }
+  `;
+        }).join('\n');
+
+        if (!(mutateProperties || deleteProperties)) {
+            // there is nothing to update
+            reloadOnSuccess(fullReload);
+            return;
+        }
+        const query = `
+          mutation updateProperties($nodeId: String!) {
+            jcr(workspace: EDIT) {
+              mutateNode(pathOrId: $nodeId) {
+                ${mutateProperties}
+                ${deleteProperties}
+              }
+            }
+          }
+        `;
+        console.log(query);
+        const variables = {nodeId: nodeIdentifier};
+        execGraphQL(context, query, variables, () => reloadOnSuccess(fullReload));
+
     } else {
-        callback(result, serializedForm);
+        reloadOnSuccess(fullReload);
     }
 }
 
@@ -114,8 +125,12 @@ $.fn.serializeObject = function (fieldsClass, deleteTable) {
 
         //Adding to delete List all the form elements with empty values
         if (value == '') {
-            deleteTable[deleteIndex] = this.name;
-            deleteIndex++;
+            if (this.attributes['data-undefined']?.value !== 'true') {
+                // only delete it if it was defined before
+                deleteTable[deleteIndex] = this.name;
+                deleteIndex++;
+            }
+            this.setAttribute('data-undefined', true);
         } else {
             if (this.name != undefined && this.value != undefined) {
                 //formatting dates
@@ -123,6 +138,7 @@ $.fn.serializeObject = function (fieldsClass, deleteTable) {
                     // Add Timezone to gmt as we are only picking date by day/month/year
                     value = new Date(value + 'T00:00:00.000').toISOString();
                 }
+                this.setAttribute('data-undefined', false);
                 //adding to object
                 if (serializedObject[name]) {
                     if (!serializedObject[name].push) {
@@ -158,21 +174,18 @@ var ajaxReloadCallback = function (result, sent) {
         $('#editDetailspage').load(getUrl);
     }
 };
-
-/* Edit User Details Functions */
-/**
- * @Author : Jahia(rahmed)
- * Edit User Details Callback Function
- * This function is called after the user properties Update
- * if the propertie preferredLanguage is updated the page is fully reloaded
- * in the other case an ajax load is enough to refresh the properties display
- * @param result : The PUT request result
- * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
- */
-function ajaxReloadPublicView() {
-    $('#public').load(getUrl);
+var reloadOnSuccess = function (fulReload = false) {
+    if (fulReload) {
+        var windowToRefresh = window.parent;
+        if (windowToRefresh == undefined)
+            windowToRefresh = window;
+        windowToRefresh.location.reload();
+    } else {
+        $('#editDetailspage').load(getUrl);
+    }
 }
 
+/* Edit User Details Functions */
 
 function goToStart() {
     var windowToRefresh = window.parent;
@@ -190,6 +203,7 @@ function goToStart() {
  * @param result : The PUT request result
  * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
  */
+// TODO duplicate and take error string as input
 var formError = function (result, sent) {
     var resultObject = null;
 
@@ -337,24 +351,25 @@ function urlExists(testUrl) {
  * @param locale: The locale for the jahia API Standard Call
  */
 function editVisibility(propertiesNumber, idNumber, value, nodeIdentifier, locale) {
-    var jsonString = '{"properties":{"j:publicProperties":{"multiValued":true,"value":[';
-    var filled = false;
+    // get selected public properties
+    var publicPropertiesValues = $('input[name="j:publicProperties"]').filter(':checked').map(function () {
+        return this.value;
+    }).get();
 
-    //Looping on properties and filling the data
-    for (var currentPropertieIndex = 0; currentPropertieIndex < propertiesNumber; currentPropertieIndex++) {
-        //replacing the list of public properties by the list of all the switches in true state
-        if ($('#publicProperties' + currentPropertieIndex).bootstrapSwitch('state') == true) {
-            if (filled == true) {
-                jsonString += ',';
-            }
-            jsonString += '"' + $('#publicProperties' + currentPropertieIndex).val() + '"';
-            filled = true;
+    const query = `
+    mutation updateVisibility($nodeId: String!, $values: [String]!) {
+      jcr(workspace: EDIT) {
+        mutateNode(pathOrId: $nodeId) {
+          mutateProperties(names:"j:publicProperties") {
+            setValues(values:$values)
+          }
         }
+      }
     }
-    jsonString += ']}}}';
-    //posting the properties visibility to JCR
-    currentCssClass = 'privacyField';
-    jahiaAPIStandardCall(context, 'default', locale, 'nodes', nodeIdentifier, 'PUT', jsonString, ajaxReloadCallback, formError);
+`;
+    const variables = { nodeId: nodeIdentifier, values: publicPropertiesValues };
+    execGraphQL(context, query, variables, reloadOnSuccess);
+
 }
 
 /**
@@ -423,6 +438,44 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
 }
 
 /* Edit User Details User Picture */
+function getOrCreateProfileFolder(urlContext, userNodeIdentifier) {
+    const getFilesProfileFolderQuery = `
+            query getFilesProfileFolder($userNodeIdentifier: String!) {
+              jcr(workspace: EDIT) {
+                nodeById(uuid: $userNodeIdentifier) {
+                  children(names: ["files"]) {
+                    nodes {
+                      uuid
+                      children(names: ["profile"]) {
+                        nodes {
+                          name
+                          uuid
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        `;
+    let profileFolderId;
+    return execGraphQLPromise(urlContext, getFilesProfileFolderQuery, {userNodeIdentifier: userNodeIdentifier}).then(response => {
+
+            profileFolderId = response.data?.jcr?.nodeById?.children?.nodes[0]?.children?.nodes[0]?.uuid;
+            if (!profileFolderId) {
+                // the folder does not exist, try to create it
+                const filesFolderId = response.data?.jcr?.nodeById?.children?.nodes[0]?.uuid;
+                if (!filesFolderId) {
+                    // the /files folder does not exist
+                    return createFolder(urlContext, userNodeIdentifier, "files").then(id => createFolder(urlContext, id, "profile"))
+                }
+                return createFolder(urlContext, filesFolderId, "profile");
+            }
+            return profileFolderId;
+        }
+    ).catch(error => console.error("Unable to create the folder 'files/profile' for that user", error));
+}
+
 /**
  * @Author : Jahia(rahmed)
  * This function Upload a picture the user picked and update his user picture property with it
@@ -434,82 +487,38 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
  * @param callbackFunction : the callback function
  * @param errorFunction : The error callback function
  */
-function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction) {
-    currentCssClass = 'imageField';
-    //checking if the file input has been filled
-    if ($('#' + imageId).val() == '') {
+/**
+ *
+ * @param context {string} the URL context
+ * @param userNodeIdentifier {string} JCR node's identifier of the user
+ */
+function updatePhoto(context, userNodeIdentifier) {
+    if ($('#uploadedImage').val() == '') {
         $('#imageUploadEmptyError').fadeIn('slow').delay(5000).fadeOut('slow');
     } else {
-        jahiaAPIStandardCall(context, 'default', locale, 'paths', nodePath + '/files/profile', 'GET', null, function () {
-            doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction);
-        }, function () {
+        const uploadedPhoto = $('#uploadedImage').first().prop('files')[0];
 
-            //create profile
-            console.log('profile folder does not exist, we are creating it.');
-            var jsonData = {'name': 'files', 'type': 'jnt:folder'};
-            jahiaAPIStandardCall(context, 'default', locale, 'nodes', userId + '/children/files', 'PUT', JSON.stringify(jsonData), function (response) {
-                jahiaAPIStandardCall(context, 'default', locale, 'nodes', response.id + '/children/profile', 'PUT', JSON.stringify(jsonData), function (result) {
-                    console.log(JSON.stringify(result));
-                    doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction);
-                });
-            });
-        });
+        getOrCreateProfileFolder(context, userNodeIdentifier)
+            .then(profileFolderId => {
+                getChildIdByPath(profileFolderId, uploadedPhoto.name)
+                    .then(previousPhotoId => {
+                        console.log('previousPhotoId', previousPhotoId);
+                        if (previousPhotoId) {
+                            return deleteNode(previousPhotoId);
+                        }
+                        return true;
+                    })
+                    .then(() => uploadFile(context, profileFolderId, uploadedPhoto))
+                    .then(uploadedPhotoId => updateNodeProperty(userNodeIdentifier, "j:picture", uploadedPhotoId))
+                    .then(() => reloadOnSuccess());
+            })
     }
 }
 
-function doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction) {
-    var uploadUrl = context + '/' + API_URL_START + '/default/' + locale + '/paths' + nodePath + '/files/profile';
-    currentCssClass = 'imageField';
-    //Upload the picture
-    $.ajaxFileUpload({
-        url: uploadUrl,
-        secureuri: false,
-        fileElementId: imageId,
-        dataType: 'json',
-        success: function (result) {
-            if (result['exception'] != undefined) {
-                if (result['status'] === undefined) {
-                    result['status'] = 404;
-                }
-                errorFunction(result);
-            } else {
-                var fileId = result['id'];
-                var fileName = result['name'];
-                var filepath = urlFiles + '/files/profile/' + fileName;
-                //JSon Serialized String
-                var jsonData;
-                var endOfURI = userId + '/properties/j__picture';
-
-                //Creating the Json String to send with the PUT request
-                jsonData = '{"value":"' + fileId + '"}';
-                if (fileId != undefined) {
-                    //Requesting the Jahia API to update the user picture
-                    jahiaAPIStandardCall(context, 'default', locale, 'nodes', endOfURI, 'PUT', jsonData, function () {
-                        //Check If Jahia had the time to create the Avatar
-                        //building the avatar URL
-                        var imageUrl = filepath + '?t=avatar_120';
-                        var ExistsCode = -1;
-                        var intervalURLChecker = window.setInterval(function () {
-                            ExistsCode = urlExists(imageUrl);
-                            if (ExistsCode <= 300) {
-                                // Avatar has been found refreshing the profile display ...
-                                window.clearInterval(intervalURLChecker);
-                                callbackFunction(result, 'picture');
-                            }
-                        }, 500);
-                    }, errorFunction);
-                } else {
-                    $('#imageUploadError').fadeIn('slow').delay(5000).fadeOut('slow');
-                }
-            }
-        },
-        error: function (result) {
-            if (result['status'] === undefined) {
-                result['status'] = 404;
-            }
-            errorFunction(result);
-        }
-    });
+function deletePhoto(userId) {
+    deleteNodeProperty(userId, "j:picture")
+        .then(() => reloadOnSuccess())
+        .catch(error => formError(error));
 }
 
 /**

@@ -24,11 +24,11 @@
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js,settings/dataTables.initializer.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="api.js"/>
 <template:addResources type="javascript" resources="myFilesDashboard.js"/>
 
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 <c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
-<c:set var="apiPath" value="${url.context}/modules/api/jcr/v1/default/${currentResource.locale}"/>
 
 <c:set var="displayPath" value="${currentUser.localPath}/files"/>
 <c:if test="${not empty param['path']}">
@@ -39,7 +39,7 @@
 
 <script type="text/javascript">
 
-    var apiPath = '${apiPath}';
+    var context = "${url.context}";
 
     var currentNodePath = '${functions:escapeJavaScript(displayPath)}';
     var currentFolderId = '${not empty folderNode ? folderNode.identifier : ""}';

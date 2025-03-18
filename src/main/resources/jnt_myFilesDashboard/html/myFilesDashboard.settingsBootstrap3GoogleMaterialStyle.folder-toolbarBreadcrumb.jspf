@@ -50,12 +50,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="pull-left btn-group">
-            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFile(${empty folderNode})"
+            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFile(context, ${empty folderNode})"
                     title="<fmt:message key="uploadFile.label"/>">
                 <i class="material-icons">add</i>
                 <i class="material-icons">insert_drive_file</i>
             </button>
-            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFolder(${empty folderNode})"
+            <button class="btn btn-default btn-sm btn-primary" onclick="bbAddFolder(context, ${empty folderNode})"
                     title="<fmt:message key="label.createFolder"/>">
                 <i class="material-icons">add</i>
                 <i class="material-icons">folder</i>

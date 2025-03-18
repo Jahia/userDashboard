@@ -35,7 +35,7 @@
                                 <div class="control-group">
                                     <div class="form-group label-floating">
                                         <label class="control-label" for="title"><fmt:message key="jnt_user.j_title"/></label>
-                                        <select id="title" name="j:title" class="form-control namesField"
+                                        <select data-undefined="${user.properties['j:title'] == null}" id="title" name="j:title" class="form-control namesField"
                                                 <c:if test="${not user:isPropertyEditable(user,'j:title')}">disabled="disabled"</c:if>>
                                             <option value=""></option>
                                             <c:forEach items="${titleInit}"
@@ -59,7 +59,7 @@
                                     <div class="form-group label-floating">
                                         <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
                                         <label class="control-label" for="firstname"><fmt:message key="jnt_user.j_firstName"/></label>
-                                        <input id="firstname" class="form-control namesField" name="j:firstName" type="text" value="${firstNameValue}"
+                                        <input data-undefined="${user.properties['j:firstName'] == null}" id="firstname" class="form-control namesField" name="j:firstName" type="text" value="${firstNameValue}"
                                                <c:if
                                                 test="${not user:isPropertyEditable(user,'j:firstName')}">disabled="disabled"</c:if>/>
                                     </div>
@@ -70,7 +70,7 @@
                                     <div class="form-group label-floating">
                                         <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
                                         <label class="control-label" for="lastName"><fmt:message key="jnt_user.j_lastName"/></label>
-                                        <input id="lastName" class="form-control namesField" name="j:lastName" type="text" value="${lastNameValue}"
+                                        <input data-undefined="${user.properties['j:lastName'] == null}" id="lastName" class="form-control namesField" name="j:lastName" type="text" value="${lastNameValue}"
                                                <c:if test="${not user:isPropertyEditable(user,'j:lastName')}">disabled="disabled"</c:if>/>
                                     </div>
                                 </div>
@@ -79,7 +79,7 @@
                                 <div class="control-group">
                                     <div class="form-group label-floating">
                                         <label class="control-label" for="gender"><fmt:message key="jnt_user.j_gender"/></label>
-                                        <select id="gender" name="j:gender" class="form-control namesField" jcrtype="choiceList" <c:if test="${not
+                                        <select data-undefined="${user.properties['j:gender'] == null}" id="gender" name="j:gender" class="form-control namesField" jcrtype="choiceList" <c:if test="${not
                                         user:isPropertyEditable(user,'j:gender')}">disabled="disabled"</c:if>>
                                             <option value=""></option>
                                             <c:forEach items="${genderInit}"
@@ -152,7 +152,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
                                 <label class="control-label" for="function"><fmt:message key="jnt_user.j_function"/></label>
-                                <input class="form-control professionField" name="j:function" type="text" value="${functionValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:function'] == null}" class="form-control professionField" name="j:function" type="text" value="${functionValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:function')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
                                 <label class="control-label" for="organization"><fmt:message key="jnt_user.j_organization"/></label>
-                                <input class="form-control professionField" name="j:organization" type="text" value="${organizationValue}" <c:if
+                                <input data-undefined="${user.properties['j:organization'] == null}" class="form-control professionField" name="j:organization" type="text" value="${organizationValue}" <c:if
                                         test="${not user:isPropertyEditable(user,'j:organization')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
                                 <label class="control-label" for="facebookID"><fmt:message key="jnt_user.j_facebookID"/></label>
-                                <input class="form-control socialField" name="j:facebookID" type="text" value="${facebookIDValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:facebookID'] == null}" class="form-control socialField" name="j:facebookID" type="text" value="${facebookIDValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:facebookID')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -263,7 +263,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
                                 <label class="control-label" for="linkedinID"><fmt:message key="jnt_user.j_linkedinID"/></label>
-                                <input class="form-control socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:linkedinID'] == null}" class="form-control socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:linkedinID')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -273,7 +273,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
                                 <label class="control-label" for="skypeID"><fmt:message key="jnt_user.j_skypeID"/></label>
-                                <input class="form-control socialField" name="j:skypeID" type="text" value="${skypeIDValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:skypeID'] == null}" class="form-control socialField" name="j:skypeID" type="text" value="${skypeIDValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:skypeID')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -283,7 +283,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
                                 <label class="control-label" for="twitterID"><fmt:message key="jnt_user.j_twitterID"/></label>
-                                <input class="form-control socialField" name="j:twitterID" type="text" value="${twitterIDValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:twitterID'] == null}" class="form-control socialField" name="j:twitterID" type="text" value="${twitterIDValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:twitterID')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -395,7 +395,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="addressValue" value="${not empty user.properties['j:address'] ? fn:escapeXml(user.properties['j:address'].string) : ''}"/>
                                 <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/></label>
-                                <input class="form-control addressField" type="text" name="j:address" value="${addressValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:address'] == null}" class="form-control addressField" type="text" name="j:address" value="${addressValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:address')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -405,7 +405,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="zipCodeValue" value="${not empty user.properties['j:zipCode'] ? fn:escapeXml(user.properties['j:zipCode'].string) : ''}"/>
                                 <label class="control-label" for="zipCode"><fmt:message key='jnt_user.j_zipCode'/></label>
-                                <input class="form-control addressField" type="text" name="j:zipCode" value="${zipCodeValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:zipCode'] == null}" class="form-control addressField" type="text" name="j:zipCode" value="${zipCodeValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:zipCode')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -415,7 +415,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="cityValue" value="${not empty user.properties['j:city'] ? fn:escapeXml(user.properties['j:city'].string) : ''}"/>
                                 <label class="control-label" for="city"><fmt:message key='jnt_user.j_city'/></label>
-                                <input class="form-control addressField" type="text" name="j:city" value="${cityValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:city'] == null}" class="form-control addressField" type="text" name="j:city" value="${cityValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:city')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -425,7 +425,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="countryValue" value="${not empty user.properties['j:country'] ? fn:escapeXml(user.properties['j:country'].string) : ''}"/>
                                 <label class="control-label" for="country"><fmt:message key='jnt_user.j_country'/></label>
-                                <input class="form-control addressField" type="text" name="j:country" value="${countryValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:country'] == null}" class="form-control addressField" type="text" name="j:country" value="${countryValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:country')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -435,7 +435,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="phoneNumberValue" value="${not empty user.properties['j:phoneNumber'] ? fn:escapeXml(user.properties['j:phoneNumber'].string) : ''}"/>
                                 <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/></label>
-                                <input class="form-control phone addressField" type="text" name="j:phoneNumber" value="${phoneNumberValue}" <c:if
+                                <input data-undefined="${user.properties['j:phoneNumber'] == null}" class="form-control phone addressField" type="text" name="j:phoneNumber" value="${phoneNumberValue}" <c:if
                                         test="${not user:isPropertyEditable(user,'j:phoneNumber')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -445,7 +445,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
                                 <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/></label>
-                                <input class="form-control phone addressField" type="text" name="j:mobileNumber" value="${mobileNumberValue}" <c:if
+                                <input data-undefined="${user.properties['j:mobileNumber'] == null}" class="form-control phone addressField" type="text" name="j:mobileNumber" value="${mobileNumberValue}" <c:if
                                         test="${not user:isPropertyEditable(user,'j:mobileNumber')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -455,7 +455,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="altNumberValue" value="${not empty user.properties['j:altNumber'] ? fn:escapeXml(user.properties['j:altNumber'].string) : ''}"/>
                                 <label class="control-label" for="altNumber"><fmt:message key='jnt_editUserDetails.j_altNumber'/></label>
-                                <input class="form-control phone addressField" type="text" name="j:altNumber" value="${altNumberValue}" <c:if
+                                <input data-undefined="${user.properties['j:altNumber'] == null}" class="form-control phone addressField" type="text" name="j:altNumber" value="${altNumberValue}" <c:if
                                         test="${not user:isPropertyEditable(user,'j:altNumber')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
                             <div class="form-group label-floating">
                                 <c:set var="emailValue" value="${not empty user.properties['j:email'] ? fn:escapeXml(user.properties['j:email'].string) : ''}"/>
                                 <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/></label>
-                                <input class="form-control email addressField" type="text" name="j:email" value="${emailValue}" <c:if test="${not
+                                <input data-undefined="${user.properties['j:email'] == null}" class="form-control email addressField" type="text" name="j:email" value="${emailValue}" <c:if test="${not
                                 user:isPropertyEditable(user,'j:email')}">disabled="disabled"</c:if>/>
                             </div>
                         </div>
@@ -473,7 +473,7 @@
                     <br>
                     <div class="form-actions" style="float:right; margin-right:-180px">
                         <button type="button" class="btn btn-default" onclick="switchRow('address')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('addressField')">
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateAddressProperties()">
                             <fmt:message key="save"/>
                         </button>
                         <div class="addressField errorMessage"></div>
@@ -630,7 +630,7 @@
                                 <fmt:message key="jnt_user.j_birthDate"/>
                             </label>
                             <div class="input-group date" id="birthDate" style="display: block;">
-                                <input class="form-control otherField" type="text" data-format="MM/dd/yyyy" name="j:birthDate"
+                                <input data-undefined="${user.properties['j:birthDate'] == null}" class="form-control otherField" type="text" data-format="MM/dd/yyyy" name="j:birthDate"
                                        value="${dateforCal}"
                                        jcrtype="Date" <c:if
                                         test="${not user:isPropertyEditable(user,'j:birthDate')}">disabled="disabled"</c:if>/>
@@ -659,7 +659,7 @@
                     <br>
                     <div class="form-actions" style="float:right; margin-right:-180px">
                         <button type="button" class="btn btn-default" onclick="switchRow('other')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('otherField')">
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updateProperties('otherField', true)">
                             <fmt:message key="save"/>
                         </button>
                         <div class="otherField errorMessage"></div>
