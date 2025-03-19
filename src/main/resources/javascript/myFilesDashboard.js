@@ -22,7 +22,7 @@ function addInputForAddFile() {
     $('#fileFormUpload').append('<input type="file" name="file" id="file' + addFileIndex + '" /><br />');
 }
 
-function bbDelete(context, name, id) {
+function bbDelete(name, id) {
     bootbox.dialog({
         message: '<p>' + myFilesDeleteBox + '&nbsp;' + name + ' ?</p>',
         title: labelDelete + '&nbsp;:&nbsp;' + name,
@@ -37,16 +37,15 @@ function bbDelete(context, name, id) {
                 label: labelDelete,
                 className: 'btn-success',
                 callback: function () {
-                    // TODO
-                    var query =`
-                    mutation deleteNode($fileId: String!) {
-                      jcr(workspace: EDIT) {
-                        deleteNode(pathOrId: $fileId)
-                      }
-                    }
+                    const query = /* GraphQL */ `
+                        mutation deleteNode($fileId: String!) {
+                            jcr(workspace: EDIT) {
+                                deleteNode(pathOrId: $fileId)
+                            }
+                        }
                     `
                     const variables = {fileId: id};
-                    execGraphQLPromise(context, query, variables)
+                    execGraphQL(context, query, variables)
                         .then(() => window.location.reload())
                         .catch(error => bootbox.alert(myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + error, function () {
                         }));
@@ -123,7 +122,6 @@ function bbAddFolder(context, rootFolderMissing) {
                     var folderName = $('#nameFolder').val();
                     if (!regex.test(folderName)) {
                         function errorHandler(error) {
-                            console.log("error", error);
                             bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + error);
                         }
 

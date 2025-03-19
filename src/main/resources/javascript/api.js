@@ -1,34 +1,3 @@
-function execGraphQL(urlContext, query, variables, successCallback, errorCallback) {
-    console.debug("Executing GraphQL...");
-
-    async function fetchGraphQL(query, variables) {
-        const response = await fetch(urlContext + '/modules/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                query: query,
-                variables: variables
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        return response.json();
-    }
-
-    // TODO use callbacks
-    fetchGraphQL(query, variables)
-        .then(data => {
-            console.log(data);
-            successCallback();
-        })
-        .catch(error => console.error('Error:', error));
-}
-
 /**
  *
  * @param httpResponse {Response}
@@ -41,18 +10,20 @@ function readResponse(httpResponse) {
     return httpResponse.json();
 }
 
-// TODO find  a better name
 function readErrors(response) {
-    console.debug("GraphQL JSON response: ", response);
     const errorMessage = response.errors?.map(e => e.message).join(', ');
     if (errorMessage) {
-        throw new Error(errorMessage);
+        // very likely the user lose their session
+        if (response.errors[0].errorType === "GqlAccessDeniedException") {
+            goToStartPage();
+        } else {
+            throw new Error(errorMessage);
+        }
     }
     return response;
 }
 
-function execGraphQLPromise(urlContext, query, variables) {
-    console.debug("Executing GraphQL...");
+function execGraphQL(urlContext, query, variables) {
     return fetch(urlContext + '/modules/graphql', {
         method: 'POST',
         headers: {
@@ -75,21 +46,21 @@ function execGraphQLPromise(urlContext, query, variables) {
  * @return {Promise<string>} a Promise which resolves with the node uuid of the created folder
  */
 function createFolder(context, parentPathOrId, folderName) {
-    const query = `
-                        mutation createFolder($parentPathOrId: String!, $folderName: String!) {
-                          jcr(workspace: EDIT) {
-                            addNode(
-                              name: $folderName
-                              parentPathOrId: $parentPathOrId
-                              primaryNodeType: "jnt:folder"
-                            ) {
-                              uuid
-                            }
-                          }
-                        }
-                    `;
+    const query = /* GraphQL */ `
+        mutation createFolder($parentPathOrId: String!, $folderName: String!) {
+            jcr(workspace: EDIT) {
+                addNode(
+                    name: $folderName
+                    parentPathOrId: $parentPathOrId
+                    primaryNodeType: "jnt:folder"
+                ) {
+                    uuid
+                }
+            }
+        }
+    `;
     const variables = {parentPathOrId: parentPathOrId, folderName: folderName};
-    return execGraphQLPromise(context, query, variables)
+    return execGraphQL(context, query, variables)
         .then(response => {
             const newFolderId = response.data?.jcr?.addNode?.uuid;
             if (!newFolderId) {
@@ -107,19 +78,19 @@ function createFolder(context, parentPathOrId, folderName) {
  * @returns {Promise<string>}
  */
 function uploadFile(context, folderId, file) {
-    const query = `
-              mutation uploadFile($folderId: String!, $filename: String!, $file: String!, $mimeType: String!) {
-                jcr(workspace: EDIT) {
-                  addNode(name: $filename, parentPathOrId: $folderId, primaryNodeType: "jnt:file", mixins:["jmix:image"]) {
+    const query = /* GraphQL */`
+        mutation uploadFile($folderId: String!, $filename: String!, $file: String!, $mimeType: String!) {
+            jcr(workspace: EDIT) {
+                addNode(name: $filename, parentPathOrId: $folderId, primaryNodeType: "jnt:file", mixins:["jmix:image"]) {
                     addChild(name: "jcr:content", primaryNodeType: "jnt:resource") {
-                      content: mutateProperty(name: "jcr:data") { setValue(type: BINARY, value: $file)}
-                      contentType: mutateProperty(name: "jcr:mimeType") { setValue(value: $mimeType)}
+                        content: mutateProperty(name: "jcr:data") { setValue(type: BINARY, value: $file)}
+                        contentType: mutateProperty(name: "jcr:mimeType") { setValue(value: $mimeType)}
                     }
                     uuid
-                  }
                 }
-              }
-            `;
+            }
+        }
+    `;
 
     const variables = {
         folderId: folderId,
@@ -137,8 +108,6 @@ function uploadFile(context, folderId, file) {
     formData.append("query", JSON.stringify(payload));
     formData.append("uploadedFile", file);
 
-    // TODO use callbacks
-    // TODO handle case where file already exists
     return fetch(context + '/modules/graphql', {
         method: 'POST',
         body: formData
@@ -166,15 +135,15 @@ function uploadFile(context, folderId, file) {
  * @returns {Promise<boolean>} a Promise which resolves with 'true'
  */
 function deleteNode(nodePathOrId) {
-    var query = `
-    mutation deleteNode($nodePathOrId: String!) {
-      jcr(workspace: EDIT) {
-        deleteNode(pathOrId: $nodePathOrId)
-      }
-    }
+    const query = /* GraphQL */ `
+        mutation deleteNode($nodePathOrId: String!) {
+            jcr(workspace: EDIT) {
+                deleteNode(pathOrId: $nodePathOrId)
+            }
+        }
     `
     const variables = {nodePathOrId: nodePathOrId};
-    return execGraphQLPromise(context, query, variables)
+    return execGraphQL(context, query, variables)
         .then(response => {
             const success = response?.data?.jcr?.deleteNode;
             if (!success) {
@@ -192,19 +161,19 @@ function deleteNode(nodePathOrId) {
  * @returns {Promise<boolean>} a Promise which resolves with 'true'
  */
 function updateNodeProperty(nodeId, propertyName, value) {
-    const query = `
+    const query = /* GraphQL */ `
         mutation updateNodeProperty($nodeId: String!, $propertyName:String!, $value: String!) {
-          jcr(workspace: EDIT) {
-            mutateNode(pathOrId: $nodeId) {
-              mutateProperty(name: $propertyName) {
-                setValue(value:$value)
-              }
+            jcr(workspace: EDIT) {
+                mutateNode(pathOrId: $nodeId) {
+                    mutateProperty(name: $propertyName) {
+                        setValue(value:$value)
+                    }
+                }
             }
-          }
         }
     `;
     const variables = {nodeId: nodeId, propertyName: propertyName, value: value};
-    return execGraphQLPromise(context, query, variables)
+    return execGraphQL(context, query, variables)
         .then(response => {
             const success = response?.data?.jcr?.mutateNode?.mutateProperty?.setValue;
             if (!success) {
@@ -221,19 +190,19 @@ function updateNodeProperty(nodeId, propertyName, value) {
  * @returns {Promise<boolean>} a Promise which resolves with 'true'
  */
 function deleteNodeProperty(nodeId, propertyName) {
-    const query = `
+    const query = /* GraphQL */ `
         mutation deleteNodeProperty($nodeId: String!, $propertyName: String!) {
-          jcr(workspace: EDIT) {
-            mutateNode(pathOrId: $nodeId) {
-              mutateProperty(name: $propertyName) {
-                delete
-              }
+            jcr(workspace: EDIT) {
+                mutateNode(pathOrId: $nodeId) {
+                    mutateProperty(name: $propertyName) {
+                        delete
+                    }
+                }
             }
-          }
         }
     `;
     const variables = {nodeId: nodeId, propertyName: propertyName};
-    return execGraphQLPromise(context, query, variables)
+    return execGraphQL(context, query, variables)
         .then(response => {
             const success = response?.data?.jcr?.mutateNode?.mutateProperty?.delete;
             if (!success) {
@@ -251,29 +220,30 @@ function deleteNodeProperty(nodeId, propertyName) {
  * @returns {Promise<string>} A Promise that resolves with the UUID of the child node if found, or `undefined` otherwise.
  */
 function getChildIdByPath(parentNodeId, childName) {
-    const query = `
+    const query = /* GraphQL */ `
         query getNodeChildByPath($parentNodeId: String!, $childName: String!) {
-          jcr(workspace: EDIT) {
-            nodeById(uuid: $parentNodeId) {
-              uuid
-              children(names: [$childName]) {
-                nodes {
-                  uuid
+            jcr(workspace: EDIT) {
+                nodeById(uuid: $parentNodeId) {
+                    uuid
+                    children(names: [$childName]) {
+                        nodes {
+                            uuid
+                        }
+                    }
                 }
-              }
             }
-          }
         }
     `;
     const variables = {parentNodeId: parentNodeId, childName: childName};
-    return execGraphQLPromise(context, query, variables)
+    return execGraphQL(context, query, variables)
         .then(response => {
-            console.log('getChildIdByPath', response);
-            const childId = response?.data?.jcr?.nodeById?.children?.nodes[0]?.uuid;
-            // if (childId === null) {
-            //     throw new Error('Unable to check if the node child exists')
-            // }
-            return childId;
+            return response?.data?.jcr?.nodeById?.children?.nodes[0]?.uuid;
         });
-    // TODO return the uuid if found, or undefined otherwise
+}
+
+function goToStartPage() {
+    var windowToRefresh = window.parent;
+    if (windowToRefresh === undefined)
+        windowToRefresh = window;
+    windowToRefresh.location.replace(context + '/start');
 }

@@ -42,7 +42,7 @@
                             <c:if test="${(node.properties['jcr:createdBy'].string ne 'system')}">
                                 <p class="btnFH text-center">
                                     <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>"
-                                       onclick="bbDelete(context, '${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
+                                       onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${node.identifier}' );return false;"
                                        style="text-decoration: none;">
                                         <i class="material-icons">delete</i>
                                     </a>
@@ -94,7 +94,7 @@
                             </p>
                             <p class="btnFH text-center">
                                 <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>"
-                                   onclick="bbDelete(context, '${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;"
+                                   onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${node.identifier}' );return false;"
                                    style="text-decoration: none;">
                                     <i class="material-icons">delete</i>
                                 </a>

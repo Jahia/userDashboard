@@ -64,7 +64,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="ckeditor.js"/>
+<template:addResources type="javascript" resources="ckeditor/ckeditor.j"/>
 <template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addResources type="javascript" resources="api.js"/>
@@ -92,7 +92,6 @@
 <template:addResources>
     <script type="text/javascript">
         var editor = null;
-        var API_URL_START = "modules/api/jcr/v1";
         var context = "${url.context}";
         var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
         var getUrl="<c:url
@@ -348,7 +347,11 @@
                                                     <div id="about_form" style="display:none">
                                                         <textarea id="about_editor"><c:out value="${user.properties['j:about'].string}"/></textarea>
                                                         <script type="text/javascript">
-                                                                if(editor==null) { editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"}); }
+                                                            $( document ).ready( function() {
+                                                                if (editor == null) {
+                                                                    editor = $('#about_editor').ckeditor({toolbar: "Mini"});
+                                                                }
+                                                            });
                                                         </script>
                                                         <br />
                                                         <div class="pull-right">

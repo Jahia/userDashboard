@@ -49,25 +49,32 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
     //Creating the Json String to send with the PUT request
     serializedObject = $(formId).serializeObject(fieldsClass, deleteList);
     deleteProperties = '';
+
+    function createMutatePropertyHeader(key) {
+        // use aliases (based on the property name) to perform mutations (see https://graphql.org/learn/queries/#aliases)
+        const alias = key.replace(/[^a-zA-Z0-9_$]/g, '_');
+        return `${alias}: mutateProperty(name:"${key}")`;
+    }
+
     if (deleteList.length > 0) {
         deleteProperties = deleteList.map(key => {
-            aliasName = key.replace(/[^a-zA-Z0-9_$]/g, '_');
+            const propHeader = createMutatePropertyHeader(key);
             return `
-      ${aliasName}: mutateProperty(name:"${key}") {
-        delete
-      }
-  `;
+                  ${propHeader} {
+                    delete
+                  }
+              `;
         }).join('\n');
     }
 
     if (serializedObject != '{"properties":{"undefined":{"value":""}}}' && serializedObject != '{"properties":{}}') {
         const mutateProperties = Object.keys(serializedObject.properties).map(key => {
-            aliasName = key.replace(/[^a-zA-Z0-9_$]/g, '_');
+            const propHeader = createMutatePropertyHeader(key);
             return `
-      ${aliasName}: mutateProperty(name:"${key}") {
-        setValue(value:"${serializedObject.properties[key].value}")
-      }
-  `;
+                  ${propHeader} {
+                    setValue(value:"${serializedObject.properties[key].value}")
+                  }
+              `;
         }).join('\n');
 
         if (!(mutateProperties || deleteProperties)) {
@@ -75,19 +82,19 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
             reloadOnSuccess(fullReload);
             return;
         }
-        const query = `
-          mutation updateProperties($nodeId: String!) {
-            jcr(workspace: EDIT) {
-              mutateNode(pathOrId: $nodeId) {
-                ${mutateProperties}
-                ${deleteProperties}
-              }
+        const query = /* GraphQL */ `
+            mutation updateProperties($nodeId: String!) {
+                jcr(workspace: EDIT) {
+                    mutateNode(pathOrId: $nodeId) {
+                        ${mutateProperties}
+                        ${deleteProperties}
+                    }
+                }
             }
-          }
         `;
-        console.log(query);
         const variables = {nodeId: nodeIdentifier};
-        execGraphQL(context, query, variables, () => reloadOnSuccess(fullReload));
+        execGraphQL(context,query,variables)
+            .then(() => reloadOnSuccess(fullReload));
 
     } else {
         reloadOnSuccess(fullReload);
@@ -356,19 +363,21 @@ function editVisibility(propertiesNumber, idNumber, value, nodeIdentifier, local
         return this.value;
     }).get();
 
-    const query = `
-    mutation updateVisibility($nodeId: String!, $values: [String]!) {
-      jcr(workspace: EDIT) {
-        mutateNode(pathOrId: $nodeId) {
-          mutateProperties(names:"j:publicProperties") {
-            setValues(values:$values)
-          }
+    const query = /* GraphQL */ `
+        mutation updateVisibility($nodeId: String!, $values: [String]!) {
+            jcr(workspace: EDIT) {
+                mutateNode(pathOrId: $nodeId) {
+                    mutateProperties(names:"j:publicProperties") {
+                        setValues(values:$values)
+                    }
+                }
+            }
         }
-      }
-    }
-`;
+    `;
     const variables = { nodeId: nodeIdentifier, values: publicPropertiesValues };
-    execGraphQL(context, query, variables, reloadOnSuccess);
+
+    execGraphQL(context, query, variables)
+        .then(() => reloadOnSuccess());
 
 }
 
@@ -439,27 +448,27 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
 
 /* Edit User Details User Picture */
 function getOrCreateProfileFolder(urlContext, userNodeIdentifier) {
-    const getFilesProfileFolderQuery = `
-            query getFilesProfileFolder($userNodeIdentifier: String!) {
-              jcr(workspace: EDIT) {
+    const getFilesProfileFolderQuery = /* GraphQL */ `
+        query getFilesProfileFolder($userNodeIdentifier: String!) {
+            jcr(workspace: EDIT) {
                 nodeById(uuid: $userNodeIdentifier) {
-                  children(names: ["files"]) {
-                    nodes {
-                      uuid
-                      children(names: ["profile"]) {
+                    children(names: ["files"]) {
                         nodes {
-                          name
-                          uuid
+                            uuid
+                            children(names: ["profile"]) {
+                                nodes {
+                                    name
+                                    uuid
+                                }
+                            }
                         }
-                      }
                     }
-                  }
                 }
-              }
             }
-        `;
+        }
+    `;
     let profileFolderId;
-    return execGraphQLPromise(urlContext, getFilesProfileFolderQuery, {userNodeIdentifier: userNodeIdentifier}).then(response => {
+    return execGraphQL(urlContext, getFilesProfileFolderQuery, {userNodeIdentifier: userNodeIdentifier}).then(response => {
 
             profileFolderId = response.data?.jcr?.nodeById?.children?.nodes[0]?.children?.nodes[0]?.uuid;
             if (!profileFolderId) {
@@ -477,20 +486,10 @@ function getOrCreateProfileFolder(urlContext, userNodeIdentifier) {
 }
 
 /**
- * @Author : Jahia(rahmed)
- * This function Upload a picture the user picked and update his user picture property with it
- * The picture to upload is directly picked from the form
- * @param imageId : The id of the input file form field
- * @param locale: The locale for the API call URL build
- * @param nodepath : The path of the user node for the API call URL build
- * @param userId : The user Id for the picture propertie Update
- * @param callbackFunction : the callback function
- * @param errorFunction : The error callback function
- */
-/**
- *
+ * Update the profile picture by updating the photo under /users/<users>/files/profile and by updating the user's property "j:picture".
+ * If a profile photo already exists under /users/<users>/files/profile with the same name, it gets overwritten.
  * @param context {string} the URL context
- * @param userNodeIdentifier {string} JCR node's identifier of the user
+ * @param userNodeIdentifier {string} JCR user's node identifier
  */
 function updatePhoto(context, userNodeIdentifier) {
     if ($('#uploadedImage').val() == '') {
@@ -502,7 +501,6 @@ function updatePhoto(context, userNodeIdentifier) {
             .then(profileFolderId => {
                 getChildIdByPath(profileFolderId, uploadedPhoto.name)
                     .then(previousPhotoId => {
-                        console.log('previousPhotoId', previousPhotoId);
                         if (previousPhotoId) {
                             return deleteNode(previousPhotoId);
                         }
