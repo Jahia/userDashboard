@@ -64,9 +64,14 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="ckeditor.js"/>
+<template:addResources type="inline"  >
+    <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
+    <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
+    <script src='<c:url value="/modules/ckeditor/javascript/ckeditor.js" />'></script>
+</template:addResources>
 <template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
+<template:addResources type="javascript" resources="api.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/Moment.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="jquery.validate.min.js"/>
@@ -91,7 +96,6 @@
 <template:addResources>
     <script type="text/javascript">
         var editor = null;
-        var API_URL_START = "modules/api/jcr/v1";
         var context = "${url.context}";
         var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
         var getUrl="<c:url
@@ -112,22 +116,16 @@
          * This function updates a Form Row properties and verify the phones and email fields if the Row cssClass is 'AddressField'
          * @param cssClass : The Form Row css class
          */
-        function updateProperties(cssClass)
-        {
+        function updateProperties(cssClass, fullReload = false) {
             currentCssClass=cssClass;
-            if(cssClass=="addressField")
-            {
-                if(verifyAndSubmitAddress(cssClass,'phoneFormatError','emailFormatError'))
-                {
-                    var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
-                }
-            }
-            else
-            {
-                var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
-            }
-        }
+            formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass,fullReload);
 
+        }
+        function updateAddressProperties() {
+            currentCssClass = "addressField";
+            verifyAndSubmitAddress(currentCssClass, 'phoneFormatError', 'emailFormatError');
+            formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", currentCssClass);
+        }
         var visibilityNumber = 0;
         if(window.userDetailsHasSwitch == undefined) {
             var userDetailsHasSwitch = false;
@@ -330,10 +328,10 @@
                                                         <div class="form-actions">
                                                             <button type="button" class="btn btn-default"
                                                                     onclick="$('#about').show();$('#image_form').hide();$('#image').show()"><fmt:message key="cancel"/></button>
-                                                            <button id="DeletePictureButton" class="btn btn-danger" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), formError)">
+                                                            <button id="DeletePictureButton" class="btn btn-danger" type="button" onclick="deletePhoto('${user.identifier}')">
                                                                 <fmt:message key="mySettings.picture.delete"/>
                                                             </button>
-                                                            <button id="imageUploadButton" class="btn btn-primary btn-raised" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, formError );">
+                                                            <button id="imageUploadButton" class="btn btn-primary btn-raised" type="button" onclick="updatePhoto(context, '${user.identifier}');">
                                                                 <fmt:message key="save"/>
                                                             </button>
                                                             <div>
@@ -351,17 +349,20 @@
                                                 </div>
                                                 <c:if test="${user:isPropertyEditable(user,'j:about')}">
                                                     <div id="about_form" style="display:none">
-                                                        <textarea id="about_editor"><c:out value="${user.properties['j:about'].string}"/></textarea>
+                                                        <textarea id="about_editor"><c:out
+                                                                value="${user.properties['j:about'].string}"/></textarea>
                                                         <script type="text/javascript">
-                                                                if(editor==null) { editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"}); }
+                                                            $(document).ready(function () {
+                                                                CKEDITOR.replace('about_editor');
+                                                            });
                                                         </script>
                                                         <br />
                                                         <div class="pull-right">
                                                             <div>
-                                                                <button type="button" class="btn btn-default" onclick="ajaxReloadCallback(null,'cancel')">
+                                                                <button type="button" class="btn btn-default" onclick="reload()">
                                                                     <fmt:message key="cancel"/>
                                                                 </button>
-                                                                <button class="btn btn-primary btn-raised" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError);">
+                                                                <button class="btn btn-primary btn-raised" type="button" onclick="saveCkEditorChanges('${user.identifier}');">
                                                                     <fmt:message key="save"/>
                                                                 </button>
                                                             </div>
