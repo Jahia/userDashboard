@@ -154,28 +154,58 @@ function deleteNode(nodePathOrId) {
 }
 
 /**
- * Update a node property.
+ * Update the value of a node property.
  * @param nodeId {string} the node identifier
- * @param propertyName {string} the property name to update
+ * @param name {string} the property name to update
  * @param value {string} to value to update the property with
  * @returns {Promise<boolean>} a Promise which resolves with 'true'
  */
-function updateNodeProperty(nodeId, propertyName, value) {
+function updateNodePropertyValue(nodeId, name, value) {
     const query = /* GraphQL */ `
-        mutation updateNodeProperty($nodeId: String!, $propertyName:String!, $value: String!) {
+        mutation updateNodeProperty($nodeId: String!, $name:String!, $value: String!) {
             jcr(workspace: EDIT) {
                 mutateNode(pathOrId: $nodeId) {
-                    mutateProperty(name: $propertyName) {
+                    mutateProperty(name: $name) {
                         setValue(value:$value)
                     }
                 }
             }
         }
     `;
-    const variables = {nodeId: nodeId, propertyName: propertyName, value: value};
+    const variables = {nodeId: nodeId, name: name, value: value};
     return execGraphQL(context, query, variables)
         .then(response => {
             const success = response?.data?.jcr?.mutateNode?.mutateProperty?.setValue;
+            if (!success) {
+                throw new Error('Unable to update the node property')
+            }
+            return true;
+        });
+}
+
+/**
+ * Update the values of a node property.
+ * @param nodeId {string} the node identifier
+ * @param name {string} the property name to update
+ * @param values {string[]} to value to update the property with
+ * @returns {Promise<boolean>} a Promise which resolves with 'true'
+ */
+function updateNodePropertyValues(nodeId, name, values) {
+    const query = /* GraphQL */ `
+        mutation updateNodeProperty($nodeId: String!, $name:String!, $values: [String]!) {
+            jcr(workspace: EDIT) {
+                mutateNode(pathOrId: $nodeId) {
+                    mutateProperty(name: $name) {
+                        setValues(values:$values)
+                    }
+                }
+            }
+        }
+    `;
+    const variables = {nodeId: nodeId, name: name, values: values};
+    return execGraphQL(context, query, variables)
+        .then(response => {
+            const success = response?.data?.jcr?.mutateNode?.mutateProperty?.setValues;
             if (!success) {
                 throw new Error('Unable to update the node property')
             }

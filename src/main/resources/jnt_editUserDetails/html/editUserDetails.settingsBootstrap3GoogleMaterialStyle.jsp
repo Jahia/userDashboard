@@ -64,7 +64,11 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="ckeditor/ckeditor.j"/>
+<template:addResources type="inline"  >
+    <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
+    <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
+    <script src='<c:url value="/modules/ckeditor/javascript/ckeditor.js" />'></script>
+</template:addResources>
 <template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addResources type="javascript" resources="api.js"/>
@@ -345,21 +349,20 @@
                                                 </div>
                                                 <c:if test="${user:isPropertyEditable(user,'j:about')}">
                                                     <div id="about_form" style="display:none">
-                                                        <textarea id="about_editor"><c:out value="${user.properties['j:about'].string}"/></textarea>
+                                                        <textarea id="about_editor"><c:out
+                                                                value="${user.properties['j:about'].string}"/></textarea>
                                                         <script type="text/javascript">
-                                                            $( document ).ready( function() {
-                                                                if (editor == null) {
-                                                                    editor = $('#about_editor').ckeditor({toolbar: "Mini"});
-                                                                }
+                                                            $(document).ready(function () {
+                                                                CKEDITOR.replace('about_editor');
                                                             });
                                                         </script>
                                                         <br />
                                                         <div class="pull-right">
                                                             <div>
-                                                                <button type="button" class="btn btn-default" onclick="ajaxReloadCallback(null,'cancel')">
+                                                                <button type="button" class="btn btn-default" onclick="reload()">
                                                                     <fmt:message key="cancel"/>
                                                                 </button>
-                                                                <button class="btn btn-primary btn-raised" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError);">
+                                                                <button class="btn btn-primary btn-raised" type="button" onclick="saveCkEditorChanges('${user.identifier}');">
                                                                     <fmt:message key="save"/>
                                                                 </button>
                                                             </div>

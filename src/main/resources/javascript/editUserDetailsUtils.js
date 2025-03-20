@@ -1,44 +1,4 @@
 /* REST API GENERAL FUNCTIONS */
-/**
- * @Author : Jahia(rahmed)
- * This function make an ajax call to the Jahia API and return the result of this call
- * @param workspace : the workspace to use on this call (live, default)
- * @param locale : the locale to use in ISO 639-1
- * @param way : the way to find the JCR entity on which make the call (nodes, byPath, byType)
- * @param method : the METHOD to call (GET, POST, PUT, DELETE ...)
- * @param endOfURI : the information needed to complete the entity search (id if the way is nodes, path if byPath and type if byType) with the options (/propertie/<propertieName> for example)
- * @param json : the Json to pass with the call
- * @param callback : the callback function for the request (Optional)
- * @param errorCallback : the error function for the request (Optional)
- * @return callResult : the result of the Ajax call
- */
-function jahiaAPIStandardCall(urlContext, workspace, locale, way, endOfURI, method, json, callback, errorCallback) {
-    var callResult;
-    var url = urlContext + '/' + API_URL_START + '/' + workspace + '/' + locale + '/' + way + (way == 'paths' ? '' : '/') + endOfURI;
-    var httpResult = $.ajax({
-        contentType: 'application/json',
-        data: json,
-        dataType: 'json',
-        processData: false,
-        type: method,
-        url: url,
-        success: function (result) {
-            result['status'] = httpResult.status;
-            //calling the callback
-            if (callback) {
-                callback(result, json);
-            }
-            callResult = result;
-        },
-        error: function (result) {
-            result['status'] = httpResult.status;
-            return errorCallback(result, json);
-
-        }
-    });
-
-    return callResult;
-}
 
 function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, fullReload = false) {
     var deleteList = [];
@@ -79,7 +39,7 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
 
         if (!(mutateProperties || deleteProperties)) {
             // there is nothing to update
-            reloadOnSuccess(fullReload);
+            reload(fullReload);
             return;
         }
         const query = /* GraphQL */ `
@@ -94,10 +54,10 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
         `;
         const variables = {nodeId: nodeIdentifier};
         execGraphQL(context,query,variables)
-            .then(() => reloadOnSuccess(fullReload));
+            .then(() => reload(fullReload));
 
     } else {
-        reloadOnSuccess(fullReload);
+        reload(fullReload);
     }
 }
 
@@ -163,28 +123,13 @@ $.fn.serializeObject = function (fieldsClass, deleteTable) {
 
 /* Edit User Details Functions */
 /**
- * @Author : Jahia(rahmed)
- * Edit User Details Callback Function
- * This function is called after the user properties Update
- * if the propertie preferredLanguage is updated the page is fully reloaded
- * in the other case an ajax load is enough to refresh the properties display
- * @param result : The PUT request result
- * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
+ * Reload the page.
+ * @param fullReload whether to perform a full reload or not.
  */
-var ajaxReloadCallback = function (result, sent) {
-    if (sent != undefined && (sent.indexOf('preferredLanguage') != -1 && currentCssClass != 'privacyField')) {
+var reload = function (fullReload = false) {
+    if (fullReload) {
         var windowToRefresh = window.parent;
-        if (windowToRefresh == undefined)
-            windowToRefresh = window;
-        windowToRefresh.location.reload();
-    } else {
-        $('#editDetailspage').load(getUrl);
-    }
-};
-var reloadOnSuccess = function (fulReload = false) {
-    if (fulReload) {
-        var windowToRefresh = window.parent;
-        if (windowToRefresh == undefined)
+        if (windowToRefresh === undefined)
             windowToRefresh = window;
         windowToRefresh.location.reload();
     } else {
@@ -332,52 +277,16 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
 }
 
 /**
- * @Author : Jahia(rahmed)
- * This function is called after the user picture Upload
- * to check if the avatar is created
- * @param testUrl: the file url to test
- * @return: 200 for success and 0 or negative value on error
+ * Update the privacy information for the user with their public/private properties.
  */
-function urlExists(testUrl) {
-    var http = jQuery.ajax({
-        type: 'GET',
-        url: testUrl,
-        async: false
-    });
-    return http.status;
-}
-
-/**
- * @Author : Jahia(rahmed)
- * This function post the privacy properties in order to update JCR
- * The post is in string in order to allow multiple values on publicProperties.
- * @param propertiesNumber: The number of properties in the loop
- * @param idNumber: The id of the switch triggering the update (for the check image near the switch)
- * @param value: State of the property switch
- * @param nodeIdentifier: The end of URI for the jahia API Standard Call is the user id
- * @param locale: The locale for the jahia API Standard Call
- */
-function editVisibility(propertiesNumber, idNumber, value, nodeIdentifier, locale) {
+function updatePrivacyInformation() {
     // get selected public properties
     var publicPropertiesValues = $('input[name="j:publicProperties"]').filter(':checked').map(function () {
         return this.value;
     }).get();
 
-    const query = /* GraphQL */ `
-        mutation updateVisibility($nodeId: String!, $values: [String]!) {
-            jcr(workspace: EDIT) {
-                mutateNode(pathOrId: $nodeId) {
-                    mutateProperties(names:"j:publicProperties") {
-                        setValues(values:$values)
-                    }
-                }
-            }
-        }
-    `;
-    const variables = { nodeId: nodeIdentifier, values: publicPropertiesValues };
-
-    execGraphQL(context, query, variables)
-        .then(() => reloadOnSuccess());
+    updateNodePropertyValues(nodeIdentifier, "j:publicProperties", publicPropertiesValues)
+        .then(() => reload());
 
 }
 
@@ -507,50 +416,27 @@ function updatePhoto(context, userNodeIdentifier) {
                         return true;
                     })
                     .then(() => uploadFile(context, profileFolderId, uploadedPhoto))
-                    .then(uploadedPhotoId => updateNodeProperty(userNodeIdentifier, "j:picture", uploadedPhotoId))
-                    .then(() => reloadOnSuccess());
+                    .then(uploadedPhotoId => updateNodePropertyValue(userNodeIdentifier, "j:picture", uploadedPhotoId))
+                    .then(() => reload());
             })
     }
 }
 
 function deletePhoto(userId) {
     deleteNodeProperty(userId, "j:picture")
-        .then(() => reloadOnSuccess())
+        .then(() => reload())
         .catch(error => formError(error));
 }
 
-/**
- * @Author : Jahia(rahmed)
- * This function make a JSON Post of ckeditor contained in a Row
- * It also defines the error message div css class for the error callback
- * The div has to be defined following the pattern : <ID>Field
- * @param rowId: the Id of the from which post the form entries
- * @param nodeIdentifier : the endofURI for the Jahia API Standard Call
- * @param locale : the locale for the Jahia API Standard Call
- * @param callback : the callback function for the Jahia API Standard Call
- * @param errorCallback : the error callback function for the Jahia API Standard Call
- */
-function saveCkEditorChanges(rowId, nodeIdentifier, locale, callback, errorCallback) {
 
-    //Opening the JSON
-    var jsonPropTable = {};
-    var jsonTable = {};
+function saveCkEditorChanges(nodeIdentifier) {
 
-    //getting the ckeditors
-    var editorId = rowId + '_editor';
-    var editor = CKEDITOR.instances[editorId];
+    var editor = CKEDITOR.instances['about_editor'];
     var editorValue = editor.getData().trim();
 
-    jsonPropTable['j:' + rowId] = {'value': editorValue};
+    updateNodePropertyValue(nodeIdentifier, "j:about", editorValue)
+        .then(() => reload());
 
-    jsonTable['properties'] = jsonPropTable;
-
-    //calling ajax POST
-    var myJSONText = JSON.stringify(jsonTable);
-    currentCssClass = rowId + 'Field';
-
-    //Calling the Jahia Restful API to Update the node
-    jahiaAPIStandardCall(context, 'default', locale, 'nodes', nodeIdentifier, 'PUT', myJSONText, callback, errorCallback);
 }
 
 
