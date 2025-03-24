@@ -53,7 +53,7 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
             }
         `;
         const variables = {nodeId: nodeIdentifier};
-        execGraphQL(context,query,variables)
+        execGraphQL(context, query, variables)
             .then(() => reload(fullReload));
 
     } else {
@@ -279,13 +279,13 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
 /**
  * Update the privacy information for the user with their public/private properties.
  */
-function updatePrivacyInformation() {
+function updatePrivacyInformation(userNodeIdentifier) {
     // get selected public properties
     var publicPropertiesValues = $('input[name="j:publicProperties"]').filter(':checked').map(function () {
         return this.value;
     }).get();
 
-    updateNodePropertyValues(nodeIdentifier, "j:publicProperties", publicPropertiesValues)
+    updateNodePropertyValues(userNodeIdentifier, "j:publicProperties", publicPropertiesValues)
         .then(() => reload());
 
 }

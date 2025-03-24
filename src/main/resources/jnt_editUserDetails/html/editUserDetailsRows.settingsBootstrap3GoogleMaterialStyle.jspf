@@ -758,7 +758,7 @@
                     </div>
                     <div class="form-actions" style="float:right;">
                         <button type="button" class="btn btn-default" onclick="switchRow('privacy')"><fmt:message key="cancel"/></button>
-                        <button class="btn btn-primary btn-raised" type="button" onclick="updatePrivacyInformation();">
+                        <button class="btn btn-primary btn-raised" type="button" onclick="updatePrivacyInformation('${user.identifier}');">
                             <fmt:message key="save"/>
                         </button>
                         <div class="otherField errorMessage"></div>
