@@ -64,7 +64,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-3/bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="inline"  >
+<template:addResources type="inline">
     <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
     <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
     <script src='<c:url value="/modules/ckeditor/javascript/ckeditor.js" />'></script>
@@ -353,7 +353,9 @@
                                                                 value="${user.properties['j:about'].string}"/></textarea>
                                                         <script type="text/javascript">
                                                             $(document).ready(function () {
-                                                                CKEDITOR.replace('about_editor');
+                                                                if (typeof CKEDITOR !== 'undefined') {
+                                                                    CKEDITOR.replace('about_editor');
+                                                                }
                                                             });
                                                         </script>
                                                         <br />

@@ -428,15 +428,18 @@ function deletePhoto(userId) {
         .catch(error => formError(error));
 }
 
-
 function saveCkEditorChanges(nodeIdentifier) {
-
-    var editor = CKEDITOR.instances['about_editor'];
-    var editorValue = editor.getData().trim();
+    let editorValue;
+    if (typeof CKEDITOR !== 'undefined') {
+        const editor = CKEDITOR.instances['about_editor'];
+        editorValue = editor.getData().trim();
+    } else {
+        // Use fallback <textarea id="about_editor"> in editUserDetails jsp if CKEDITOR is undefined
+        editorValue = $('#about_editor').val().trim();
+    }
 
     updateNodePropertyValue(nodeIdentifier, "j:about", editorValue)
         .then(() => reload());
-
 }
 
 
