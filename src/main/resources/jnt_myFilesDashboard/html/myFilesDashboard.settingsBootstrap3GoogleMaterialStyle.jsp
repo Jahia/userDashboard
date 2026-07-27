@@ -30,9 +30,21 @@
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 <c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
-<c:set var="displayPath" value="${currentUser.localPath}/files"/>
+<c:set var="userFilesRoot" value="${currentUser.localPath}/files"/>
+<c:set var="userFilesPrefix" value="${currentUser.localPath}/files/"/>
+<c:set var="displayPath" value="${userFilesRoot}"/>
 <c:if test="${not empty param['path']}">
-    <c:set var="displayPath" value="${functions:decodeUrlParam(param['path'])}"/>
+    <%-- This view browses the current user's own files, so only accept a requested path that
+         resolves inside that subtree. Compare against the '/'-terminated prefix (or the root
+         itself) so a sibling such as '<root>-other' cannot pass, and reject parent-directory
+         segments and markup characters, which never occur in a real folder path here. --%>
+    <c:set var="requestedPath" value="${functions:decodeUrlParam(param['path'])}"/>
+    <c:if test="${(requestedPath eq userFilesRoot or fn:startsWith(requestedPath, userFilesPrefix))
+                  and not fn:contains(requestedPath, '..')
+                  and not fn:contains(requestedPath, '<')
+                  and not fn:contains(requestedPath, '>')}">
+        <c:set var="displayPath" value="${requestedPath}"/>
+    </c:if>
 </c:if>
 
 <jcr:node var="folderNode" path="${displayPath}"/>
@@ -41,7 +53,10 @@
 
     var context = "${url.context}";
 
-    var currentNodePath = '${functions:escapeJavaScript(displayPath)}';
+    <%-- Escape for both contexts this value passes through: the JS string literal it is written
+         into, and the surrounding markup, which is parsed server-side before the response is
+         sent. A JS-only escaper leaves '<' and '>' intact, so tag-like text would survive here. --%>
+    var currentNodePath = '${fn:escapeXml(functions:escapeJavaScript(displayPath))}';
     var currentFolderId = '${not empty folderNode ? folderNode.identifier : ""}';
     var userNodeId = '${renderContext.mainResource.node.identifier}';
 
