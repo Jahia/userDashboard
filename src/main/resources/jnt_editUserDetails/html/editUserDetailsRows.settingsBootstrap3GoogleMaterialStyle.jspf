@@ -221,7 +221,7 @@
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:skypeID'].string}">
                                     <a href="skype:${fn:escapeXml(user.properties['j:skypeID'].string)}?userinfo"><img src="<c:url
-                                    value='${url.currentModule}/img/skype_logo_20_20.png' />"/></a>&nbsp;&nbsp;
+                                    value='${url.currentModule}/img/skype_logo_20_20.png' />" alt="Skype"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
                                     <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
