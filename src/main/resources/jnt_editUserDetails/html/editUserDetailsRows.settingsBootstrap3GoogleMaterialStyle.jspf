@@ -220,7 +220,7 @@
                         <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                             <c:choose>
                                 <c:when test="${!empty user.properties['j:skypeID'].string}">
-                                    <a href="skype:${user.properties['j:skypeID'].string}?userinfo"><img src="<c:url
+                                    <a href="skype:${fn:escapeXml(user.properties['j:skypeID'].string)}?userinfo"><img src="<c:url
                                     value='${url.currentModule}/img/skype_logo_20_20.png' />"/></a>&nbsp;&nbsp;
                                 </c:when>
                                 <c:otherwise>
