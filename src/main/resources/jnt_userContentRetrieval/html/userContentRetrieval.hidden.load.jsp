@@ -48,7 +48,7 @@
 
 <%-- Display title --%>
 <c:if test="${not empty title and not empty title.string}">
-     <h3>${title.string}</h3>
+     <h3>${fn:escapeXml(title.string)}</h3>
 </c:if>
 
 <%@ include file="../../getUser.jspf"%>
@@ -81,7 +81,7 @@
 <c:set target="${moduleMap}" property="emptyListMessage">
    <c:choose>
    <c:when test="${not empty noResultsMessage}">
-      ${noResultsMessage.string}
+      ${fn:escapeXml(noResultsMessage.string)}
    </c:when>
    <c:otherwise>
        <fmt:message key='noResults.message'/>

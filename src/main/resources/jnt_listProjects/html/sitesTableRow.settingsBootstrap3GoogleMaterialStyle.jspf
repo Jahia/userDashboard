@@ -152,18 +152,18 @@
                                     <p id="siteTitleForm${node.identifier}">
                                         <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/> (*)</label>
                                         <input type="text" name="siteTitle" id="siteTitle${node.identifier}"
-                                               value="${node.properties['j:title'].string}"/>
+                                               value="${fn:escapeXml(node.properties['j:title'].string)}"/>
                                     </p>
                                     <p id="siteServerNameForm${node.identifier}">
                                         <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/>
                                             (*)</label>
                                         <input type="text" name="siteServerName" id="siteServerName${node.identifier}"
-                                               value="${node.properties['j:serverName'].string}"/>
+                                               value="${fn:escapeXml(node.properties['j:serverName'].string)}"/>
                                     </p>
                                     <p id="siteDescrForm${node.identifier}">
                                         <label for="siteDescr${node.identifier}"><fmt:message key="jnt_virtualsite.j_description"/></label>
                                         <textarea type="text" name="siteDescr"
-                                                  id="siteDescr${node.identifier}">${node.properties['j:description'].string}</textarea>
+                                                  id="siteDescr${node.identifier}">${fn:escapeXml(node.properties['j:description'].string)}</textarea>
                                     </p>
                                 </fieldset>
                             </form>
