@@ -4,6 +4,7 @@
 <fmt:message key="label.manageSite.changeProperties" var="sitePropertiesActionLabel"/>
 <fmt:message key="myWebProjects.files" var="filesActionLabel"/>
 <fmt:message key="label.content" var="contentActionLabel"/>
+<fmt:message key="label.notPublished" var="notPublishedActionLabel"/>
 
 <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <tr>
@@ -15,8 +16,7 @@
                     </label>
                 </div>
             </c:if>
-                        <fmt:message key="label.notPublished" var="notPublishedActionLabel"/>
-                ${node.displayableName}
+            ${node.displayableName}
         </td>
         <c:choose>
             <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
@@ -134,7 +134,7 @@
                             <c:when test="${jcr:hasPermission(node,'adminVirtualSites')}">
                                 <a href="#" onclick="modalSiteEditProperties('${node.identifier}')" title="${fn:escapeXml(sitePropertiesActionLabel)}" aria-label="${fn:escapeXml(sitePropertiesActionLabel)}">
                                     <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(sitePropertiesActionLabel)}" width="24" height="24"/>
-                                                    <img src="<c:url value='${url.currentModule}/img/not_published.svg'/>" alt="${fn:escapeXml(notPublishedActionLabel)}" title="${fn:escapeXml(notPublishedActionLabel)}" width="24" height="24"/>
+                                </a>
                             </c:when>
                             <c:otherwise>
                                 <i class="material-icons">block</i>
@@ -147,7 +147,6 @@
                 <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                     <div id="editSiteDiv${node.identifier}" class="ud-site-modal" tabindex="-1" aria-labelledby="modalEditSiteProperties${node.identifier}"
                          aria-hidden="true">
-                                                        <img src="<c:url value='${url.currentModule}/img/not_published.svg'/>" alt="${fn:escapeXml(notPublishedActionLabel)}" title="${fn:escapeXml(notPublishedActionLabel)}" width="24" height="24"/>
                             <div class="ud-site-modal__header">
                                 <h3 id="modalEditSiteProperties${node.identifier}">
                                     <fmt:message key="label.manageSite.siteProperties"/>
