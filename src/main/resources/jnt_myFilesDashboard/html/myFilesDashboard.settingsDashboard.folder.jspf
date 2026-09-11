@@ -1,0 +1,163 @@
+<template:addResources>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            initSimpleTable('myFilesTable', {
+                pageSize: 25,
+                sortableColumns: [0, 1, 2, 3, 4]
+            });
+        });
+    </script>
+</template:addResources>
+
+<div id="detailView" class="ud-list-surface">
+        <%@include file="myFilesDashboard.settingsDashboard.folder-toolbarBreadcrumb.jspf" %>
+    <fmt:message key="nt_folder" var="folderTypeLabel"/>
+    <fmt:message key="label.delete" var="deleteLabel"/>
+    <fmt:message key="label.rename" var="renameLabel"/>
+
+        <table class="ud-list-table" id="myFilesTable">
+            <thead>
+            <tr>
+                <th><fmt:message key="label.name"/></th>
+                <th><fmt:message key="label.type"/></th>
+                <th><fmt:message key="label.created"/></th>
+                <th><fmt:message key="label.size"/></th>
+                <th><fmt:message key="label.modified"/></th>
+                <th><fmt:message key="label.actions"/></th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:if test="${not empty folderNode}">
+                <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:folder')}" var="node">
+                    <c:set var="folderDisplayName" value="${not empty node.displayableName ? node.displayableName : node.name}"/>
+                    <c:set var="folderShortName" value="${fn:length(folderDisplayName) gt 48 ? fn:substring(folderDisplayName, 0, 48) : folderDisplayName}"/>
+                    <tr>
+                        <td data-sort-value="${fn:escapeXml(folderDisplayName)}">
+                            <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+                                <c:param name="path" value="${functions:encodeUrlParam(node.path)}"/>
+                            </c:url>
+                            <a class="ud-myFiles-nameLink" href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;" title="${fn:escapeXml(folderDisplayName)}" aria-label="${fn:escapeXml(folderDisplayName)}">
+                                <img class="ud-myFiles-nameIcon" src="<c:url value='${url.currentModule}/img/folder.svg'/>" alt="${fn:escapeXml(folderTypeLabel)}" width="24" height="24"/>
+                                <span><c:out value="${folderShortName}"/></span>
+                            </a>
+                        </td>
+                        <td data-sort-value="folder">
+                            ${folderTypeLabel}
+                        </td>
+                        <td data-sort-value="${node.properties['jcr:created'].date.time.time}">
+                            <fmt:formatDate value="${node.properties['jcr:created'].date.time}" type="date" dateStyle="long" var="displayCreatedDate"/>
+                                ${displayCreatedDate}
+                        </td>
+                        <td data-sort-value="0">
+
+                        </td>
+                        <td data-sort-value="${node.properties['jcr:lastModified'].date.time.time}">
+                            <fmt:formatDate value="${node.properties['jcr:lastModified'].date.time}" type="date" dateStyle="long"
+                                            var="displayModifiedDate"/>
+                                ${displayModifiedDate}
+                        </td>
+                        <td>
+                            <c:if test="${(node.properties['jcr:createdBy'].string ne 'system')}">
+                                <div class="ud-myFiles-actions">
+                                    <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(deleteLabel)}" aria-label="${fn:escapeXml(deleteLabel)}"
+                                       onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${functions:escapeJavaScript(node.identifier)}' );return false;">
+                                        <img src="<c:url value='${url.currentModule}/img/delete.svg'/>" alt="${fn:escapeXml(deleteLabel)}" width="24" height="24"/>
+                                    </a>
+                                    <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(renameLabel)}" aria-label="${fn:escapeXml(renameLabel)}"
+                                       onclick="editInContentEditor('${functions:escapeJavaScript(node.identifier)}', '${functions:escapeJavaScript(currentResource.locale)}', '${functions:escapeJavaScript(renderContext.UILocale)}', '${functions:escapeJavaScript(node.resolveSite.name)}');return false;">
+                                        <img src="<c:url value='${url.currentModule}/img/edit.svg'/>" alt="${fn:escapeXml(renameLabel)}" width="24" height="24"/>
+                                    </a>
+                                </div>
+                            </c:if>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:file')}" var="node">
+                    <c:set var="fileDisplayName" value="${not empty node.displayableName ? node.displayableName : node.name}"/>
+                    <c:set var="fileShortName" value="${fn:length(fileDisplayName) gt 48 ? fn:substring(fileDisplayName, 0, 48) : fileDisplayName}"/>
+                    <tr>
+                        <td data-sort-value="${fn:escapeXml(fileDisplayName)}">
+                            <c:choose>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'video'}">
+                                    <a class="ud-myFiles-nameLink" href="#"
+                                       onclick="bbShowVideo('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.fileContent.contentType)}');return false;"
+                                       style="text-decoration: none;" title="${fn:escapeXml(fileDisplayName)}" aria-label="${fn:escapeXml(fileDisplayName)}">
+                                        <span class="icon ${functions:fileIcon(node.name)} ud-myFiles-nameIcon"></span>
+                                        <c:out value="${fileShortName}"/>
+                                    </a>
+                                </c:when>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'audio'}">
+                                    <a class="ud-myFiles-nameLink" href="#"
+                                       onclick="bbShowAudio('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.fileContent.contentType)}');return false;"
+                                       style="text-decoration: none;" title="${fn:escapeXml(fileDisplayName)}" aria-label="${fn:escapeXml(fileDisplayName)}">
+                                        <span class="icon ${functions:fileIcon(node.name)} ud-myFiles-nameIcon"></span>
+                                        <c:out value="${fileShortName}"/>
+                                    </a>
+                                </c:when>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
+                                    <a class="ud-myFiles-nameLink" href="#"
+                                       onclick="bbShowImage('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.properties['j:width'].string)}', '${functions:escapeJavaScript(node.properties['j:height'].string)}');return false;"
+                                       style="text-decoration: none;" title="${fn:escapeXml(fileDisplayName)}" aria-label="${fn:escapeXml(fileDisplayName)}">
+                                        <span class="icon ${functions:fileIcon(node.name)} ud-myFiles-nameIcon"></span>
+                                        <c:out value="${fileShortName}"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="ud-myFiles-nameLink" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" style="text-decoration: none;" title="${fn:escapeXml(fileDisplayName)}" aria-label="${fn:escapeXml(fileDisplayName)}">
+                                        <span class="icon ${functions:fileIcon(node.name)} ud-myFiles-nameIcon"></span>
+                                        <c:out value="${fileShortName}"/>
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td data-sort-value="${fn:escapeXml(node.fileContent.contentType)}">
+                            <c:choose>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'application'}">
+                                    <c:choose>
+                                        <c:when test="${functions:fileExtensionFromMimetype(node.fileContent.contentType) ne null}">
+                                            ${functions:fileExtensionFromMimetype(node.fileContent.contentType)}
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${fn:split(node.fileContent.contentType, '/')[1]}
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    ${fn:split(node.fileContent.contentType, '/')[1]}
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td data-sort-value="${node.properties['jcr:created'].date.time.time}">
+                            <fmt:formatDate value="${node.properties['jcr:created'].date.time}" type="date" dateStyle="long" var="displayCreatedDate"/>
+                                ${displayCreatedDate}
+                        </td>
+                        <td data-sort-value="${node.fileContent.contentLength}">
+                                ${functions:humanReadableByteCount(node.fileContent.contentLength)}
+                        </td>
+                        <td data-sort-value="${node.properties['jcr:lastModified'].date.time.time}">
+                            <fmt:formatDate value="${node.properties['jcr:lastModified'].date.time}" type="date" dateStyle="long"
+                                            var="displayModifiedDate"/>
+                                ${displayModifiedDate}
+                        </td>
+                        <td>
+                            <div class="ud-myFiles-actions">
+                                <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(deleteLabel)}" aria-label="${fn:escapeXml(deleteLabel)}"
+                                   onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${functions:escapeJavaScript(node.identifier)}' );return false;">
+                                    <img src="<c:url value='${url.currentModule}/img/delete.svg'/>" alt="${fn:escapeXml(deleteLabel)}" width="24" height="24"/>
+                                </a>
+                                <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(renameLabel)}" aria-label="${fn:escapeXml(renameLabel)}"
+                                   onclick="editInContentEditor('${functions:escapeJavaScript(node.identifier)}', '${functions:escapeJavaScript(currentResource.locale)}', '${functions:escapeJavaScript(renderContext.UILocale)}', '${functions:escapeJavaScript(node.resolveSite.name)}');return false">
+                                    <img src="<c:url value='${url.currentModule}/img/edit.svg'/>" alt="${fn:escapeXml(renameLabel)}" width="24" height="24"/>
+                                </a>
+                                <a class="ud-list-iconLink" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
+                                   title="<fmt:message key="label.download"/>" download>
+                                    <img src="<c:url value='${url.currentModule}/img/download.svg'/>" alt="<fmt:message key="label.download"/>" width="24" height="24"/>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </c:if>
+            </tbody>
+        </table>
+</div>

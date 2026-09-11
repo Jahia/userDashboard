@@ -1,0 +1,17 @@
+{
+  "name": "@jahia/userdashboard-modernization",
+  "private": true,
+  "description": "React 18 and Moonstone scaffold for the Jahia userDashboard module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@jahia/moonstone": "^2.19.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.1",
+    "vite": "^7.0.0"
+  }
+}

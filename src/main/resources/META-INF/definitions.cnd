@@ -28,6 +28,7 @@
  - j:linkedinID (boolean)
  - j:picture (boolean)
  - preferredLanguage (boolean)
+ - timeZone (boolean) = true
  - age (boolean)
  - password (boolean)
 

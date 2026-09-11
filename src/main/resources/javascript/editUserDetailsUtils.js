@@ -1,13 +1,143 @@
 /* REST API GENERAL FUNCTIONS */
 
-function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, fullReload = false) {
+function domQuery(selector, root) {
+    return (root || document).querySelector(selector);
+}
+
+function domQueryAll(selector, root) {
+    return Array.prototype.slice.call((root || document).querySelectorAll(selector));
+}
+
+function getFormElement(formId) {
+    if (!formId) {
+        return null;
+    }
+
+    return formId.charAt(0) === '#' ? domQuery(formId) : document.getElementById(formId);
+}
+
+function setDisplay(element, visible) {
+    if (!element) {
+        return;
+    }
+
+    element.style.display = visible ? '' : 'none';
+}
+
+function showMessageForDuration(element, duration) {
+    if (!element) {
+        return;
+    }
+
+    setDisplay(element, true);
+    window.setTimeout(function() {
+        setDisplay(element, false);
+    }, duration || 5000);
+}
+
+function showElementsForDuration(elements, duration) {
+    elements.forEach(function(element) {
+        showMessageForDuration(element, duration);
+    });
+}
+
+function appendMessage(element, message) {
+    if (!element) {
+        return;
+    }
+
+    var wrapper = document.createElement('div');
+    wrapper.textContent = message == null ? '' : String(message);
+    element.appendChild(wrapper);
+}
+
+function serializeFormObject(formElement, fieldsClass, deleteTable) {
+    var deleteIndex = 0;
+    var serializedObject = {};
+    var serializedArray;
+
+    if (!formElement) {
+        return {'properties': serializedObject};
+    }
+
+    if (fieldsClass === undefined) {
+        serializedArray = domQueryAll('input, select, textarea', formElement).filter(function(field) {
+            return field.name && !field.disabled && field.type !== 'submit' && field.type !== 'button' && field.type !== 'reset' && field.type !== 'file';
+        });
+    } else {
+        serializedArray = domQueryAll('.' + fieldsClass + ':not([disabled])', formElement);
+    }
+
+    serializedArray.forEach(function(field) {
+        var name = field.name;
+        var value = field.value;
+
+        if (field.type === 'checkbox' || field.type === 'radio') {
+            if (!field.checked) {
+                return;
+            }
+        }
+
+        if (value === '') {
+            if (field.getAttribute('data-undefined') !== 'true') {
+                deleteTable[deleteIndex] = name;
+                deleteIndex++;
+            }
+            field.setAttribute('data-undefined', 'true');
+            return;
+        }
+
+        if (name !== undefined && value !== undefined) {
+            if (field.getAttribute('jcrtype') === 'Date') {
+                value = new Date(value + 'T00:00:00.000').toISOString();
+            }
+            field.setAttribute('data-undefined', 'false');
+            if (serializedObject[name]) {
+                if (!serializedObject[name].push) {
+                    serializedObject[name] = [serializedObject[name]];
+                }
+                serializedObject[name].push(value || '');
+            } else {
+                serializedObject[name] = {'value': value || ''};
+            }
+        }
+    });
+
+    return {'properties': serializedObject};
+}
+
+function normalizeSaveOptions(fullReloadOrOptions) {
+    if (typeof fullReloadOrOptions === 'object' && fullReloadOrOptions !== null) {
+        return {
+            fullReload: Boolean(fullReloadOrOptions.fullReload),
+            onSuccess: fullReloadOrOptions.onSuccess
+        };
+    }
+
+    return {
+        fullReload: Boolean(fullReloadOrOptions),
+        onSuccess: undefined
+    };
+}
+
+function handleSaveSuccess(saveOptions) {
+    if (typeof saveOptions.onSuccess === 'function') {
+        return Promise.resolve(saveOptions.onSuccess());
+    }
+
+    reload(saveOptions.fullReload);
+    return Promise.resolve();
+}
+
+function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, fullReloadOrOptions = false) {
+    var saveOptions = normalizeSaveOptions(fullReloadOrOptions);
     var deleteList = [];
     //JSon Serialized String
     var serializedForm;
     var serializedObject;
     var result;
     //Creating the Json String to send with the PUT request
-    serializedObject = $(formId).serializeObject(fieldsClass, deleteList);
+    serializedObject = serializeFormObject(getFormElement(formId), fieldsClass, deleteList);
     deleteProperties = '';
 
     function createMutatePropertyHeader(key) {
@@ -39,7 +169,7 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
 
         if (!(mutateProperties || deleteProperties)) {
             // there is nothing to update
-            reload(fullReload);
+            handleSaveSuccess(saveOptions);
             return;
         }
         const query = /* GraphQL */ `
@@ -54,10 +184,12 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
         `;
         const variables = {nodeId: nodeIdentifier};
         execGraphQL(context, query, variables)
-            .then(() => reload(fullReload));
+            .then(function() {
+                return handleSaveSuccess(saveOptions);
+            });
 
     } else {
-        reload(fullReload);
+        handleSaveSuccess(saveOptions);
     }
 }
 
@@ -69,72 +201,18 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
  * @param deleteList : Table of the properties to delete
  * @returns JSon Object containing all the properties to send to API
  */
-$.fn.serializeObject = function (fieldsClass, deleteTable) {
-    var serializedArray;
-
-    //index to browse the deleteTable
-    var deleteIndex = 0;
-
-    //Serializing the form (or the by cssCLass) to an Array
-    if (fieldsClass === undefined) {
-        serializedArray = this.serializeArray();
-    } else {
-        serializedArray = $('.' + fieldsClass + ':not([disabled])');
-    }
-
-    //Building the JSON Object from the array
-    var serializedObject = {};
-
-    //For each form element
-    $.each(serializedArray, function () {
-        var name = this.name;
-        var value = this.value;
-
-        //Adding to delete List all the form elements with empty values
-        if (value == '') {
-            if (this.attributes['data-undefined']?.value !== 'true') {
-                // only delete it if it was defined before
-                deleteTable[deleteIndex] = this.name;
-                deleteIndex++;
-            }
-            this.setAttribute('data-undefined', true);
-        } else {
-            if (this.name != undefined && this.value != undefined) {
-                //formatting dates
-                if (this.getAttribute('jcrtype') != undefined && this.getAttribute('jcrtype') == 'Date') {
-                    // Add Timezone to gmt as we are only picking date by day/month/year
-                    value = new Date(value + 'T00:00:00.000').toISOString();
-                }
-                this.setAttribute('data-undefined', false);
-                //adding to object
-                if (serializedObject[name]) {
-                    if (!serializedObject[name].push) {
-                        serializedObject[name] = [serializedObject[name]];
-                    }
-                    serializedObject[name].push(value || '');
-                } else {
-                    serializedObject[name] = {'value': value || ''};
-                }
-            }
-        }
-    });
-    return {'properties': serializedObject};
-};
-
 /* Edit User Details Functions */
 /**
  * Reload the page.
  * @param fullReload whether to perform a full reload or not.
  */
 var reload = function (fullReload = false) {
-    if (fullReload) {
-        var windowToRefresh = window.parent;
-        if (windowToRefresh === undefined)
-            windowToRefresh = window;
-        windowToRefresh.location.reload();
-    } else {
-        $('#editDetailspage').load(getUrl);
+    var windowToRefresh = window.parent;
+    if (windowToRefresh === undefined) {
+        windowToRefresh = window;
     }
+
+    windowToRefresh.location.reload();
 }
 
 /* Edit User Details Functions */
@@ -158,6 +236,8 @@ function goToStart() {
 // TODO duplicate and take error string as input
 var formError = function (result, sent) {
     var resultObject = null;
+    var otherErrorsElements = domQueryAll('.' + currentCssClass + '.otherErrorsMessage');
+    var errorElements = domQueryAll('.' + currentCssClass + '.errorMessage');
 
     if (result['status'] > 300) {
         if (result['status'] == 401) {
@@ -165,8 +245,10 @@ var formError = function (result, sent) {
             goToStart();
         } else if (result['status'] >= 400 && result['status'] < 500) {
             //other errors displaying default message
-            $('.' + currentCssClass + '.otherErrorsMessage').hide();
-            $('.' + currentCssClass + '.otherErrorsMessage').fadeIn('slow').delay(1500);
+            otherErrorsElements.forEach(function(element) {
+                setDisplay(element, false);
+            });
+            showElementsForDuration(otherErrorsElements, 1500);
         } else if (result['status'] == 500) {
             //server error trying to get message from Api
             if (result.responseJSON != undefined) {
@@ -207,17 +289,19 @@ var formError = function (result, sent) {
                 }
 
                 //displaying formatted error message
-                $('.' + currentCssClass + '.errorMessage').html('');
-                $('.' + currentCssClass + '.errorMessage').hide();
-                $('.' + currentCssClass + '.errorMessage').stop().fadeIn();
-                $('.' + currentCssClass + '.errorMessage').stop().fadeOut();
-                $('.' + currentCssClass + '.errorMessage').html($('.' + currentCssClass + '.errorMessage').html() + '<div>' + errorMessage + '</div>');
-                $('.' + currentCssClass + '.errorMessage').fadeIn('slow').delay(4000).fadeOut('slow');
+                errorElements.forEach(function(element) {
+                    element.innerHTML = '';
+                    setDisplay(element, false);
+                    appendMessage(element, errorMessage);
+                });
+                showElementsForDuration(errorElements, 4000);
 
             } else {
                 //default error message
-                $('.' + currentCssClass + '.otherErrorsMessage').hide();
-                $('.' + currentCssClass + '.otherErrorsMessage').fadeIn('slow').delay(1500);
+                otherErrorsElements.forEach(function(element) {
+                    setDisplay(element, false);
+                });
+                showElementsForDuration(otherErrorsElements, 1500);
             }
         }
     }
@@ -238,40 +322,40 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
     var phoneValidation = true;
     var emailValidation = true;
 
-    // QA-5792: NOTE: Any change done the below variables and condition should be copied
-    // and correctly translated in the /userDashboard/src/main/resources/jnt_editUserDetails/html/editUserDetails.bootstrap.jsp
-    // at the QA-5792 marks:
+    // Keep these rules aligned with the inline validation in editUserDetails.settingsDashboard.jsp.
     // variables: phoneRegex and emailRegex
-    // conditions: && $(this).val().length < 5 for phone
+    // condition: reject phone values shorter than 5 characters
 
     var phoneRegex = /^\+?[0-9_\- \(\)]*$/;
 
     var emailRegex = /^(?:[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z-]{2,})?$/;
 
-    $.each($('.' + cssClass + '.phone'), function () {
-        if ($(this).val().length > 0 && $(this).val().length < 5) {
+    domQueryAll('.' + cssClass + '.phone').forEach(function(field) {
+        if (field.value.length > 0 && field.value.length < 5) {
             phoneValidation = false;
         }
-        if ($(this).val().length > 0 && !phoneRegex.test($(this).val())) {
+        if (field.value.length > 0 && !phoneRegex.test(field.value)) {
             phoneValidation = false;
         }
     });
 
-    $.each($('.' + cssClass + '.email'), function () {
-        if ($(this).val().length > 0 && !emailRegex.test($(this).val())) {
+    domQueryAll('.' + cssClass + '.email').forEach(function(field) {
+        if (field.value.length > 0 && !emailRegex.test(field.value)) {
             emailValidation = false;
         }
     });
 
     //displaying the error messages
-    $('#' + phoneErrorId).hide();
+    var phoneError = document.getElementById(phoneErrorId);
+    var emailError = document.getElementById(emailErrorId);
 
-    $('#' + emailErrorId).hide();
+    setDisplay(phoneError, false);
+    setDisplay(emailError, false);
     if (!phoneValidation) {
-        $('#' + phoneErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
+        showMessageForDuration(phoneError);
     }
     if (!emailValidation) {
-        $('#' + emailErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
+        showMessageForDuration(emailError);
     }
     return phoneValidation && emailValidation;
 }
@@ -281,9 +365,9 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
  */
 function updatePrivacyInformation(userNodeIdentifier) {
     // get selected public properties
-    var publicPropertiesValues = $('input[name="j:publicProperties"]').filter(':checked').map(function () {
-        return this.value;
-    }).get();
+    var publicPropertiesValues = domQueryAll('input[name="j:publicProperties"]:checked').map(function(field) {
+        return field.value;
+    });
 
     updateNodePropertyValues(userNodeIdentifier, "j:publicProperties", publicPropertiesValues)
         .then(() => reload());
@@ -301,54 +385,75 @@ function updatePrivacyInformation(userNodeIdentifier) {
  * @param passwordMandatory: The error message for the empty password case
  * @param passwordNotMatching: The error message for the non matching passwords case
  */
-function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMandatory, passwordNotMatching) {
+function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMandatory, passwordNotMatching, saveOptions) {
+    var normalizedSaveOptions = normalizeSaveOptions(saveOptions);
+    var oldPasswordField = document.getElementById('oldPasswordField');
+    var passwordField = document.getElementById('passwordField');
+    var passwordConfirmField = document.getElementById('passwordconfirm');
+    var passwordErrors = document.getElementById('passwordErrors');
+    var passwordSuccess = document.getElementById('passwordSuccess');
+
+    function showPasswordError(message, focusField) {
+        if (passwordErrors) {
+            passwordErrors.textContent = message == null ? '' : String(message);
+            showMessageForDuration(passwordErrors);
+        }
+        if (focusField) {
+            focusField.focus();
+        }
+    }
+
     //passwords checks
-    if ($('#oldPasswordField').val() == '') {
-        $('#passwordErrors').hide();
-        $('#passwordErrors').html(oldPasswordMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
-        $('#oldPasswordField').focus();
-    } else if ($('#passwordField').val() == '') {
-        $('#passwordErrors').hide();
-        $('#passwordErrors').html(passwordMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
-        $('#passwordField').focus();
-    } else if ($('#passwordconfirm').val() == '') {
-        $('#passwordErrors').hide();
-        $('#passwordErrors').html(confirmationMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
-        $('#passwordconfirm').focus();
-    } else if ($('#passwordField').val() != $('#passwordconfirm').val()) {
-        $('#passwordField').val('');
-        $('#passwordconfirm').val('');
-        $('#passwordErrors').hide();
-        $('#passwordErrors').html(passwordNotMatching);
-        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
-        $('#passwordField').focus();
+    if (!oldPasswordField || oldPasswordField.value === '') {
+        showPasswordError(oldPasswordMandatory, oldPasswordField);
+    } else if (!passwordField || passwordField.value === '') {
+        showPasswordError(passwordMandatory, passwordField);
+    } else if (!passwordConfirmField || passwordConfirmField.value === '') {
+        showPasswordError(confirmationMandatory, passwordConfirmField);
+    } else if (passwordField.value !== passwordConfirmField.value) {
+        passwordField.value = '';
+        passwordConfirmField.value = '';
+        showPasswordError(passwordNotMatching, passwordField);
     } else {
         currentCssClass = 'passwordField';
-        $.post(changePasswordUrl, {
-                oldpassword: $('#oldPasswordField').val(),
-                password: $('#passwordField').val(),
-                passwordconfirm: $('#passwordconfirm').val()
+        fetch(changePasswordUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            function (result) {
+            body: new URLSearchParams({
+                oldpassword: oldPasswordField.value,
+                password: passwordField.value,
+                passwordconfirm: passwordConfirmField.value
+            }).toString()
+        }).then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            return response.json();
+        }).then(function(result) {
                 if (result['result'] == 'success') {
-                    switchRow('password');
-                    $('#passwordSuccess').addClass('text-success');
-                    $('#passwordSuccess').html(result['errorMessage']);
-                    $('#passwordSuccess').fadeIn('slow').delay(5000).fadeOut('slow');
+                    if (typeof normalizedSaveOptions.onSuccess === 'function') {
+                        normalizedSaveOptions.onSuccess(result);
+                    } else if (window.userDashboardReactActions && typeof window.userDashboardReactActions.closeEditor === 'function') {
+                        window.userDashboardReactActions.closeEditor();
+                    } else {
+                        switchRow('password');
+                    }
+                    if (passwordSuccess) {
+                        passwordSuccess.classList.add('text-success');
+                        passwordSuccess.textContent = result['errorMessage'] == null ? '' : String(result['errorMessage']);
+                        showMessageForDuration(passwordSuccess);
+                    }
                 } else {
-                    $('#passwordField').val('');
-                    $('#passwordconfirm').val('');
-                    $('#oldPasswordField').val('');
-                    $('#passwordErrors').hide();
-                    $('#passwordErrors').html(result['errorMessage']);
-                    $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
-                    $('input[name=' + result['focusField'] + ']').focus();
+                    passwordField.value = '';
+                    passwordConfirmField.value = '';
+                    oldPasswordField.value = '';
+                    showPasswordError(result['errorMessage'], domQuery('input[name="' + result['focusField'] + '"]'));
                 }
-            },
-            'json').fail(function () {
+        }).catch(function() {
             var result = {status: '404', message: 'standard error ...'};
             formError(result);
         });
@@ -400,11 +505,15 @@ function getOrCreateProfileFolder(urlContext, userNodeIdentifier) {
  * @param context {string} the URL context
  * @param userNodeIdentifier {string} JCR user's node identifier
  */
-function updatePhoto(context, userNodeIdentifier) {
-    if ($('#uploadedImage').val() == '') {
-        $('#imageUploadEmptyError').fadeIn('slow').delay(5000).fadeOut('slow');
+function updatePhoto(context, userNodeIdentifier, saveOptions) {
+    var normalizedSaveOptions = normalizeSaveOptions(saveOptions);
+    var uploadedImageField = document.getElementById('uploadedImage');
+    var imageUploadEmptyError = document.getElementById('imageUploadEmptyError');
+
+    if (!uploadedImageField || uploadedImageField.value === '') {
+        showMessageForDuration(imageUploadEmptyError);
     } else {
-        const uploadedPhoto = $('#uploadedImage').first().prop('files')[0];
+        const uploadedPhoto = uploadedImageField.files[0];
 
         getOrCreateProfileFolder(context, userNodeIdentifier)
             .then(profileFolderId => {
@@ -417,29 +526,38 @@ function updatePhoto(context, userNodeIdentifier) {
                     })
                     .then(() => uploadFile(context, profileFolderId, uploadedPhoto))
                     .then(uploadedPhotoId => updateNodePropertyValue(userNodeIdentifier, "j:picture", uploadedPhotoId))
-                    .then(() => reload());
+                    .then(function() {
+                        return handleSaveSuccess(normalizedSaveOptions);
+                    });
             })
     }
 }
 
-function deletePhoto(userId) {
+function deletePhoto(userId, saveOptions) {
+    var normalizedSaveOptions = normalizeSaveOptions(saveOptions);
     deleteNodeProperty(userId, "j:picture")
-        .then(() => reload())
+        .then(function() {
+            return handleSaveSuccess(normalizedSaveOptions);
+        })
         .catch(error => formError(error));
 }
 
-function saveCkEditorChanges(nodeIdentifier) {
+function saveCkEditorChanges(nodeIdentifier, saveOptions) {
+    var normalizedSaveOptions = normalizeSaveOptions(saveOptions);
     let editorValue;
     if (typeof CKEDITOR !== 'undefined') {
         const editor = CKEDITOR.instances['about_editor'];
         editorValue = editor.getData().trim();
     } else {
         // Use fallback <textarea id="about_editor"> in editUserDetails jsp if CKEDITOR is undefined
-        editorValue = $('#about_editor').val().trim();
+        var aboutEditor = document.getElementById('about_editor');
+        editorValue = aboutEditor ? aboutEditor.value.trim() : '';
     }
 
     updateNodePropertyValue(nodeIdentifier, "j:about", editorValue)
-        .then(() => reload());
+        .then(function() {
+            return handleSaveSuccess(normalizedSaveOptions);
+        });
 }
 
 
@@ -453,26 +571,28 @@ var currentForm = '';
  */
 function switchRow(elementId) {
     //building css element id
-    elementId = '#' + elementId;
+    var elementSelector = '#' + elementId;
 
     //building css form id
-    var elementFormId = elementId + '_form';
+    var elementFormSelector = elementSelector + '_form';
+    var displayElement = domQuery(elementSelector);
+    var formElement = domQuery(elementFormSelector);
     //Checking which element to show and which element to hide
-    if ($(elementId).is(':visible')) {
+    if (displayElement && getComputedStyle(displayElement).display !== 'none') {
         if (currentForm != '') {
-            $(currentForm).hide();
-            $(currentElement).show();
+            setDisplay(domQuery(currentForm), false);
+            setDisplay(domQuery(currentElement), true);
         }
         //Hide the display row
-        $(elementId).hide();
+        setDisplay(displayElement, false);
         //Show the form
-        $(elementFormId).show();
+        setDisplay(formElement, true);
     } else {
         //Hide the Form
-        $(elementFormId).hide();
+        setDisplay(formElement, false);
         //Show the display Row
-        $(elementId).show();
+        setDisplay(displayElement, true);
     }
-    currentElement = elementId;
-    currentForm = elementFormId;
+    currentElement = elementSelector;
+    currentForm = elementFormSelector;
 }

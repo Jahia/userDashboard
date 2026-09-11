@@ -1,0 +1,82 @@
+<div class="ud-edit-sectionWrap">
+    <div class="ud-edit-sectionGrid">
+        <div id="aboutRows" class="ud-edit-sectionCard">
+            <div class="ud-edit-sectionCard__header">
+                <div class="ud-edit-sectionCard__headerRow">
+                    <h4><fmt:message key="jnt_user.j_about"/></h4>
+                    <div id="editUserDetailsPrivateAboutHeaderActionRoot" class="ud-edit-sectionCard__headerAction"></div>
+                </div>
+            </div>
+            <div class="ud-edit-sectionCard__body">
+                <div id="editUserDetailsPrivateHeroRoot"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ud-edit-sectionWrap">
+    <div class="ud-edit-sectionGrid">
+        <div id="userDetailsRow" class="ud-edit-sectionCard">
+            <div class="ud-edit-sectionCard__header">
+                <div class="ud-edit-sectionCard__headerRow">
+                    <h4><fmt:message key="mySettings.identityAndProfessionalInformation"/></h4>
+                    <div id="editUserDetailsPrivateIdentityHeaderActionRoot" class="ud-edit-sectionCard__headerAction"></div>
+                </div>
+            </div>
+            <div class="ud-edit-sectionCard__body">
+                <div class="ud-private-sectionStack">
+                    <div id="editUserDetailsPrivateNamesRoot"></div>
+                    <div id="editUserDetailsPrivateProfessionRoot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ud-edit-sectionWrap">
+    <div class="ud-edit-sectionGrid">
+        <div id="AddressRows" class="ud-edit-sectionCard">
+            <div class="ud-edit-sectionCard__header">
+                <div class="ud-edit-sectionCard__headerRow">
+                    <h4><fmt:message key="mySettings.address"/></h4>
+                    <div id="editUserDetailsPrivateContactHeaderActionRoot" class="ud-edit-sectionCard__headerAction"></div>
+                </div>
+            </div>
+            <div class="ud-edit-sectionCard__body">
+                <div id="editUserDetailsPrivateContactRoot"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ud-edit-sectionWrap">
+    <div class="ud-edit-sectionGrid">
+        <div id="passwordRows" class="ud-edit-sectionCard">
+            <div class="ud-edit-sectionCard__header">
+                <div class="ud-edit-sectionCard__headerRow">
+                    <h4><fmt:message key="label.password"/></h4>
+                    <div id="editUserDetailsPrivatePasswordHeaderActionRoot" class="ud-edit-sectionCard__headerAction"></div>
+                </div>
+            </div>
+            <div class="ud-edit-sectionCard__body">
+                <div id="editUserDetailsPrivatePasswordRoot"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ud-edit-sectionWrap">
+    <div class="ud-edit-sectionGrid">
+        <div id="otherRows" class="ud-edit-sectionCard">
+            <div class="ud-edit-sectionCard__header">
+                <div class="ud-edit-sectionCard__headerRow">
+                    <h4><fmt:message key="mySettings.other"/></h4>
+                    <div id="editUserDetailsPrivatePreferencesHeaderActionRoot" class="ud-edit-sectionCard__headerAction"></div>
+                </div>
+            </div>
+            <div class="ud-edit-sectionCard__body">
+                <div id="editUserDetailsPrivatePreferencesRoot"></div>
+            </div>
+        </div>
+    </div>
+</div>

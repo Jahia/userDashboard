@@ -48,7 +48,7 @@
                     </environment.png>
                 </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <dashboard-modules-base j:view="settingsBootstrap3GoogleMaterialStyle"
+                <dashboard-modules-base j:view="settingsDashboard"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
                     <j:translation_en jcr:language="en"
@@ -57,23 +57,23 @@
                                       jcr:title="dashboard-modules-base"/>
                     <files j:applyOn="jnt:user"
                            j:defaultTemplate="false"
-                           j:hiddenTemplate="false"
+                             j:hiddenTemplate="true"
                            j:icon="/modules/userDashboard/templates/files/folder_document.png"
                            j:priority="100"
                            j:titleKey="myFiles.label"
-                           j:view="settingsBootstrap3GoogleMaterialStyle"
+                           j:view="settingsDashboard"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <files-browser j:view="settingsBootstrap3GoogleMaterialStyle"
+                            <files-browser j:view="settingsDashboard"
                                            jcr:mixinTypes="jmix:renderable"
                                            jcr:primaryType="jnt:myFilesDashboard"/>
                         </pagecontent>
                     </files>
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
-                           j:hiddenTemplate="false"
-                           j:view="settingsBootstrap3GoogleMaterialStyle"
+                             j:hiddenTemplate="true"
+                           j:view="settingsDashboard"
                            j:icon="/modules/userDashboard/templates/files/text_rich_colored.png"
                            j:titleKey="system.myPages"
                            jcr:mixinTypes="jmix:rbTitle"
@@ -82,17 +82,17 @@
                             <my-pages j:criteria="jcr:created"
                                       j:sortDirection="asc"
                                       j:type="jnt:page"
-                                      j:view="bootstrapUserContent.settingsBootstrap3GoogleMaterialStyle"
+                                      j:view="userContent.settingsDashboard"
                                       jcr:mixinTypes="jmix:renderable"
                                       jcr:primaryType="jnt:userContentRetrieval"/>
                         </pagecontent>
                     </pages>
                     <projects j:applyOn="jnt:user"
                               j:defaultTemplate="false"
-                              j:hiddenTemplate="false"
+                                  j:hiddenTemplate="true"
                               j:icon="/modules/userDashboard/templates/files/environment.png"
                               j:titleKey="system.myWebProjects"
-                              j:view="settingsBootstrap3GoogleMaterialStyle"
+                              j:view="settingsDashboard"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
@@ -103,7 +103,7 @@
                                                         edit="true"
                                                         editproperties="false"
                                                         export="true"
-                                                        j:view="bootstrapSites.settingsBootstrap3GoogleMaterialStyle"
+                                                        j:view="sites.settingsDashboard"
                                                         jcr:mixinTypes="jmix:renderable"
                                                         jcr:primaryType="jnt:listProjects"
                                                         live="true"
@@ -139,12 +139,13 @@
                                          j:skypeID="true"
                                          j:title="true"
                                          j:twitterID="true"
-                                         j:view="settingsBootstrap3GoogleMaterialStyle"
+                                         j:view="settingsDashboard"
                                          j:zipCode="true"
                                          jcr:mixinTypes="jmix:renderable jmix:useUILocale"
                                          jcr:primaryType="jnt:editUserDetails"
                                          password="true"
-                                         preferredLanguage="true"/>
+                                         preferredLanguage="true"
+                                         timeZone="true"/>
                         </pagecontent>
                     </me>
                 </dashboard-modules-base>

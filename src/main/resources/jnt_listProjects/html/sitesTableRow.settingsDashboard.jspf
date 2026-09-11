@@ -1,0 +1,305 @@
+<fmt:message key="label.edit" var="editActionLabel"/>
+<fmt:message key="label.preview" var="previewActionLabel"/>
+<fmt:message key="label.live.version" var="liveActionLabel"/>
+<fmt:message key="label.manageSite.changeProperties" var="sitePropertiesActionLabel"/>
+<fmt:message key="myWebProjects.files" var="filesActionLabel"/>
+<fmt:message key="label.content" var="contentActionLabel"/>
+
+<c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
+    <tr>
+        <td>
+            <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean) and jcr:hasPermission(node,'adminVirtualSites')}">
+                <div class="ud-list-checkbox">
+                    <label>
+                        <input class="sitecheckbox" type="checkbox" name="${node.name}"/>
+                    </label>
+                </div>
+            </c:if>
+                        <fmt:message key="label.notPublished" var="notPublishedActionLabel"/>
+                ${node.displayableName}
+        </td>
+        <c:choose>
+            <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
+                <c:set var="page" value="/contents"/>
+            </c:when>
+            <c:when test="${currentNode.properties.typeOfContent.string eq 'files'}">
+                <c:set var="page" value="/files"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="page" value="/${node.home.name}"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${not empty node and (jcr:hasPermission(node,'jContentAccess') || jcr:hasPermission(node,'pageComposerAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
+                <c:set var="baseLive" value="${url.baseLive}"/>
+                <c:set var="basePreview" value="${url.basePreview}"/>
+                <c:set var="baseContribute" value="${url.baseContribute}"/>
+                <c:set var="baseEdit" value="${url.baseEdit}"/>
+                <c:set var="siteInLang" value="false"/>
+                <c:set var="currentLocale">${currentResource.locale}</c:set>
+                <c:set var="siteLocale">${currentResource.locale}</c:set>
+                <c:forEach items="${node.languages}" var="mapLang">
+                    <c:if test="${currentLocale == mapLang}">
+                        <c:set var="siteInLang" value="true"/>
+                    </c:if>
+                </c:forEach>
+                <c:if test="${not siteInLang}">
+                    <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                    <c:set var="baseLive"
+                           value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
+                    <c:set var="basePreview"
+                           value="${fn:substring(url.basePreview,-1,fn:length(url.basePreview)-localeLength)}${node.defaultLanguage}"/>
+                    <c:set var="baseContribute"
+                           value="${fn:substring(url.baseContribute,-1,fn:length(url.baseContribute)-localeLength)}${node.defaultLanguage}"/>
+                    <c:set var="baseEdit"
+                           value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
+                    <c:set var="siteLocale">${node.defaultLanguage}</c:set>
+                </c:if>
+                <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
+                <c:if test="${currentNode.properties.edit.boolean}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${jcr:hasPermission(node,'jContentAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                                <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${siteLocale}/pages'/>" target="_parent" title="${fn:escapeXml(editActionLabel)}" aria-label="${fn:escapeXml(editActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(editActionLabel)}" width="24" height="24"/>
+                                </a>
+                            </c:when>
+                            <c:when test="${jcr:hasPermission(node,'pageComposerAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                                <a href="<c:url value='/jahia/page-composer/default/${siteLocale}${node.path}${page}.html'/>" target="_parent" title="${fn:escapeXml(editActionLabel)}" aria-label="${fn:escapeXml(editActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(editActionLabel)}" width="24" height="24"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <i class="material-icons">block</i>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </c:if>
+                <c:if test="${currentNode.properties.preview.boolean}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                                <a href="<c:url value='${basePreview}${node.path}${page}.html'/>" target="_blank" title="${fn:escapeXml(previewActionLabel)}" aria-label="${fn:escapeXml(previewActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/preview.svg'/>" alt="${fn:escapeXml(previewActionLabel)}" width="24" height="24"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <i class="material-icons">block</i>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </c:if>
+                <c:if test="${currentNode.properties.live.boolean}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${node.home.properties['j:published'].boolean or remotelyPublished}">
+                                <a href="<c:url value='${baseLive}${node.path}${page}.html'/>" target="_blank" title="${fn:escapeXml(liveActionLabel)}" aria-label="${fn:escapeXml(liveActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(liveActionLabel)}" width="24" height="24"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='${url.currentModule}/img/not_published.svg'/>" alt="${fn:escapeXml(notPublishedActionLabel)}" title="${fn:escapeXml(notPublishedActionLabel)}" width="24" height="24"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </c:if>
+                <td>
+                    <c:choose>
+                        <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
+                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${siteLocale}/media/files?params=(sub:!t)'/>" target="_blank" title="${fn:escapeXml(filesActionLabel)}" aria-label="${fn:escapeXml(filesActionLabel)}">
+                                <img src="<c:url value='${url.currentModule}/img/search.svg'/>" alt="${fn:escapeXml(filesActionLabel)}" width="24" height="24"/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="material-icons">block</i>
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <td>
+                    <c:choose>
+                        <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
+                            <a href="<c:url value='/jahia/jcontent/${node.siteKey}/${siteLocale}/content-folders/contents'/>"
+                               target="_blank" title="${fn:escapeXml(contentActionLabel)}" aria-label="${fn:escapeXml(contentActionLabel)}">
+                                <img src="<c:url value='${url.currentModule}/img/search.svg'/>" alt="${fn:escapeXml(contentActionLabel)}" width="24" height="24"/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="material-icons">block</i>
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <c:if test="${currentNode.properties.editproperties.boolean}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${jcr:hasPermission(node,'adminVirtualSites')}">
+                                <a href="#" onclick="modalSiteEditProperties('${node.identifier}')" title="${fn:escapeXml(sitePropertiesActionLabel)}" aria-label="${fn:escapeXml(sitePropertiesActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(sitePropertiesActionLabel)}" width="24" height="24"/>
+                                                    <img src="<c:url value='${url.currentModule}/img/not_published.svg'/>" alt="${fn:escapeXml(notPublishedActionLabel)}" title="${fn:escapeXml(notPublishedActionLabel)}" width="24" height="24"/>
+                            </c:when>
+                            <c:otherwise>
+                                <i class="material-icons">block</i>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </c:if>
+                <jsp:useBean id="nowDate" class="java.util.Date"/>
+                <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+                <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
+                    <div id="editSiteDiv${node.identifier}" class="ud-site-modal" tabindex="-1" aria-labelledby="modalEditSiteProperties${node.identifier}"
+                         aria-hidden="true">
+                                                        <img src="<c:url value='${url.currentModule}/img/not_published.svg'/>" alt="${fn:escapeXml(notPublishedActionLabel)}" title="${fn:escapeXml(notPublishedActionLabel)}" width="24" height="24"/>
+                            <div class="ud-site-modal__header">
+                                <h3 id="modalEditSiteProperties${node.identifier}">
+                                    <fmt:message key="label.manageSite.siteProperties"/>
+                                </h3>
+                                <button class="ud-site-modal__close" type="button" onclick="hideSiteEditProperties('${node.identifier}')" aria-label="Close">&times;</button>
+                            </div>
+                            <div class="ud-site-modal__body">
+                                <form class="ajaxForm ud-site-form" id="editSiteForm${node.identifier}"
+                                      action="<c:url value='${url.basePreview}${node.path}.adminEditSite.do'/>">
+                                    <fieldset>
+                                        <p id="siteTitleForm${node.identifier}" class="ud-site-form__field">
+                                            <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/> (*)</label>
+                                            <input type="text" name="siteTitle" id="siteTitle${node.identifier}"
+                                                   value="${fn:escapeXml(node.properties['j:title'].string)}"/>
+                                        </p>
+                                        <p id="siteServerNameForm${node.identifier}" class="ud-site-form__field">
+                                            <label for="siteServerName${node.identifier}"><fmt:message key="jnt_virtualsite.j_serverName"/>
+                                                (*)</label>
+                                            <input type="text" name="siteServerName" id="siteServerName${node.identifier}"
+                                                   value="${fn:escapeXml(node.properties['j:serverName'].string)}"/>
+                                        </p>
+                                        <p id="siteDescrForm${node.identifier}" class="ud-site-form__field">
+                                            <label for="siteDescr${node.identifier}"><fmt:message key="jnt_virtualsite.j_description"/></label>
+                                            <textarea name="siteDescr"
+                                                      id="siteDescr${node.identifier}">${fn:escapeXml(node.properties['j:description'].string)}</textarea>
+                                        </p>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="ud-site-modal__footer">
+                                <button class="ud-list-button" type="button" onclick="hideSiteEditProperties('${node.identifier}')">
+                                    <fmt:message key="cancel"/>
+                                </button>
+                                <button class="ud-list-button ud-list-button--primary" type="button" site="${node.identifier}" onclick="editProperties('${node.identifier}')">
+                                    <fmt:message key="label.manageSite.submitChanges"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <c:set var="jContentAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('jContentAccess', node, 'jnt:page')}"/>
+                <c:set var="contributeModeAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('contributeModeAccess', node, 'jnt:page')}"/>
+
+                <%-- check home page for read permission otherwise, return first allowed node --%>
+                <c:if test="${jcr:hasPermission(node.home, 'jcr:read_default')}">
+                    <c:set var="previewModeAccessNode" value="${node.home}"/>
+                </c:if>
+                <c:if test="${empty previewModeAccessNode}">
+                    <c:set var="previewModeAccessNode"
+                           value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
+                </c:if>
+
+                <c:choose>
+                    <c:when test="${node.home.properties['j:published'].boolean or not empty jContentAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
+                        <c:set var="baseLive" value="${url.baseLive}"/>
+                        <c:set var="basePreview" value="${url.basePreview}"/>
+                        <c:set var="baseContribute" value="${url.baseContribute}"/>
+                        <c:set var="baseEdit" value="${url.baseEdit}"/>
+                        <c:if test="${not functions:contains(node.languages, currentLocale)}">
+                            <c:set var="localeLength" value="${fn:length(currentLocale)}"/>
+                            <c:set var="baseLive"
+                                   value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
+                            <c:set var="basePreview"
+                                   value="${fn:substring(url.basePreview,-1,fn:length(url.basePreview)-localeLength)}${node.defaultLanguage}"/>
+                            <c:set var="baseContribute"
+                                   value="${fn:substring(url.baseContribute,-1,fn:length(url.baseContribute)-localeLength)}${node.defaultLanguage}"/>
+                            <c:set var="baseEdit"
+                                   value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
+                        </c:if>
+                        <c:if test="${currentNode.properties.edit.boolean}">
+                            <td>
+                            <c:choose>
+                                <c:when test="${not empty jContentAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                    <a href="<c:url value='${baseEdit}${jContentAccessNode.path}.html'/>" target="_blank" title="${fn:escapeXml(editActionLabel)}" aria-label="${fn:escapeXml(editActionLabel)}">
+                                        <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(editActionLabel)}" width="24" height="24"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="material-icons">cancel</i></td>
+                                </c:otherwise>
+                            </c:choose>
+                            </td>
+                        </c:if>
+                        <c:if test="${currentNode.properties.preview.boolean}">
+                            <td>
+                            <c:choose>
+                                <c:when test="${not empty previewModeAccessNode && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                    <a href="<c:url value='${basePreview}${previewModeAccessNode.path}.html'/>" target="_blank" title="${fn:escapeXml(previewActionLabel)}" aria-label="${fn:escapeXml(previewActionLabel)}">
+                                        <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(previewActionLabel)}" width="24" height="24"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="material-icons">cancel</i></td>
+                                </c:otherwise>
+                            </c:choose>
+                            </td>
+                        </c:if>
+                        <c:if test="${currentNode.properties.live.boolean}">
+                            <td>
+                            <c:choose>
+                                <c:when test="${node.home.properties['j:published'].boolean}">
+                                    <a href="<c:url value='${baseLive}${node.path}${page}.html'/>" target="_blank" title="${fn:escapeXml(liveActionLabel)}" aria-label="${fn:escapeXml(liveActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(liveActionLabel)}" width="24" height="24"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="material-icons">cancel</i></td>
+                                </c:otherwise>
+                            </c:choose>
+                            </td>
+                        </c:if>
+                        <td>
+                        <c:choose>
+                            <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
+                                <a href="<c:url value='/engines/manager.jsp?conf=filemanager&site=${node.identifier}'/>" target="_blank" title="${fn:escapeXml(filesActionLabel)}" aria-label="${fn:escapeXml(filesActionLabel)}">
+                                    <img src="<c:url value='${url.currentModule}/img/search.svg'/>" alt="${fn:escapeXml(filesActionLabel)}" width="24" height="24"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <i class="material-icons">cancel</i></td>
+                            </c:otherwise>
+                        </c:choose>
+
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${jcr:hasPermission(node, 'jContentAccess')}">
+                                    <a href="<c:url value='/engines/manager.jsp?conf=editorialcontentmanager&site=${node.identifier}'/>"
+                                       target="_blank" title="${fn:escapeXml(contentActionLabel)}" aria-label="${fn:escapeXml(contentActionLabel)}">
+                                        <img src="<c:url value='${url.currentModule}/img/search.svg'/>" alt="${fn:escapeXml(contentActionLabel)}" width="24" height="24"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="material-icons">search</i>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </c:when>
+                    <c:otherwise>
+                        <td><i class="material-icons">cancel</i></td>
+                        <td><i class="material-icons">cancel</i></td>
+                        <td><i class="material-icons">cancel</i></td>
+                        <td><i class="material-icons">cancel</i></td>
+                        <td><i class="material-icons">cancel</i></td>
+                        <td><i class="material-icons">cancel</i></td>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+    </tr>
+</c:forEach>

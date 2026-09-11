@@ -15,26 +15,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#module_table').dataTable({
-                "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                "iDisplayLength":25,
-                "sPaginationType": "bootstrap",
-                "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
-            });
-        });
-    </script>
-</template:addResources>
-
-<template:addResources type="css" resources="userProfile.css"/>
-
 <%-- Get parameters of the module --%>
 <jcr:nodeProperty node="${currentNode}" name='jcr:title' var="title"/>
 <jcr:nodeProperty node="${currentNode}" name='maxItems' var="nbOfResult"/>

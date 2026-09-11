@@ -1,7 +1,10 @@
 /target/
+/node_modules/
+/node/
 /.classpath
 /.project
 /.settings
 .idea
 *iml
+userDashboard.code-workspace
 repository.xml.generated

@@ -2,149 +2,316 @@
  * Created by dgaillard on 19/03/14.
  */
 
-function bbShowVideo(name, path, type) {
-    bootbox.alert('<h1>' + name + '</h1><br />' + '<video width="320" height="240" controls><source src="' + path + '" type="' + type + '"></video><br /><p>' + myFilesVideo1 + '&nbsp;<a href="' + path + '" download>' + myFilesVideo2 + '</a>&nbsp;' + myFilesVideo3 + '</p>', function () {
+var uploadedFilesExpected = 0;
+
+function ensureMyFilesDialogOverlay() {
+    var overlay = document.getElementById('ud-myfiles-dialog-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'ud-myfiles-dialog-overlay';
+        overlay.className = 'ud-dialogOverlay';
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) {
+                closeMyFilesDialog();
+            }
+        });
+        document.body.appendChild(overlay);
+    }
+
+    return overlay;
+}
+
+function closeMyFilesDialog() {
+    var overlay = document.getElementById('ud-myfiles-dialog-overlay');
+    if (overlay) {
+        overlay.classList.remove('is-open');
+        overlay.innerHTML = '';
+    }
+    document.body.classList.remove('ud-modal-open');
+}
+
+function openMyFilesDialog(options) {
+    var overlay = ensureMyFilesDialogOverlay();
+    var dialog = document.createElement('div');
+    dialog.className = 'ud-dialog';
+
+    var header = document.createElement('div');
+    header.className = 'ud-dialog__header';
+
+    var title = document.createElement('h3');
+    title.textContent = options.title || '';
+    header.appendChild(title);
+
+    var closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'ud-dialog__close';
+    closeButton.setAttribute('aria-label', 'Close');
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', closeMyFilesDialog);
+    header.appendChild(closeButton);
+
+    var body = document.createElement('div');
+    body.className = 'ud-dialog__body';
+    body.innerHTML = options.message || '';
+
+    var footer = document.createElement('div');
+    footer.className = 'ud-dialog__footer';
+
+    (options.buttons || []).forEach(function(buttonConfig) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = buttonConfig.primary ? 'ud-list-button ud-list-button--primary' : 'ud-list-button';
+        button.textContent = buttonConfig.label;
+        button.addEventListener('click', function() {
+            var shouldClose = true;
+            if (buttonConfig.callback) {
+                shouldClose = buttonConfig.callback(dialog, body) !== false;
+            }
+
+            if (shouldClose) {
+                closeMyFilesDialog();
+            }
+        });
+        footer.appendChild(button);
     });
+
+    dialog.appendChild(header);
+    dialog.appendChild(body);
+    dialog.appendChild(footer);
+    overlay.innerHTML = '';
+    overlay.appendChild(dialog);
+    overlay.classList.add('is-open');
+    document.body.classList.add('ud-modal-open');
+
+    return dialog;
+}
+
+function showMyFilesAlert(title, message, callback) {
+    openMyFilesDialog({
+        title: title,
+        message: message,
+        buttons: [{
+            label: labelOK,
+            primary: true,
+            callback: function() {
+                if (callback) {
+                    callback();
+                }
+            }
+        }]
+    });
+}
+
+function bbShowVideo(name, path, type) {
+    showMyFilesAlert(name, '<div class="ud-dialog__media"><video controls><source src="' + path + '" type="' + type + '"></video><a class="ud-list-button ud-list-button--primary" href="' + path + '" download>' + labelOK + '</a></div>');
 }
 
 function bbShowAudio(name, path, type) {
-    bootbox.alert('<h1>' + name + '</h1><br />' + '<audio controls><source src="' + path + '" type="' + type + '"></audio><br /><p>' + myFilesAudio1 + '&nbsp;<a href="' + path + '" download>' + myFilesAudio2 + '</a>&nbsp;' + myFilesAudio3 + '</p>', function () {
-    });
+    showMyFilesAlert(name, '<div class="ud-dialog__media"><audio controls><source src="' + path + '" type="' + type + '"></audio><a class="ud-list-button ud-list-button--primary" href="' + path + '" download>' + labelOK + '</a></div>');
 }
 
 function bbShowImage(name, path, width, height) {
-    bootbox.alert('<h1>' + name + '</h1><br />' + '<img src="' + path + '" alt="' + name + '" height="' + height + '" width="' + width + '">', function () {
-    });
+    showMyFilesAlert(name, '<div class="ud-dialog__media"><img src="' + path + '" alt="' + name + '" width="' + width + '" height="' + height + '"></div>');
 }
 
 function addInputForAddFile() {
     addFileIndex++;
-    $('#fileFormUpload').append('<input type="file" name="file" id="file' + addFileIndex + '" /><br />');
+    var form = document.getElementById('fileFormUpload');
+    if (!form) {
+        return;
+    }
+
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'file';
+    input.id = 'file' + addFileIndex;
+    form.appendChild(input);
 }
 
 function bbDelete(name, id) {
-    bootbox.dialog({
+    openMyFilesDialog({
+        title: labelDelete + ' : ' + name,
         message: '<p>' + myFilesDeleteBox + '&nbsp;' + name + ' ?</p>',
-        title: labelDelete + '&nbsp;:&nbsp;' + name,
-        buttons: {
-            danger: {
-                label: labelCancel,
-                className: 'btn-danger',
-                callback: function () {
-                }
-            },
-            success: {
-                label: labelDelete,
-                className: 'btn-success',
-                callback: function () {
-                    const query = /* GraphQL */ `
-                        mutation deleteNode($fileId: String!) {
-                            jcr(workspace: EDIT) {
-                                deleteNode(pathOrId: $fileId)
-                            }
+        buttons: [{
+            label: labelCancel
+        }, {
+            label: labelDelete,
+            primary: true,
+            callback: function() {
+                const query = /* GraphQL */ `
+                    mutation deleteNode($fileId: String!) {
+                        jcr(workspace: EDIT) {
+                            deleteNode(pathOrId: $fileId)
                         }
-                    `
-                    const variables = {fileId: id};
-                    execGraphQL(context, query, variables)
-                        .then(() => window.location.reload())
-                        .catch(error => bootbox.alert(myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + error, function () {
-                        }));
-                }
+                    }
+                `;
+                const variables = {fileId: id};
+                execGraphQL(context, query, variables)
+                    .then(() => window.location.reload())
+                    .catch(error => showMyFilesAlert(labelError, myFilesDeleteError + '&nbsp;:&nbsp;' + name + '<br />' + error));
             }
-        }
+        }]
     });
 }
 
-function endAddFile(fileName, addFileIndex, status, messageError) {
+function endAddFile(fileName, status, messageError) {
     index += 1;
-    if (fileName != '') {
+    if (fileName !== '') {
         fileUp.push([fileName, status, messageError]);
     }
-    if (index == addFileIndex + 1) {
-        var table = '<table class="table table-hover table-bordered"><thead><tr><th>' + labelName + '</th><th>' + labelStatus + '</th><th>' + labelMessage + '</th></tr></thead><tbody>';
+
+    if (index === uploadedFilesExpected) {
+        var table = '<table class="ud-dialog__table"><thead><tr><th>' + labelName + '</th><th>' + labelStatus + '</th><th>' + labelMessage + '</th></tr></thead><tbody>';
         for (var j = 0; j < fileUp.length; j++) {
-            if (fileUp[j][1] == 'error') {
-                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="label label-important">' + labelError + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
+            if (fileUp[j][1] === 'error') {
+                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="ud-statusBadge ud-statusBadge--error">' + labelError + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
             } else {
-                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="label label-success">' + labelOK + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
+                table += '<tr><td>' + fileUp[j][0] + '</td><td><span class="ud-statusBadge ud-statusBadge--success">' + labelOK + '</span></td><td>' + fileUp[j][2] + '</td></tr>';
             }
         }
         table += '</tbody></table>';
-        bootbox.alert('<h1>' + myFilesUploadedFiles + '</h1><br />' + table, function () {
+        showMyFilesAlert(myFilesUploadedFiles, table, function() {
             window.location.reload();
         });
     }
 }
 
-function bbAddFile(context, rootFolderMissing) {
-    bootbox.dialog({
-        message: '<label>' + labelAddFile + '&nbsp;:&nbsp;</label><button class="btn btn-primary pull-right" onclick="addInputForAddFile()" ><i class="icon-plus icon-white"></i>&nbsp;' + labelAddFile + '</button><form id="fileFormUpload" enctype="multipart/form-data"><input name="file" type="file" id="file' + addFileIndex + '" /><br /></form><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
-        title: labelUploadFile,
-        buttons: {
-            danger: {
-                label: labelCancel,
-                className: 'btn-danger',
-                callback: function () {
-                }
-            },
-            success: {
-                label: labelAdd,
-                className: 'btn-success',
-                callback: function () {
-                    if (rootFolderMissing) {
-                        createFolder(context, userNodeId, 'files').then(() => bbCreateFile(context));
-                    } else {
-                        bbCreateFile(context);
-                    }
-                }
-            }
-        }
+function collectSelectedFiles(container) {
+    return Array.prototype.slice.call(container.querySelectorAll('input[type=file]')).map(function(input) {
+        return input.files && input.files[0] ? input.files[0] : null;
+    }).filter(function(file) {
+        return !!file;
     });
 }
 
-function bbAddFolder(context, rootFolderMissing) {
-    bootbox.dialog({
-        message: '<label>' + labelName + '&nbsp;:&nbsp;</label><input type="text" id="nameFolder"/><br /><br /><div class="alert alert-info"><h4>' + myFilesAlertInfoCharacters + '&nbsp;:</h4><br />: / \\ | " < > [ ] * </div>',
-        title: myFilesCreateNewFolder,
-        buttons: {
-            danger: {
-                label: labelCancel,
-                className: 'btn-danger',
-                callback: function () {
+function getMyFilesInvalidNamePattern() {
+    return /[:/<>[\]*|"\\]/;
+}
+
+function validateSelectedFiles(files) {
+    var invalidNamePattern = getMyFilesInvalidNamePattern();
+    var invalidFiles;
+
+    if (!files.length) {
+        return myFilesEmptyUploadError || labelUploadFile;
+    }
+
+    invalidFiles = files.filter(function(file) {
+        return invalidNamePattern.test(file.name);
+    });
+
+    if (invalidFiles.length) {
+        return myFilesUploadedFileErrorCharacters + '<br><br>' + invalidFiles.map(function(file) {
+            return file.name;
+        }).join('<br>');
+    }
+
+    return '';
+}
+
+function uploadSelectedFiles(contextValue, folderId, files) {
+    index = 0;
+    fileUp = [];
+    uploadedFilesExpected = files.length;
+
+    if (!files.length) {
+        showMyFilesAlert(labelError, myFilesEmptyUploadError || labelUploadFile);
+        return;
+    }
+
+    files.forEach(function(file) {
+        uploadFile(contextValue, folderId, file)
+            .then(function() {
+                endAddFile(file.name, 'success', '');
+            })
+            .catch(function(error) {
+                endAddFile(file.name, 'error', error);
+            });
+    });
+}
+
+function bbAddFile(contextValue, rootFolderMissing) {
+    addFileIndex = 0;
+    openMyFilesDialog({
+        title: labelUploadFile,
+        message: '<div class="ud-site-form__field"><label>' + labelAddFile + '</label><button class="ud-list-button" type="button" onclick="addInputForAddFile()">' + labelAddFile + '</button><form id="fileFormUpload" enctype="multipart/form-data"><input name="file" type="file" id="file0"></form><div class="ud-dialog__notice"><strong>' + myFilesAlertInfoCharacters + '&nbsp;:</strong><br>: / \\ | " < > [ ] *</div></div>',
+        buttons: [{
+            label: labelCancel
+        }, {
+            label: labelAdd,
+            primary: true,
+            callback: function(dialog) {
+                var files = collectSelectedFiles(dialog);
+                var validationMessage = validateSelectedFiles(files);
+
+                if (validationMessage) {
+                    showMyFilesAlert(labelError, validationMessage);
+                    return false;
                 }
-            },
-            success: {
-                label: labelCreateFolder,
-                className: 'btn-success',
-                callback: function () {
-                    var regex = /[:<>[\]*|"\\]/;
 
-                    var folderName = $('#nameFolder').val();
-                    if (!regex.test(folderName)) {
-                        function errorHandler(error) {
-                            bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderError + '&nbsp;:<br /><br />' + error);
-                        }
-
-                        if (rootFolderMissing) {
-                            createFolder(context, userNodeId, 'files')
-                                .then(id => createFolder(context, id, folderName))
-                                .then(() => window.location.reload())
-                                .catch(error => {
-                                    errorHandler(error);
-                                })
-                        } else {
-                            createFolder(context, currentFolderId, folderName)
-                                .then(() => window.location.reload())
-                                .catch(error => {
-                                    errorHandler(error);
-                                })
-                        }
-                    } else {
-                        bootbox.alert('<h1>' + labelError + '&nbsp;!</h1><br />' + myFilesCreateFolderErrorCharacters);
-                    }
+                if (rootFolderMissing) {
+                    createFolder(contextValue, userNodeId, 'files')
+                        .then(function(id) {
+                            uploadSelectedFiles(contextValue, id, files);
+                        })
+                        .catch(function(error) {
+                            showMyFilesAlert(labelError, myFilesCreateFolderError + '&nbsp;:<br><br>' + error);
+                        });
+                } else {
+                    uploadSelectedFiles(contextValue, currentFolderId, files);
                 }
             }
-        }
+        }]
+    });
+}
+
+function bbAddFolder(contextValue, rootFolderMissing) {
+    openMyFilesDialog({
+        title: myFilesCreateNewFolder,
+        message: '<div class="ud-site-form__field"><label for="nameFolder">' + labelName + '</label><input type="text" id="nameFolder"><div class="ud-dialog__notice"><strong>' + myFilesAlertInfoCharacters + '&nbsp;:</strong><br>: / \\ | " < > [ ] *</div></div>',
+        buttons: [{
+            label: labelCancel
+        }, {
+            label: labelCreateFolder,
+            primary: true,
+            callback: function(dialog) {
+                var regex = getMyFilesInvalidNamePattern();
+                var folderNameInput = dialog.querySelector('#nameFolder');
+                var folderName = folderNameInput ? folderNameInput.value.trim() : '';
+
+                if (!folderName || regex.test(folderName)) {
+                    showMyFilesAlert(labelError, myFilesCreateFolderErrorCharacters);
+                    return false;
+                }
+
+                function errorHandler(error) {
+                    showMyFilesAlert(labelError, myFilesCreateFolderError + '&nbsp;:<br><br>' + error);
+                }
+
+                if (rootFolderMissing) {
+                    createFolder(contextValue, userNodeId, 'files')
+                        .then(function(id) {
+                            return createFolder(contextValue, id, folderName);
+                        })
+                        .then(function() {
+                            window.location.reload();
+                        })
+                        .catch(function(error) {
+                            errorHandler(error);
+                        });
+                } else {
+                    createFolder(contextValue, currentFolderId, folderName)
+                        .then(function() {
+                            window.location.reload();
+                        })
+                        .catch(function(error) {
+                            errorHandler(error);
+                        });
+                }
+
+                return false;
+            }
+        }]
     });
 }
 
@@ -168,13 +335,39 @@ function editInContentEditor(uuid, locale, uilocale, site) {
 
 function bbCreateFile(context) {
     for (var i = 0; i <= addFileIndex; i++) {
-        if ($('#file' + i).val() != '') {
-            const uploadedFile = $('#file' + i).first().prop('files')[0];
+        var input = document.getElementById('file' + i);
+        if (input && input.value !== '') {
+            const uploadedFile = input.files[0];
             uploadFile(context, currentFolderId, uploadedFile)
-                .then(() => endAddFile(uploadedFile.name, addFileIndex, 'success', ''))
-                .catch(error => endAddFile(uploadedFile.name, addFileIndex, 'error', error))
+                .then(() => endAddFile(uploadedFile.name, 'success', ''))
+                .catch(error => endAddFile(uploadedFile.name, 'error', error))
         } else {
-            endAddFile('', addFileIndex, '', '');
+            endAddFile('', '', '');
         }
     }
 }
+
+function myFilesSliderStep(id, delta) {
+    var slider = document.getElementById(id);
+    if (!slider) {
+        return;
+    }
+
+    var slides = slider.querySelectorAll('.ud-myFiles-slide');
+    if (!slides.length) {
+        return;
+    }
+
+    var currentIndex = parseInt(slider.getAttribute('data-current-index') || '0', 10);
+    var nextIndex = (currentIndex + delta + slides.length) % slides.length;
+
+    slides[currentIndex].classList.remove('is-active');
+    slides[nextIndex].classList.add('is-active');
+    slider.setAttribute('data-current-index', nextIndex);
+}
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === 'Escape') {
+        closeMyFilesDialog();
+    }
+});

@@ -1,0 +1,89 @@
+<template:addResources>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+        });
+    </script>
+</template:addResources>
+
+<div id="iconView" class="ud-list-surface">
+        <%@include file="myFilesDashboard.settingsDashboard.folder-toolbarBreadcrumb.jspf" %>
+    <fmt:message key="nt_folder" var="folderTypeLabel"/>
+    <fmt:message key="label.delete" var="deleteLabel"/>
+    <fmt:message key="label.rename" var="renameLabel"/>
+
+        <div class="ud-myFiles-grid">
+            <c:if test="${not empty folderNode}">
+                <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:folder')}" var="node">
+                        <article class="ud-myFiles-card">
+                            <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+                                <c:param name="path" value="${functions:encodeUrlParam(node.path)}"/>
+                                <c:param name="view" value="${functions:encodeUrlParam('icon')}"/>
+                            </c:url>
+                            <a href="<c:out value='${link}' escapeXml='false'/>" class="ud-myFiles-card__media" title="${fn:escapeXml(folderTypeLabel)}" aria-label="${fn:escapeXml(folderTypeLabel)}">
+                                <img src="<c:url value='${url.currentModule}/img/folder.svg'/>" alt="${fn:escapeXml(folderTypeLabel)}" width="48" height="48"/>
+                            </a>
+                            <p class="ud-myFiles-card__title">${node.name}</p>
+                            <c:if test="${(node.properties['jcr:createdBy'].string ne 'system')}">
+                                <div class="ud-myFiles-card__actions">
+                                    <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(deleteLabel)}" aria-label="${fn:escapeXml(deleteLabel)}"
+                                       onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${functions:escapeJavaScript(node.identifier)}' );return false;">
+                                        <img src="<c:url value='${url.currentModule}/img/delete.svg'/>" alt="${fn:escapeXml(deleteLabel)}" width="24" height="24"/>
+                                    </a>
+                                    <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(renameLabel)}" aria-label="${fn:escapeXml(renameLabel)}"
+                                       onclick="editInContentEditor('${functions:escapeJavaScript(node.identifier)}', '${functions:escapeJavaScript(currentResource.locale)}', '${functions:escapeJavaScript(renderContext.UILocale)}', '${functions:escapeJavaScript(node.resolveSite.name)}');return false">
+                                        <img src="<c:url value='${url.currentModule}/img/edit.svg'/>" alt="${fn:escapeXml(renameLabel)}" width="24" height="24"/>
+                                    </a>
+                                </div>
+                            </c:if>
+                        </article>
+                </c:forEach>
+                <c:forEach items="${jcr:getChildrenOfType(folderNode,'jnt:file')}" var="node">
+                        <article class="ud-myFiles-card">
+                            <c:choose>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'video'}">
+                                    <a class="ud-myFiles-card__media" href="#"
+                                       onclick="bbShowVideo('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.fileContent.contentType)}');return false;">
+                                        <span class="icon_large ${functions:fileIcon(node.name)}_large"></span>
+                                    </a>
+                                </c:when>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'audio'}">
+                                    <a class="ud-myFiles-card__media" href="#"
+                                       onclick="bbShowAudio('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.fileContent.contentType)}');return false;">
+                                        <span class="icon_large ${functions:fileIcon(node.name)}_large"></span>
+                                    </a>
+                                </c:when>
+                                <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
+                                    <a class="ud-myFiles-card__media" href="#"
+                                       onclick="bbShowImage('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${functions:escapeJavaScript(node.properties['j:width'].string)}', '${functions:escapeJavaScript(node.properties['j:height'].string)}');return false;">
+                                        <img src="${functions:default(node.thumbnailUrls['thumbnail'],thumbnailURL)}"
+                                             alt="${fn:escapeXml(node.name)}"/>
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="ud-myFiles-card__media" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
+                                       download>
+                                        <span class="icon_large ${functions:fileIcon(node.name)}_large"></span>
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
+                            <p class="ud-myFiles-card__title">${node.name}</p>
+                            <div class="ud-myFiles-card__actions">
+                                <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(deleteLabel)}" aria-label="${fn:escapeXml(deleteLabel)}"
+                                   onclick="bbDelete('${functions:escapeJavaScript(node.name)}' ,'${functions:escapeJavaScript(node.identifier)}' );return false;">
+                                    <img src="<c:url value='${url.currentModule}/img/delete.svg'/>" alt="${fn:escapeXml(deleteLabel)}" width="24" height="24"/>
+                                </a>
+                                <a class="ud-list-iconLink" href="#" title="${fn:escapeXml(renameLabel)}" aria-label="${fn:escapeXml(renameLabel)}"
+                                   onclick="editInContentEditor('${functions:escapeJavaScript(node.identifier)}', '${functions:escapeJavaScript(currentResource.locale)}', '${functions:escapeJavaScript(renderContext.UILocale)}', '${functions:escapeJavaScript(node.resolveSite.name)}');return false;"
+                                   >
+                                    <img src="<c:url value='${url.currentModule}/img/edit.svg'/>" alt="${fn:escapeXml(renameLabel)}" width="24" height="24"/>
+                                </a>
+                                <a class="ud-list-iconLink" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
+                                   title="<fmt:message key="label.download"/>" download>
+                                    <i class="material-icons">file_download</i>
+                                </a>
+                            </div>
+                        </article>
+                </c:forEach>
+            </c:if>
+        </div>
+</div>

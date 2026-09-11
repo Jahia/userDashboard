@@ -1,0 +1,56 @@
+<div class="ud-myFiles-toolbar">
+    <ol class="ud-myFiles-breadcrumbList">
+            <c:set var="compare" value="${currentUser.localPath}/files"/>
+            <c:choose>
+                <c:when test="${not empty folderNode && folderNode.path ne compare}">
+                    <li>
+                        <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                            <c:param name="view" value="${functions:encodeUrlParam(displayView)}"/>
+                        </c:url>
+                        <a class="ud-myFiles-breadcrumbLink" href="<c:out value='${link}' escapeXml='false'/>">
+                            <fmt:message key="label.home"/>
+                        </a>
+                    </li>
+                    <c:set value="${fn:substringAfter(folderNode.path, compare)}" var="sub"/>
+                    <c:set value="${fn:split(sub, '/')}" var="split"/>
+                    <c:forEach items="${split}" var="folder" varStatus="folderIndex">
+                        <c:set value="${folderUrl}/${folder}" var="folderUrl"/>
+                        <c:choose>
+                            <c:when test="${folderIndex.last}">
+                                <li>
+                                    <span>/</span>
+                                        ${folder}
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li>
+                                    <span>/</span>
+                                    <c:set var="folderPath" value="${compare}${folderUrl}"/>
+                                    <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                                        <c:param name="path" value="${functions:encodeUrlParam(folderPath)}"/>
+                                        <c:param name="view" value="${functions:encodeUrlParam(displayView)}"/>
+                                    </c:url>
+                                    <a class="ud-myFiles-breadcrumbLink" href="<c:out value='${link}' escapeXml='false'/>">${folder}</a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li>
+                        <fmt:message key="label.home"/>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+    </ol>
+    <div class="ud-myFiles-toolbarActions">
+        <button class="ud-list-button ud-list-button--primary" type="button" onclick="bbAddFile(context, ${empty folderNode})"
+                    title="<fmt:message key="myFiles.uploadFile"/>">
+                <fmt:message key="myFiles.uploadFile"/>
+            </button>
+            <button class="ud-list-button ud-list-button--primary" type="button" onclick="bbAddFolder(context, ${empty folderNode})"
+                    title="<fmt:message key="myFiles.createFolder"/>">
+                <fmt:message key="myFiles.createFolder"/>
+            </button>
+    </div>
+</div>
