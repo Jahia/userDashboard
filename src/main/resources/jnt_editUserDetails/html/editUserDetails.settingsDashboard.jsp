@@ -18,7 +18,9 @@
 <template:addResources type="css" resources="react-profile-app/edit-user-details-app.css"/>
 
 <%-- Javascripts inclusions --%>
-<template:addResources type="javascript" resources="react-profile-app/edit-user-details-app.js"/>
+<%-- deferred on purpose: the bundle is added to <head>, and Moonstone touches document.body
+     when it is evaluated, which is null until the body has been parsed --%>
+<template:addResources type="javascript" resources="react-profile-app/edit-user-details-app.js" defer="true"/>
 <template:addResources type="inline">
     <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
     <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
