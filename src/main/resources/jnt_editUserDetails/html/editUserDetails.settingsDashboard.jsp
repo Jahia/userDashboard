@@ -70,6 +70,9 @@
 <fmt:message key="mysettings.picture.edit" var="reactPictureEditLabel"/>
 <fmt:message key="mySettings.picture.delete" var="reactPictureDeleteLabel"/>
 <fmt:message key="mySettings.newPassword" var="reactPasswordLabel"/>
+<fmt:message key="label.password" var="reactPasswordSectionLabel"/>
+<fmt:message key="mySettings.passwordChanged" var="labelPasswordChanged"/>
+<fmt:message key="mySettings.errors.passwordChange" var="labelPasswordChangeFailed"/>
 <fmt:message key="mySettings.oldPassword" var="reactOldPasswordLabel"/>
 <fmt:message key="mySettings.confirmNewPassword" var="reactConfirmPasswordLabel"/>
 <fmt:message key="jnt_user.preferredLanguage" var="reactPreferredLanguageLabel"/>
@@ -132,6 +135,7 @@
             pictureEdit: '${functions:escapeJavaScript(reactPictureEditLabel)}',
             pictureDelete: '${functions:escapeJavaScript(reactPictureDeleteLabel)}',
             password: '${functions:escapeJavaScript(reactPasswordLabel)}',
+            passwordSection: '${functions:escapeJavaScript(reactPasswordSectionLabel)}',
             oldPassword: '${functions:escapeJavaScript(reactOldPasswordLabel)}',
             confirmPassword: '${functions:escapeJavaScript(reactConfirmPasswordLabel)}',
             preferredLanguage: '${functions:escapeJavaScript(reactPreferredLanguageLabel)}',
@@ -360,7 +364,7 @@
                     ]
                 },
                 password: {
-                    title: reactLabels.password,
+                    title: reactLabels.passwordSection,
                     maskedValue: '******',
                     canEdit: canEditFlags.password,
                     editLabel: reactLabels.edit,
@@ -377,7 +381,9 @@
                         oldPasswordMandatory: '${functions:escapeJavaScript(labelOldPasswordMandatory)}',
                         passwordMandatory: '${functions:escapeJavaScript(labelPasswordMandatory)}',
                         confirmationMandatory: '${functions:escapeJavaScript(labelPasswordConfirmationMandatory)}',
-                        passwordNotMatching: '${functions:escapeJavaScript(labelPasswordNotMatching)}'
+                        passwordNotMatching: '${functions:escapeJavaScript(labelPasswordNotMatching)}',
+                        passwordChanged: '${functions:escapeJavaScript(labelPasswordChanged)}',
+                        genericError: '${functions:escapeJavaScript(labelPasswordChangeFailed)}'
                     }
                 },
                 preferences: {

@@ -139,13 +139,17 @@ function normalizeSaveOptions(fullReloadOrOptions) {
     if (typeof fullReloadOrOptions === 'object' && fullReloadOrOptions !== null) {
         return {
             fullReload: Boolean(fullReloadOrOptions.fullReload),
-            onSuccess: fullReloadOrOptions.onSuccess
+            onSuccess: fullReloadOrOptions.onSuccess,
+            onError: fullReloadOrOptions.onError,
+            genericErrorMessage: fullReloadOrOptions.genericErrorMessage
         };
     }
 
     return {
         fullReload: Boolean(fullReloadOrOptions),
-        onSuccess: undefined
+        onSuccess: undefined,
+        onError: undefined,
+        genericErrorMessage: undefined
     };
 }
 
@@ -432,10 +436,15 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
     var passwordSuccess = document.getElementById('passwordSuccess');
 
     function showPasswordError(message, focusField) {
-        if (passwordErrors) {
+        // the caller renders the message where the user is looking; the span below is
+        // the fallback for any page that still relies on it
+        if (typeof normalizedSaveOptions.onError === 'function') {
+            normalizedSaveOptions.onError(message == null ? '' : String(message));
+        } else if (passwordErrors) {
             passwordErrors.textContent = message == null ? '' : String(message);
             showMessageForDuration(passwordErrors);
         }
+
         if (focusField) {
             focusField.focus();
         }
@@ -454,36 +463,50 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
         showPasswordError(passwordNotMatching, passwordField);
     } else {
         currentCssClass = 'passwordField';
-        fetch(changePasswordUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: new URLSearchParams({
-                oldpassword: oldPasswordField.value,
-                password: passwordField.value,
-                passwordconfirm: passwordConfirmField.value
-            }).toString()
-        }).then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+
+        // Sent with XMLHttpRequest, not fetch, and deliberately so: this URL is a Jahia
+        // action guarded by CsrfGuard, whose script (/modules/CsrfServlet) adds the
+        // required token by patching XMLHttpRequest. It does not know about fetch, so a
+        // fetch here is rejected before it reaches the action and the password silently
+        // never changes.
+        var request = new XMLHttpRequest();
+        request.open('POST', changePasswordUrl, true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        request.onerror = function() {
+            console.error('Could not change the password: the request failed');
+            showPasswordError(normalizedSaveOptions.genericErrorMessage);
+        };
+
+        request.onload = function() {
+            if (request.status < 200 || request.status >= 300) {
+                console.error('Could not change the password: HTTP ' + request.status);
+                showPasswordError(normalizedSaveOptions.genericErrorMessage);
+                return;
             }
 
-            return response.json();
-        }).then(function(result) {
+            var result;
+            try {
+                result = JSON.parse(request.responseText);
+            } catch (error) {
+                console.error('Could not change the password: unreadable response', error);
+                showPasswordError(normalizedSaveOptions.genericErrorMessage);
+                return;
+            }
+
                 if (result['result'] == 'success') {
                     if (typeof normalizedSaveOptions.onSuccess === 'function') {
                         normalizedSaveOptions.onSuccess(result);
                     } else if (window.userDashboardReactActions && typeof window.userDashboardReactActions.closeEditor === 'function') {
                         window.userDashboardReactActions.closeEditor();
+                        if (passwordSuccess) {
+                            passwordSuccess.classList.add('text-success');
+                            passwordSuccess.textContent = result['errorMessage'] == null ? '' : String(result['errorMessage']);
+                            showMessageForDuration(passwordSuccess);
+                        }
                     } else {
                         switchRow('password');
-                    }
-                    if (passwordSuccess) {
-                        passwordSuccess.classList.add('text-success');
-                        passwordSuccess.textContent = result['errorMessage'] == null ? '' : String(result['errorMessage']);
-                        showMessageForDuration(passwordSuccess);
                     }
                 } else {
                     passwordField.value = '';
@@ -491,10 +514,13 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
                     oldPasswordField.value = '';
                     showPasswordError(result['errorMessage'], domQuery('input[name="' + result['focusField'] + '"]'));
                 }
-        }).catch(function() {
-            var result = {status: '404', message: 'standard error ...'};
-            formError(result);
-        });
+        };
+
+        request.send(new URLSearchParams({
+            oldpassword: oldPasswordField.value,
+            password: passwordField.value,
+            passwordconfirm: passwordConfirmField.value
+        }).toString());
     }
 }
 

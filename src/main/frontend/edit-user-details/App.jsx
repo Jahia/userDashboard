@@ -75,6 +75,7 @@ const getEditorValue = () => {
 
 export default function App({config}) {
   const [activeEditor, setActiveEditor] = useState(null);
+  const [passwordFeedback, setPasswordFeedback] = useState(null);
   const [privateProfile, setPrivateProfile] = useState(config.privateProfile);
   const [privateSections, setPrivateSections] = useState(config.privateSections);
   const picturePreviewUrlRef = useRef(null);
@@ -105,7 +106,10 @@ export default function App({config}) {
       showProfessionEditor: () => setActiveEditor('profession'),
       showIdentityProfessionEditor: () => setActiveEditor('identityProfession'),
       showAddressEditor: () => setActiveEditor('address'),
-      showPasswordEditor: () => setActiveEditor('password'),
+      showPasswordEditor: () => {
+        setPasswordFeedback(null);
+        setActiveEditor('password');
+      },
       showOtherEditor: () => setActiveEditor('other'),
       hidePrivateEditors: () => setActiveEditor(null),
       closeEditor,
@@ -320,13 +324,23 @@ export default function App({config}) {
           }
         });
       },
-      savePassword: messages => window.changePassword?.(
-        messages.oldPasswordMandatory,
-        messages.confirmationMandatory,
-        messages.passwordMandatory,
-        messages.passwordNotMatching,
-        {onSuccess: closeEditor}
-      )
+      savePassword: messages => {
+        setPasswordFeedback(null);
+        window.changePassword?.(
+          messages.oldPasswordMandatory,
+          messages.confirmationMandatory,
+          messages.passwordMandatory,
+          messages.passwordNotMatching,
+          {
+            genericErrorMessage: messages.genericError,
+            onError: message => setPasswordFeedback({type: 'error', message}),
+            onSuccess: result => {
+              setPasswordFeedback({type: 'success', message: result?.errorMessage || messages.passwordChanged});
+              closeEditor();
+            }
+          }
+        );
+      }
     };
 
     return () => {
@@ -406,7 +420,9 @@ export default function App({config}) {
             <Button label={privateSections.password.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showPasswordEditor?.()}/>
           ) : undefined}
         >
-          {activeEditor === 'password' ? <PrivatePasswordEditor section={privateSections.password}/> : <PrivatePasswordCard section={privateSections.password}/>}
+          {activeEditor === 'password'
+            ? <PrivatePasswordEditor section={privateSections.password} feedback={passwordFeedback?.type === 'error' ? passwordFeedback : null}/>
+            : <PrivatePasswordCard section={privateSections.password} feedback={passwordFeedback?.type === 'success' ? passwordFeedback : null}/>}
         </PrivateSection>,
         passwordRoot
       )}

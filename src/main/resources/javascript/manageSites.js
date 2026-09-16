@@ -32,18 +32,33 @@ function submitJsonForm(formId) {
         return Promise.reject(new Error('Missing form ' + formId));
     }
 
-    return fetch(form.getAttribute('action'), {
-        method: (form.getAttribute('method') || 'POST').toUpperCase(),
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: new FormData(form)
-    }).then(function(response) {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+    // XMLHttpRequest rather than fetch: the form posts to a Jahia action, and the
+    // CsrfGuard script that supplies the required token only patches XMLHttpRequest.
+    // Through fetch the request is refused before it reaches the action.
+    return new Promise(function(resolve, reject) {
+        var request = new XMLHttpRequest();
 
-        return response.json();
+        request.open((form.getAttribute('method') || 'POST').toUpperCase(), form.getAttribute('action'), true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        request.onerror = function() {
+            reject(new Error('Network response was not ok'));
+        };
+
+        request.onload = function() {
+            if (request.status < 200 || request.status >= 300) {
+                reject(new Error('Network response was not ok'));
+                return;
+            }
+
+            try {
+                resolve(JSON.parse(request.responseText));
+            } catch (error) {
+                reject(error);
+            }
+        };
+
+        request.send(new FormData(form));
     });
 }
 

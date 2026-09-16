@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Input} from '@jahia/moonstone';
+import {Banner, Button, Input} from '@jahia/moonstone';
 
 const FIELDS = [
   {id: 'oldPasswordField', name: 'oldpassword', labelKey: 'oldPasswordLabel'},
@@ -7,13 +7,18 @@ const FIELDS = [
   {id: 'passwordconfirm', name: 'passwordconfirm', labelKey: 'confirmPasswordLabel'}
 ];
 
-export default function PrivatePasswordEditor({section}) {
+export default function PrivatePasswordEditor({section, feedback}) {
   const onCancel = () => window.userDashboardReactActions?.closeEditor?.();
   const onSave = () => window.userDashboardReactActions?.savePassword?.(section.messages);
 
   return (
     <div className="ud-private-formWrap">
       <div className="ud-private-form">
+        {feedback && (
+          <Banner variant="warning" title={feedback.message}>
+            {''}
+          </Banner>
+        )}
         {FIELDS.map(field => (
           <div key={field.name} className="ud-private-field">
             <label className="ud-private-field__label" htmlFor={field.id}>{section[field.labelKey]}</label>
