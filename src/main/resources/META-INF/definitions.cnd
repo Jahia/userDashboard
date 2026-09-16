@@ -5,11 +5,22 @@
 <j = 'http://www.jahia.org/jahia/1.0'>
 <mix = 'http://www.jcp.org/jcr/mix/1.0'>
 
+// Each boolean below decides whether the profile form offers that field.
+//
+// The ones marked "no longer displayed" are not read by the view any more: the
+// profile was rebuilt and those fields were dropped from it. They are kept here
+// on purpose. Removing a property from the definition would break instances that
+// already store it, or force a migration, and the stored values are still the
+// user's - so the fields are simply no longer shown. Studio still offers the
+// toggles, and they now have no effect.
 [jnt:editUserDetails] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
  - j:firstName (boolean)
  - j:lastName (boolean)
+ // no longer displayed
  - j:gender (boolean)
+ // no longer displayed
  - j:title (boolean)
+ // no longer displayed - the stored date still feeds the age below, but it cannot be edited here any more
  - j:birthDate (boolean)
  - j:organization (boolean)
  - j:function (boolean)
@@ -22,9 +33,13 @@
  - j:mobileNumber (boolean)
  - j:altNumber (boolean)
  - j:email (boolean)
+ // no longer displayed - the whole social network section was dropped
  - j:skypeID (boolean)
+ // no longer displayed
  - j:twitterID (boolean)
+ // no longer displayed
  - j:facebookID (boolean)
+ // no longer displayed
  - j:linkedinID (boolean)
  - j:picture (boolean)
  - preferredLanguage (boolean)
