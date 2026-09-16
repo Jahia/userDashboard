@@ -479,6 +479,8 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
         request.open('POST', changePasswordUrl, true);
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // without this the action answers 200 with an empty body and the outcome is unreadable
+        request.setRequestHeader('Accept', 'application/json, text/javascript, */*; q=0.01');
 
         request.onerror = function() {
             console.error('Could not change the password: the request failed');
