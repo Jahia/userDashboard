@@ -459,14 +459,14 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
         showPasswordError(passwordMandatory, passwordField);
     } else if (!passwordConfirmField || passwordConfirmField.value === '') {
         showPasswordError(confirmationMandatory, passwordConfirmField);
-    } else if (passwordField.value !== passwordConfirmField.value) {
-        passwordField.value = '';
-        passwordConfirmField.value = '';
-        showPasswordError(passwordNotMatching, passwordField);
     } else if (passwordField.value === oldPasswordField.value) {
         passwordField.value = '';
         passwordConfirmField.value = '';
         showPasswordError(normalizedSaveOptions.sameAsOldMessage, passwordField);
+    } else if (passwordField.value !== passwordConfirmField.value) {
+        passwordField.value = '';
+        passwordConfirmField.value = '';
+        showPasswordError(passwordNotMatching, passwordField);
     } else {
         currentCssClass = 'passwordField';
 
