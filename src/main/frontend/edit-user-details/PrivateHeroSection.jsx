@@ -3,7 +3,7 @@ import {Button, Typography} from '@jahia/moonstone';
 
 const hasText = value => Boolean(value && value.trim());
 
-export default function PrivateHeroSection({profile, activeEditor, embedded = false, showTitle = true, showEdit = true}) {
+export default function PrivateHeroSection({profile, activeEditor}) {
   useEffect(() => {
     if (activeEditor !== 'about') {
       const existingEditor = window.CKEDITOR?.instances?.about_editor;
@@ -93,10 +93,9 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
   }
 
   const showPictureEditor = () => window.userDashboardReactActions?.showPictureEditor?.();
-  const showAboutEditor = () => window.userDashboardReactActions?.showAboutEditor?.();
 
   return (
-    <section className={`ud-private-hero${embedded ? ' ud-private-hero--embedded' : ''}`}>
+    <section className="ud-private-hero">
       <div className="ud-private-hero__media">
         {profile.picture.canEdit ? (
           <button
@@ -114,7 +113,6 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
       </div>
       <div className="ud-private-hero__content">
         <div className="ud-private-hero__copy">
-          {showTitle && <Typography component="span" variant="caption" className="ud-private-hero__eyebrow">{profile.about.title}</Typography>}
           {hasText(profile.about.html) ? (
             <div
               className="ud-private-hero__about"
@@ -124,11 +122,6 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
             <Typography component="p" variant="caption" className="ud-private-hero__placeholder">{profile.about.emptyLabel}</Typography>
           )}
         </div>
-        {showEdit && profile.about.canEdit && (
-          <div className="ud-private-hero__actions">
-            <Button label={profile.about.editLabel} variant="outlined" onClick={showAboutEditor}/>
-          </div>
-        )}
       </div>
     </section>
   );

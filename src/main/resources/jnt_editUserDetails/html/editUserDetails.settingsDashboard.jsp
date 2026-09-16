@@ -219,6 +219,7 @@
             navigationLabel: reactLabels.navigation,
             title: reactLabels.navigation,
             professionAtLabel: reactLabels.at,
+            identityProfessionLabel: '${functions:escapeJavaScript(reactIdentityProfessionLabel)}',
             privateProfile: {
                 picture: {
                     src: profileValues.pictureSrc,

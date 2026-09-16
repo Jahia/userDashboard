@@ -8,6 +8,7 @@ import PrivateHeroSection from './PrivateHeroSection';
 import PrivatePasswordCard from './PrivatePasswordCard';
 import PrivatePasswordEditor from './PrivatePasswordEditor';
 import PrivatePreferencesCard from './PrivatePreferencesCard';
+import PrivateSection from './PrivateSection';
 import PrivateSummaryCard from './PrivateSummaryCard';
 import {Button, Typography} from '@jahia/moonstone';
 
@@ -77,16 +78,10 @@ export default function App({config}) {
   const [privateSections, setPrivateSections] = useState(config.privateSections);
   const picturePreviewUrlRef = useRef(null);
   const privateRoot = document.getElementById('editUserDetailsPrivateHeroRoot');
-  const aboutHeaderActionRoot = document.getElementById('editUserDetailsPrivateAboutHeaderActionRoot');
-  const namesRoot = document.getElementById('editUserDetailsPrivateNamesRoot');
-  const professionRoot = document.getElementById('editUserDetailsPrivateProfessionRoot');
-  const identityHeaderActionRoot = document.getElementById('editUserDetailsPrivateIdentityHeaderActionRoot');
+  const identityRoot = document.getElementById('editUserDetailsPrivateIdentityRoot');
   const contactRoot = document.getElementById('editUserDetailsPrivateContactRoot');
-  const contactHeaderActionRoot = document.getElementById('editUserDetailsPrivateContactHeaderActionRoot');
   const passwordRoot = document.getElementById('editUserDetailsPrivatePasswordRoot');
-  const passwordHeaderActionRoot = document.getElementById('editUserDetailsPrivatePasswordHeaderActionRoot');
   const preferencesRoot = document.getElementById('editUserDetailsPrivatePreferencesRoot');
-  const preferencesHeaderActionRoot = document.getElementById('editUserDetailsPrivatePreferencesHeaderActionRoot');
 
   useEffect(() => {
     return () => {
@@ -351,56 +346,75 @@ export default function App({config}) {
         </div>
       </section>
       {privateRoot && privateProfile && createPortal(
-        <PrivateHeroSection profile={privateProfile} activeEditor={activeEditor} embedded showTitle={false} showEdit={false} />,
+        <PrivateSection
+          id="about"
+          label={privateProfile.about.title}
+          buttons={privateProfile.about.canEdit && activeEditor !== 'about' && activeEditor !== 'picture' ? (
+            <Button label={privateProfile.about.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAboutEditor?.()}/>
+          ) : undefined}
+        >
+          <PrivateHeroSection profile={privateProfile} activeEditor={activeEditor}/>
+        </PrivateSection>,
         privateRoot
       )}
-      {aboutHeaderActionRoot && privateProfile?.about?.canEdit && activeEditor !== 'about' && activeEditor !== 'picture' && createPortal(
-        <Button label={privateProfile.about.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAboutEditor?.()} />,
-        aboutHeaderActionRoot
-      )}
-      {namesRoot && privateSections?.identity && createPortal(
-        activeEditor === 'identityProfession'
-          ? <PrivateFieldsForm section={identityProfessionSection} />
-          : activeEditor === 'names'
-            ? <PrivateFieldsForm section={privateSections.identity} />
-            : <PrivateSummaryCard section={{...privateSections.identity, onEditAction: 'showIdentityProfessionEditor'}} embedded showTitle={false} showEdit={false} />,
-        namesRoot
-      )}
-      {professionRoot && privateSections?.profession && createPortal(
-        activeEditor === 'identityProfession'
-          ? null
-          : activeEditor === 'profession'
-            ? <PrivateFieldsForm section={privateSections.profession} />
-            : <PrivateSummaryCard section={privateSections.profession} embedded showTitle={false} showEdit={false} />,
-        professionRoot
+      {identityRoot && privateSections?.identity && createPortal(
+        <PrivateSection
+          id="identity"
+          label={config.identityProfessionLabel}
+          buttons={identityProfessionSection?.canEdit && !['identityProfession', 'names', 'profession'].includes(activeEditor) ? (
+            <Button label={identityProfessionSection.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showIdentityProfessionEditor?.()}/>
+          ) : undefined}
+        >
+          {activeEditor === 'identityProfession' ? (
+            <PrivateFieldsForm section={identityProfessionSection}/>
+          ) : (
+            <div className="ud-private-sectionStack">
+              {activeEditor === 'names'
+                ? <PrivateFieldsForm section={privateSections.identity}/>
+                : <PrivateSummaryCard section={privateSections.identity}/>}
+              {privateSections.profession && (activeEditor === 'profession'
+                ? <PrivateFieldsForm section={privateSections.profession}/>
+                : <PrivateSummaryCard section={privateSections.profession}/>)}
+            </div>
+          )}
+        </PrivateSection>,
+        identityRoot
       )}
       {contactRoot && privateSections?.contact && createPortal(
-        activeEditor === 'address' ? <PrivateFieldsForm section={privateSections.contact} /> : <PrivateContactCard section={privateSections.contact} />,
+        <PrivateSection
+          id="contact"
+          label={privateSections.contact.title}
+          buttons={privateSections.contact.canEdit && activeEditor !== 'address' ? (
+            <Button label={privateSections.contact.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAddressEditor?.()}/>
+          ) : undefined}
+        >
+          {activeEditor === 'address' ? <PrivateFieldsForm section={privateSections.contact}/> : <PrivateContactCard section={privateSections.contact}/>}
+        </PrivateSection>,
         contactRoot
       )}
-      {identityHeaderActionRoot && identityProfessionSection?.canEdit && !['identityProfession', 'names', 'profession'].includes(activeEditor) && createPortal(
-        <Button label={identityProfessionSection.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showIdentityProfessionEditor?.()} />,
-        identityHeaderActionRoot
-      )}
-      {contactHeaderActionRoot && privateSections?.contact?.canEdit && activeEditor !== 'address' && createPortal(
-        <Button label={privateSections.contact.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAddressEditor?.()} />,
-        contactHeaderActionRoot
-      )}
       {passwordRoot && privateSections?.password && createPortal(
-        activeEditor === 'password' ? <PrivatePasswordEditor section={privateSections.password} /> : <PrivatePasswordCard section={privateSections.password} />,
+        <PrivateSection
+          id="password"
+          label={privateSections.password.title}
+          buttons={privateSections.password.canEdit && activeEditor !== 'password' ? (
+            <Button label={privateSections.password.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showPasswordEditor?.()}/>
+          ) : undefined}
+        >
+          {activeEditor === 'password' ? <PrivatePasswordEditor section={privateSections.password}/> : <PrivatePasswordCard section={privateSections.password}/>}
+        </PrivateSection>,
         passwordRoot
       )}
-      {passwordHeaderActionRoot && privateSections?.password?.canEdit && activeEditor !== 'password' && createPortal(
-        <Button label={privateSections.password.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showPasswordEditor?.()} />,
-        passwordHeaderActionRoot
-      )}
       {preferencesRoot && privateSections?.preferences && createPortal(
-        activeEditor === 'other' ? <PrivateFieldsForm section={privateSections.preferences} /> : <PrivatePreferencesCard section={privateSections.preferences} />,
+        <PrivateSection
+          id="preferences"
+          label={privateSections.preferences.title}
+          buttons={privateSections.preferences.canEdit && activeEditor !== 'other' ? (
+            <Button label={privateSections.preferences.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showOtherEditor?.()}/>
+          ) : undefined}
+        >
+          {activeEditor === 'other' ? <PrivateFieldsForm section={privateSections.preferences}/> : <PrivatePreferencesCard section={privateSections.preferences}/>}
+        </PrivateSection>,
         preferencesRoot
-      )}
-      {preferencesHeaderActionRoot && privateSections?.preferences?.canEdit && activeEditor !== 'other' && createPortal(
-        <Button label={privateSections.preferences.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showOtherEditor?.()} />,
-        preferencesHeaderActionRoot
       )}
     </>
   );
