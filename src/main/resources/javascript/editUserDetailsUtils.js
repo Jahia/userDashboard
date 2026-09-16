@@ -309,6 +309,40 @@ var formError = function (result, sent) {
 };
 
 /**
+ * The phone and email rules, defined once and used both by the live feedback on
+ * the profile form and by the check made when the address is saved. They used to
+ * be written twice, and the two copies disagreed.
+ */
+var PHONE_PATTERN = /^\+?[0-9_\- ()]*$/;
+var EMAIL_PATTERN = /^(?:[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})?$/;
+var PHONE_MIN_DIGITS = 5;
+
+/**
+ * A phone number is valid when it is empty, or holds at least PHONE_MIN_DIGITS
+ * digits and nothing but digits and the usual punctuation. Punctuation is
+ * ignored when counting, so "(01) 23" is four digits and too short.
+ */
+function isValidPhoneValue(value) {
+    var text = value == null ? '' : String(value);
+    var digits = text.replace(/[^0-9]/g, '');
+
+    if (text.length === 0) {
+        return true;
+    }
+
+    return digits.length >= PHONE_MIN_DIGITS && PHONE_PATTERN.test(text);
+}
+
+/**
+ * An email address is valid when it is empty or matches EMAIL_PATTERN.
+ */
+function isValidEmailValue(value) {
+    var text = value == null ? '' : String(value);
+
+    return text.length === 0 || EMAIL_PATTERN.test(text);
+}
+
+/**
  * @Author : Jahia(rahmed)
  * This function verify the phone and email fields of an adress
  * the phone fields must have the 'phone' css class
@@ -322,25 +356,14 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
     var phoneValidation = true;
     var emailValidation = true;
 
-    // Keep these rules aligned with the inline validation in editUserDetails.settingsDashboard.jsp.
-    // variables: phoneRegex and emailRegex
-    // condition: reject phone values shorter than 5 characters
-
-    var phoneRegex = /^\+?[0-9_\- \(\)]*$/;
-
-    var emailRegex = /^(?:[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z-]{2,})?$/;
-
     domQueryAll('.' + cssClass + '.phone').forEach(function(field) {
-        if (field.value.length > 0 && field.value.length < 5) {
-            phoneValidation = false;
-        }
-        if (field.value.length > 0 && !phoneRegex.test(field.value)) {
+        if (!isValidPhoneValue(field.value)) {
             phoneValidation = false;
         }
     });
 
     domQueryAll('.' + cssClass + '.email').forEach(function(field) {
-        if (field.value.length > 0 && !emailRegex.test(field.value)) {
+        if (!isValidEmailValue(field.value)) {
             emailValidation = false;
         }
     });

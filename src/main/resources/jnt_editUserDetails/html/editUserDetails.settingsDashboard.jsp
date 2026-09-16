@@ -508,12 +508,6 @@
                 });
             }
 
-            // Keep this inline validation logic in sync with editUserDetailsUtils.js.verifyAndSubmitAddress.
-            var phoneRegex = /^\+?([0-9_\- \(\)])*$/;
-
-            // Same regex as editUserDetailsUtils.js.verifyAndSubmitAddress.
-            var emailRegex = /^(?:[A-Za-z0-9\._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})?$/;
-
             function setValidationState(element, isValid) {
                 var field = element.closest('.ud-private-field');
                 if (!field) {
@@ -530,13 +524,14 @@
                 field.classList.add(isValid ? 'success' : 'error');
             }
 
+            // The rules themselves live in editUserDetailsUtils.js, so that what turns
+            // the field red here is the same thing that refuses the save.
             function isPhoneFieldValid(element) {
-                var normalizedPhone = element.value.replace(/\(|\)|\s+|-/g, '');
-                return normalizedPhone.length === 0 || (normalizedPhone.length > 4 && phoneRegex.test(element.value));
+                return isValidPhoneValue(element.value);
             }
 
             function isEmailFieldValid(element) {
-                return element.value === '' || emailRegex.test(element.value);
+                return isValidEmailValue(element.value);
             }
 
             function bindValidationState(selector, validator) {
