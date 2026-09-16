@@ -535,7 +535,14 @@
             }
 
             function bindValidationState(selector, validator) {
-                Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function(element) {
+                Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function(match) {
+                    // the marker class may sit on a wrapper rather than the control itself
+                    var element = resolveFieldElement(match);
+
+                    if (!element) {
+                        return;
+                    }
+
                     var refreshState = function() {
                         setValidationState(element, validator(element));
                     };

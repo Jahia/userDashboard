@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import UiButton from './UiButton';
+import {Button, Typography} from '@jahia/moonstone';
 
 const hasText = value => Boolean(value && value.trim());
 
@@ -32,17 +32,17 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
       <div className="ud-private-formWrap">
         <div className="ud-private-heroEditor">
           <div className="ud-private-heroEditor__preview">
-            <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt} />
+            <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt}/>
           </div>
           <div className="ud-private-form">
             <div className="ud-private-field">
               <label className="ud-private-field__label" htmlFor="uploadedImage">{profile.picture.editLabel}</label>
-              <input id="uploadedImage" className="ud-private-fileInput" type="file" name="file" />
+              <input id="uploadedImage" className="ud-private-fileInput" type="file" name="file"/>
             </div>
             <div className="ud-private-form__actions">
-              <UiButton label={profile.picture.cancelLabel} variant="outlined" onClick={onCancel} />
-              <button type="button" className="ud-private-actionButton ud-private-actionButton--danger" onClick={() => window.userDashboardReactActions?.deletePicture?.()}>{profile.picture.deleteLabel}</button>
-              <UiButton label={profile.picture.saveLabel} color="accent" onClick={() => window.userDashboardReactActions?.savePicture?.()} />
+              <Button label={profile.picture.cancelLabel} variant="outlined" onClick={onCancel}/>
+              <Button label={profile.picture.deleteLabel} color="danger" onClick={() => window.userDashboardReactActions?.deletePicture?.()}/>
+              <Button label={profile.picture.saveLabel} color="accent" onClick={() => window.userDashboardReactActions?.savePicture?.()}/>
             </div>
             <div>
               <span id="imageUploadError" style={{display: 'none'}}>{profile.picture.errors.upload}</span>
@@ -70,12 +70,12 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
     return (
       <div className="ud-private-formWrap">
         <div className="ud-private-form">
-          <textarea id="about_editor" defaultValue={profile.about.sourceValue} />
+          <textarea id="about_editor" defaultValue={profile.about.sourceValue}/>
           <div className="ud-private-form__actions">
-            <UiButton label={profile.about.cancelLabel} variant="outlined" onClick={onCancel} />
-            <UiButton label={profile.about.saveLabel} color="accent" onClick={() => window.userDashboardReactActions?.saveAbout?.()} />
+            <Button label={profile.about.cancelLabel} variant="outlined" onClick={onCancel}/>
+            <Button label={profile.about.saveLabel} color="accent" onClick={() => window.userDashboardReactActions?.saveAbout?.()}/>
           </div>
-          <div className="aboutField errorMessage hide" />
+          <div className="aboutField errorMessage hide"/>
           <div className="aboutField otherErrorsMessage hide">
             <div>{profile.about.otherErrorsLabel}</div>
             <div>
@@ -106,27 +106,27 @@ export default function PrivateHeroSection({profile, activeEditor, embedded = fa
             title={profile.picture.editLabel}
             aria-label={profile.picture.editLabel}
           >
-            <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt} />
+            <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt}/>
           </button>
         ) : (
-          <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt} />
+          <img className="ud-private-hero__avatar" src={profile.picture.src} alt={profile.picture.alt}/>
         )}
       </div>
       <div className="ud-private-hero__content">
         <div className="ud-private-hero__copy">
-          {showTitle && <span className="ud-private-hero__eyebrow">{profile.about.title}</span>}
+          {showTitle && <Typography component="span" variant="caption" className="ud-private-hero__eyebrow">{profile.about.title}</Typography>}
           {hasText(profile.about.html) ? (
             <div
               className="ud-private-hero__about"
               dangerouslySetInnerHTML={{__html: profile.about.html}}
-            />
+           />
           ) : (
-            <p className="ud-private-hero__placeholder">{profile.about.emptyLabel}</p>
+            <Typography component="p" variant="caption" className="ud-private-hero__placeholder">{profile.about.emptyLabel}</Typography>
           )}
         </div>
         {showEdit && profile.about.canEdit && (
           <div className="ud-private-hero__actions">
-            <UiButton label={profile.about.editLabel} variant="outlined" onClick={showAboutEditor} />
+            <Button label={profile.about.editLabel} variant="outlined" onClick={showAboutEditor}/>
           </div>
         )}
       </div>

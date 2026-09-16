@@ -6,7 +6,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@jahia/moonstone": "^2.19.0",
+    "@jahia/moonstone": "^2.20.3",
     "react": "^18.2.0",
     "react-dom": "^18.0.0"
   },

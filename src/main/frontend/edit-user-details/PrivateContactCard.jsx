@@ -1,4 +1,5 @@
 import React from 'react';
+import {Paper, Typography} from '@jahia/moonstone';
 
 const hasText = value => Boolean(value && value.trim());
 
@@ -7,7 +8,7 @@ export default function PrivateContactCard({section}) {
   const addressLines = section.addressLines.filter(hasText);
 
   return (
-    <div className="ud-private-card">
+    <Paper className="ud-private-card">
       <div className="ud-private-card__body">
         {contactRows.length > 0 || addressLines.length > 0 ? (
           <div className="ud-private-contactCard">
@@ -15,27 +16,27 @@ export default function PrivateContactCard({section}) {
               <dl className="ud-private-list">
                 {contactRows.map(row => (
                   <React.Fragment key={row.label}>
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
+                    <Typography component="dt" variant="caption">{row.label}</Typography>
+                    <Typography component="dd" variant="body">{row.value}</Typography>
                   </React.Fragment>
                 ))}
               </dl>
             )}
             {addressLines.length > 0 && (
               <div className="ud-private-addressBlock">
-                <h4>{section.addressLabel}</h4>
+                <Typography component="h4" variant="subheading">{section.addressLabel}</Typography>
                 <div>
                   {addressLines.map(line => (
-                    <div key={line}>{line}</div>
+                    <Typography key={line} component="div" variant="body">{line}</Typography>
                   ))}
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <p className="ud-private-card__placeholder">{section.emptyLabel}</p>
+          <Typography component="p" variant="caption" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>
         )}
       </div>
-    </div>
+    </Paper>
   );
 }

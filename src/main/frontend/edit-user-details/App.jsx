@@ -9,7 +9,7 @@ import PrivatePasswordCard from './PrivatePasswordCard';
 import PrivatePasswordEditor from './PrivatePasswordEditor';
 import PrivatePreferencesCard from './PrivatePreferencesCard';
 import PrivateSummaryCard from './PrivateSummaryCard';
-import UiButton from './UiButton';
+import {Button, Typography} from '@jahia/moonstone';
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -345,8 +345,8 @@ export default function App({config}) {
       <section className="ud-react-shell">
         <div className="ud-react-shell__header">
           <div className="ud-react-shell__heading">
-            <span className="ud-react-shell__eyebrow">{config.navigationLabel}</span>
-            <h2 className="ud-react-shell__title">{config.title}</h2>
+            <Typography component="span" variant="caption" className="ud-react-shell__eyebrow">{config.navigationLabel}</Typography>
+            <Typography component="h2" variant="title" className="ud-react-shell__title">{config.title}</Typography>
           </div>
         </div>
       </section>
@@ -355,7 +355,7 @@ export default function App({config}) {
         privateRoot
       )}
       {aboutHeaderActionRoot && privateProfile?.about?.canEdit && activeEditor !== 'about' && activeEditor !== 'picture' && createPortal(
-        <UiButton label={privateProfile.about.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAboutEditor?.()} />,
+        <Button label={privateProfile.about.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAboutEditor?.()} />,
         aboutHeaderActionRoot
       )}
       {namesRoot && privateSections?.identity && createPortal(
@@ -379,11 +379,11 @@ export default function App({config}) {
         contactRoot
       )}
       {identityHeaderActionRoot && identityProfessionSection?.canEdit && !['identityProfession', 'names', 'profession'].includes(activeEditor) && createPortal(
-        <UiButton label={identityProfessionSection.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showIdentityProfessionEditor?.()} />,
+        <Button label={identityProfessionSection.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showIdentityProfessionEditor?.()} />,
         identityHeaderActionRoot
       )}
       {contactHeaderActionRoot && privateSections?.contact?.canEdit && activeEditor !== 'address' && createPortal(
-        <UiButton label={privateSections.contact.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAddressEditor?.()} />,
+        <Button label={privateSections.contact.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAddressEditor?.()} />,
         contactHeaderActionRoot
       )}
       {passwordRoot && privateSections?.password && createPortal(
@@ -391,7 +391,7 @@ export default function App({config}) {
         passwordRoot
       )}
       {passwordHeaderActionRoot && privateSections?.password?.canEdit && activeEditor !== 'password' && createPortal(
-        <UiButton label={privateSections.password.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showPasswordEditor?.()} />,
+        <Button label={privateSections.password.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showPasswordEditor?.()} />,
         passwordHeaderActionRoot
       )}
       {preferencesRoot && privateSections?.preferences && createPortal(
@@ -399,7 +399,7 @@ export default function App({config}) {
         preferencesRoot
       )}
       {preferencesHeaderActionRoot && privateSections?.preferences?.canEdit && activeEditor !== 'other' && createPortal(
-        <UiButton label={privateSections.preferences.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showOtherEditor?.()} />,
+        <Button label={privateSections.preferences.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showOtherEditor?.()} />,
         preferencesHeaderActionRoot
       )}
     </>

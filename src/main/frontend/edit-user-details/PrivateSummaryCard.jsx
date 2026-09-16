@@ -1,5 +1,5 @@
 import React from 'react';
-import UiButton from './UiButton';
+import {Button, Paper, Typography} from '@jahia/moonstone';
 
 const hasText = value => Boolean(value && value.trim());
 
@@ -16,20 +16,20 @@ export default function PrivateSummaryCard({section, embedded = false, showTitle
   const value = getDisplayValue(section);
 
   return (
-    <div className={`ud-private-card${embedded ? ' ud-private-card--embedded' : ''}`}>
+    <Paper className={`ud-private-card${embedded ? ' ud-private-card--embedded' : ''}`}>
       <div className="ud-private-card__body">
         <div className={`ud-private-card__header${showTitle ? '' : ' ud-private-card__header--actionsOnly'}`}>
-          {showTitle && <h3>{section.title}</h3>}
+          {showTitle && <Typography component="h3" variant="heading">{section.title}</Typography>}
           {showEdit && section.canEdit && (
-            <UiButton label={section.editLabel} variant="outlined" onClick={onEdit} />
+            <Button label={section.editLabel} variant="outlined" onClick={onEdit}/>
           )}
         </div>
         {hasText(value) ? (
-          <p className="ud-private-card__value">{value}</p>
+          <Typography component="p" variant="body" className="ud-private-card__value">{value}</Typography>
         ) : (
-          <p className="ud-private-card__placeholder">{section.emptyLabel}</p>
+          <Typography component="p" variant="caption" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>
         )}
       </div>
-    </div>
+    </Paper>
   );
 }

@@ -4,6 +4,32 @@ function domQuery(selector, root) {
     return (root || document).querySelector(selector);
 }
 
+/**
+ * A marker class such as 'addressField' or 'phone' may sit on a control itself, or,
+ * once that control is a design-system component, on the wrapper it renders around
+ * the real input. Everything downstream wants the element that carries name and
+ * value, so resolve to it.
+ */
+function resolveFieldElement(element) {
+    if (!element) {
+        return null;
+    }
+
+    var tag = element.tagName;
+
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') {
+        return element;
+    }
+
+    return element.querySelector('input, select, textarea');
+}
+
+function resolveFieldElements(elements) {
+    return elements.map(resolveFieldElement).filter(function(field) {
+        return field !== null;
+    });
+}
+
 function domQueryAll(selector, root) {
     return Array.prototype.slice.call((root || document).querySelectorAll(selector));
 }
@@ -65,7 +91,10 @@ function serializeFormObject(formElement, fieldsClass, deleteTable) {
             return field.name && !field.disabled && field.type !== 'submit' && field.type !== 'button' && field.type !== 'reset' && field.type !== 'file';
         });
     } else {
-        serializedArray = domQueryAll('.' + fieldsClass + ':not([disabled])', formElement);
+        serializedArray = resolveFieldElements(domQueryAll('.' + fieldsClass, formElement))
+            .filter(function(field) {
+                return !field.disabled;
+            });
     }
 
     serializedArray.forEach(function(field) {
@@ -356,13 +385,13 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
     var phoneValidation = true;
     var emailValidation = true;
 
-    domQueryAll('.' + cssClass + '.phone').forEach(function(field) {
+    resolveFieldElements(domQueryAll('.' + cssClass + '.phone')).forEach(function(field) {
         if (!isValidPhoneValue(field.value)) {
             phoneValidation = false;
         }
     });
 
-    domQueryAll('.' + cssClass + '.email').forEach(function(field) {
+    resolveFieldElements(domQueryAll('.' + cssClass + '.email')).forEach(function(field) {
         if (!isValidEmailValue(field.value)) {
             emailValidation = false;
         }

@@ -1,33 +1,56 @@
-import React from 'react';
-import UiButton from './UiButton';
+import React, {useState} from 'react';
+import {Button, Dropdown, Input} from '@jahia/moonstone';
+
+/**
+ * A Dropdown is controlled and renders no form control of its own, so the value it
+ * holds is mirrored into a hidden input. That input carries the name, the jcrtype
+ * and the marker class the save path collects, exactly as the select it replaces did.
+ */
+function SelectField({field}) {
+  const [value, setValue] = useState(field.value || '');
+  const options = field.options.map(option => ({label: option.label, value: option.value}));
+  const selected = options.find(option => option.value === value);
+
+  return (
+    <>
+      <Dropdown
+        id={field.id}
+        size="medium"
+        variant="outlined"
+        data={options}
+        value={value}
+        label={selected ? selected.label : undefined}
+        isDisabled={field.disabled}
+        onChange={(event, item) => setValue(item.value)}
+      />
+      <input
+        type="hidden"
+        data-undefined={String(field.dataUndefined)}
+        className={field.className}
+        name={field.name}
+        value={value}
+        disabled={field.disabled}
+        jcrtype={field.jcrtype}
+        readOnly
+      />
+    </>
+  );
+}
 
 const renderField = field => {
   if (field.type === 'select') {
-    return (
-      <select
-        className={field.className}
-        name={field.name}
-        defaultValue={field.value}
-        disabled={field.disabled}
-      >
-        {field.options.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    );
+    return <SelectField field={field}/>;
   }
 
   return (
-    <input
+    <Input
       data-undefined={String(field.dataUndefined)}
       id={field.id}
       className={field.className}
       name={field.name}
       type={field.type || 'text'}
       defaultValue={field.value}
-      disabled={field.disabled}
+      isDisabled={field.disabled}
       jcrtype={field.jcrtype}
       autoComplete={field.autoComplete}
     />
@@ -50,11 +73,11 @@ export default function PrivateFieldsForm({section}) {
           </div>
         ))}
         <div className="ud-private-form__actions">
-          <UiButton label={section.cancelLabel} variant="outlined" onClick={onCancel} />
-          <UiButton label={section.saveLabel} color="accent" onClick={onSave} />
+          <Button label={section.cancelLabel} variant="outlined" onClick={onCancel}/>
+          <Button label={section.saveLabel} color="accent" onClick={onSave}/>
         </div>
         {errorClasses.map(errorClass => (
-          <div key={`${errorClass}-error`} className={`${errorClass} errorMessage hide`} />
+          <div key={`${errorClass}-error`} className={`${errorClass} errorMessage hide`}/>
         ))}
         {section.extraErrors?.map(error => (
           <div key={error.id} id={error.id} style={{display: 'none'}}>{error.label}</div>
