@@ -9,6 +9,9 @@
         <%@include file="myFilesDashboard.settingsDashboard.folder-toolbarBreadcrumb.jspf" %>
     <fmt:message key="label.delete" var="deleteLabel"/>
     <fmt:message key="label.rename" var="renameLabel"/>
+    <fmt:message key="label.download" var="downloadLabel"/>
+    <fmt:message key="label.previous" var="previousLabel"/>
+    <fmt:message key="label.next" var="nextLabel"/>
 
         <div id="carouselView" class="ud-myFiles-slider" data-current-index="0">
                 <c:set value="${0}" var="index"/>
@@ -33,9 +36,9 @@
                                         </a>
                                         <a class="ud-list-iconLink"
                                            href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
-                                           title="<fmt:message key="label.download"/>"
+                                           title="${fn:escapeXml(downloadLabel)}"
                                            download>
-                                            <i class="material-icons">file_download</i>
+                                            <img src="<c:url value='${url.currentModule}/img/download.svg'/>" alt="${fn:escapeXml(downloadLabel)}" title="${fn:escapeXml(downloadLabel)}" width="24" height="24"/>
                                         </a>
                                     </div>
                                     <h3>${node.name}</h3>
@@ -62,10 +65,10 @@
             <c:if test="${index gt 1}">
                 <div class="ud-myFiles-sliderNav">
                     <button class="ud-list-button" type="button" onclick="myFilesSliderStep('carouselView', -1)">
-                        <i class="material-icons">keyboard_arrow_left</i>
+                        <img src="<c:url value='${url.currentModule}/img/arrow_back.svg'/>" alt="${fn:escapeXml(previousLabel)}" title="${fn:escapeXml(previousLabel)}" width="24" height="24"/>
                     </button>
                     <button class="ud-list-button" type="button" onclick="myFilesSliderStep('carouselView', 1)">
-                        <i class="material-icons">keyboard_arrow_right</i>
+                        <img src="<c:url value='${url.currentModule}/img/arrow_forward.svg'/>" alt="${fn:escapeXml(nextLabel)}" title="${fn:escapeXml(nextLabel)}" width="24" height="24"/>
                     </button>
                 </div>
             </c:if>

@@ -5,6 +5,7 @@
 <fmt:message key="myWebProjects.files" var="filesActionLabel"/>
 <fmt:message key="label.content" var="contentActionLabel"/>
 <fmt:message key="label.notPublished" var="notPublishedActionLabel"/>
+<fmt:message key="label.notAvailable" var="notAvailableActionLabel"/>
 
 <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <tr>
@@ -70,7 +71,7 @@
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <i class="material-icons">block</i>
+                                <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -84,7 +85,7 @@
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <i class="material-icons">block</i>
+                                <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -111,7 +112,7 @@
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <i class="material-icons">block</i>
+                            <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                         </c:otherwise>
                     </c:choose>
                 </td>
@@ -124,7 +125,7 @@
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <i class="material-icons">block</i>
+                            <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                         </c:otherwise>
                     </c:choose>
                 </td>
@@ -137,7 +138,7 @@
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <i class="material-icons">block</i>
+                                <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -229,7 +230,7 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <i class="material-icons">cancel</i></td>
+                                    <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                                 </c:otherwise>
                             </c:choose>
                             </td>
@@ -243,7 +244,7 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <i class="material-icons">cancel</i></td>
+                                    <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                                 </c:otherwise>
                             </c:choose>
                             </td>
@@ -257,7 +258,7 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <i class="material-icons">cancel</i></td>
+                                    <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                                 </c:otherwise>
                             </c:choose>
                             </td>
@@ -270,7 +271,7 @@
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <i class="material-icons">cancel</i></td>
+                                <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                             </c:otherwise>
                         </c:choose>
 
@@ -284,18 +285,18 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <i class="material-icons">search</i>
+                                    <img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/>
                                 </c:otherwise>
                             </c:choose>
                         </td>
                     </c:when>
                     <c:otherwise>
-                        <td><i class="material-icons">cancel</i></td>
-                        <td><i class="material-icons">cancel</i></td>
-                        <td><i class="material-icons">cancel</i></td>
-                        <td><i class="material-icons">cancel</i></td>
-                        <td><i class="material-icons">cancel</i></td>
-                        <td><i class="material-icons">cancel</i></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
+                        <td><img src="<c:url value='${url.currentModule}/img/not_available.svg'/>" alt="${fn:escapeXml(notAvailableActionLabel)}" title="${fn:escapeXml(notAvailableActionLabel)}" width="24" height="24"/></td>
                     </c:otherwise>
                 </c:choose>
             </c:otherwise>

@@ -10,6 +10,7 @@
     <fmt:message key="nt_folder" var="folderTypeLabel"/>
     <fmt:message key="label.delete" var="deleteLabel"/>
     <fmt:message key="label.rename" var="renameLabel"/>
+    <fmt:message key="label.download" var="downloadLabel"/>
 
         <div class="ud-myFiles-grid">
             <c:if test="${not empty folderNode}">
@@ -78,8 +79,8 @@
                                     <img src="<c:url value='${url.currentModule}/img/edit.svg'/>" alt="${fn:escapeXml(renameLabel)}" width="24" height="24"/>
                                 </a>
                                 <a class="ud-list-iconLink" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>"
-                                   title="<fmt:message key="label.download"/>" download>
-                                    <i class="material-icons">file_download</i>
+                                   title="${fn:escapeXml(downloadLabel)}" download>
+                                    <img src="<c:url value='${url.currentModule}/img/download.svg'/>" alt="${fn:escapeXml(downloadLabel)}" title="${fn:escapeXml(downloadLabel)}" width="24" height="24"/>
                                 </a>
                             </div>
                         </article>
