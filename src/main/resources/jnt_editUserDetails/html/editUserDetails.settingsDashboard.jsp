@@ -69,9 +69,9 @@
 <fmt:message key="mySettings.errors.otherErrors2" var="reactOtherErrorsHelpLabel"/>
 <fmt:message key="mysettings.picture.edit" var="reactPictureEditLabel"/>
 <fmt:message key="mySettings.picture.delete" var="reactPictureDeleteLabel"/>
-<fmt:message key="label.password" var="reactPasswordLabel"/>
+<fmt:message key="mySettings.newPassword" var="reactPasswordLabel"/>
 <fmt:message key="mySettings.oldPassword" var="reactOldPasswordLabel"/>
-<fmt:message key="label.confirmPassword" var="reactConfirmPasswordLabel"/>
+<fmt:message key="mySettings.confirmNewPassword" var="reactConfirmPasswordLabel"/>
 <fmt:message key="jnt_user.preferredLanguage" var="reactPreferredLanguageLabel"/>
 <fmt:message key="jnt_user.timeZone" var="reactTimeZoneLabel"/>
 <fmt:message key="jnt_user.age" var="reactAgeLabel"/>
