@@ -73,6 +73,7 @@
 <fmt:message key="label.password" var="reactPasswordSectionLabel"/>
 <fmt:message key="mySettings.passwordChanged" var="labelPasswordChanged"/>
 <fmt:message key="mySettings.errors.passwordChange" var="labelPasswordChangeFailed"/>
+<fmt:message key="mySettings.errors.password.same.as.old" var="labelPasswordSameAsOld"/>
 <fmt:message key="mySettings.oldPassword" var="reactOldPasswordLabel"/>
 <fmt:message key="mySettings.confirmNewPassword" var="reactConfirmPasswordLabel"/>
 <fmt:message key="jnt_user.preferredLanguage" var="reactPreferredLanguageLabel"/>
@@ -383,7 +384,8 @@
                         confirmationMandatory: '${functions:escapeJavaScript(labelPasswordConfirmationMandatory)}',
                         passwordNotMatching: '${functions:escapeJavaScript(labelPasswordNotMatching)}',
                         passwordChanged: '${functions:escapeJavaScript(labelPasswordChanged)}',
-                        genericError: '${functions:escapeJavaScript(labelPasswordChangeFailed)}'
+                        genericError: '${functions:escapeJavaScript(labelPasswordChangeFailed)}',
+                        passwordSameAsOld: '${functions:escapeJavaScript(labelPasswordSameAsOld)}'
                     }
                 },
                 preferences: {

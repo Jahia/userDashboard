@@ -141,7 +141,8 @@ function normalizeSaveOptions(fullReloadOrOptions) {
             fullReload: Boolean(fullReloadOrOptions.fullReload),
             onSuccess: fullReloadOrOptions.onSuccess,
             onError: fullReloadOrOptions.onError,
-            genericErrorMessage: fullReloadOrOptions.genericErrorMessage
+            genericErrorMessage: fullReloadOrOptions.genericErrorMessage,
+            sameAsOldMessage: fullReloadOrOptions.sameAsOldMessage
         };
     }
 
@@ -149,7 +150,8 @@ function normalizeSaveOptions(fullReloadOrOptions) {
         fullReload: Boolean(fullReloadOrOptions),
         onSuccess: undefined,
         onError: undefined,
-        genericErrorMessage: undefined
+        genericErrorMessage: undefined,
+        sameAsOldMessage: undefined
     };
 }
 
@@ -461,6 +463,10 @@ function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMan
         passwordField.value = '';
         passwordConfirmField.value = '';
         showPasswordError(passwordNotMatching, passwordField);
+    } else if (passwordField.value === oldPasswordField.value) {
+        passwordField.value = '';
+        passwordConfirmField.value = '';
+        showPasswordError(normalizedSaveOptions.sameAsOldMessage, passwordField);
     } else {
         currentCssClass = 'passwordField';
 

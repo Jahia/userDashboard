@@ -333,6 +333,7 @@ export default function App({config}) {
           messages.passwordNotMatching,
           {
             genericErrorMessage: messages.genericError,
+            sameAsOldMessage: messages.passwordSameAsOld,
             onError: message => setPasswordFeedback({type: 'error', message}),
             onSuccess: result => {
               setPasswordFeedback({type: 'success', message: result?.errorMessage || messages.passwordChanged});
