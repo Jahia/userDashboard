@@ -63,6 +63,6 @@ export default function PrivateAboutSection({profile, activeEditor}) {
   return hasText(profile.about.html) ? (
     <div className="ud-private-about" dangerouslySetInnerHTML={{__html: profile.about.html}}/>
   ) : (
-    <Typography component="p" variant="body" className="ud-private-card__placeholder">{profile.about.emptyLabel}</Typography>
+    <Typography component="p" variant="subheading" className="ud-private-card__placeholder">{profile.about.emptyLabel}</Typography>
   );
 }

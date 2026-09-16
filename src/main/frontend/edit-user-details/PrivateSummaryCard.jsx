@@ -15,8 +15,8 @@ export default function PrivateSummaryCard({section}) {
   const value = getDisplayValue(section);
 
   return hasText(value) ? (
-    <Typography component="p" variant="body" className="ud-private-card__value">{value}</Typography>
+    <Typography component="p" variant="subheading" className="ud-private-card__value">{value}</Typography>
   ) : (
-    <Typography component="p" variant="body" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>
+    <Typography component="p" variant="subheading" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>
   );
 }

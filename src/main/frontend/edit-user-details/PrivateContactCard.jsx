@@ -8,7 +8,7 @@ export default function PrivateContactCard({section}) {
   const addressLines = section.addressLines.filter(hasText);
 
   if (contactRows.length === 0 && addressLines.length === 0) {
-    return <Typography component="p" variant="body" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>;
+    return <Typography component="p" variant="subheading" className="ud-private-card__placeholder">{section.emptyLabel}</Typography>;
   }
 
   return (
@@ -17,8 +17,8 @@ export default function PrivateContactCard({section}) {
         <dl className="ud-private-list">
           {contactRows.map(row => (
             <React.Fragment key={row.label}>
-              <Typography component="dt" variant="body">{row.label}</Typography>
-              <Typography component="dd" variant="body">{row.value}</Typography>
+              <Typography component="dt" variant="subheading">{row.label}</Typography>
+              <Typography component="dd" variant="subheading">{row.value}</Typography>
             </React.Fragment>
           ))}
         </dl>
@@ -28,7 +28,7 @@ export default function PrivateContactCard({section}) {
           <Typography component="h4" variant="subheading">{section.addressLabel}</Typography>
           <div>
             {addressLines.map(line => (
-              <Typography key={line} component="div" variant="body">{line}</Typography>
+              <Typography key={line} component="div" variant="subheading">{line}</Typography>
             ))}
           </div>
         </div>

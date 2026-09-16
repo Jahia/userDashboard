@@ -37,7 +37,7 @@
      inherit the host page's font; these match Moonstone's body variant, with a
      looser line height because this block is prose rather than a field value */
   font-family: var(--moon-font-family);
-  font-size: 14px;
+  font-size: 16px;
   color: #46597d;
   line-height: 1.7;
 }
