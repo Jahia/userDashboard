@@ -361,20 +361,6 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
 }
 
 /**
- * Update the privacy information for the user with their public/private properties.
- */
-function updatePrivacyInformation(userNodeIdentifier) {
-    // get selected public properties
-    var publicPropertiesValues = domQueryAll('input[name="j:publicProperties"]:checked').map(function(field) {
-        return field.value;
-    });
-
-    updateNodePropertyValues(userNodeIdentifier, "j:publicProperties", publicPropertiesValues)
-        .then(() => reload());
-
-}
-
-/**
  * @Author : Jahia(rahmed)
  * This function changes the user Password calling the action changePassword.do
  * The new password is picked directly from the password change form in this page.

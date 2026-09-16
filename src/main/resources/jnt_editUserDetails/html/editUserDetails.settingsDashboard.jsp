@@ -36,10 +36,6 @@
 
 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
 
-<jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
-<c:forEach items="${publicProperties}" var="value">
-    <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
-</c:forEach>
 <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
 <c:set var="prefLangLocale" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
 <c:set var="preferredLanguageDisplay" value="${not empty user.properties['preferredLanguage'].string ? functions:displayLocaleNameWith(prefLangLocale, prefLangLocale) : ''}"/>
@@ -57,8 +53,6 @@
 </c:choose>
 <fmt:message key="mySettings.at" var="professionAtLabel"/>
 <fmt:message key="mySettings.mySettings.label" var="reactNavigationLabel"/>
-<fmt:message key="mySettings.privateView" var="reactPrivateViewLabel"/>
-<fmt:message key="mySettings.publicView" var="reactPublicViewLabel"/>
 <fmt:message key="mySettings.name" var="reactNameLabel"/>
 <fmt:message key="mySettings.profession" var="reactProfessionLabel"/>
 <fmt:message key="mySettings.identityAndProfessionalInformation" var="reactIdentityProfessionLabel"/>
@@ -121,8 +115,6 @@
 
         var reactLabels = {
             navigation: '${functions:escapeJavaScript(reactNavigationLabel)}',
-            privateView: '${functions:escapeJavaScript(reactPrivateViewLabel)}',
-            publicView: '${functions:escapeJavaScript(reactPublicViewLabel)}',
             name: '${functions:escapeJavaScript(reactNameLabel)}',
             profession: '${functions:escapeJavaScript(reactProfessionLabel)}',
             identityProfession: '${functions:escapeJavaScript(reactIdentityProfessionLabel)}',
@@ -170,23 +162,6 @@
             ageDisplay: '${functions:escapeJavaScript(fn:trim(functions:default(ageDisplay, "")))}'
         };
 
-        var publicVisibility = {
-            picture: ${fn:contains(publicPropertiesAsString, 'j:picture')},
-            about: ${fn:contains(publicPropertiesAsString, 'j:about')},
-            firstName: ${fn:contains(publicPropertiesAsString, 'j:firstName')},
-            lastName: ${fn:contains(publicPropertiesAsString, 'j:lastName')},
-            functionTitle: ${fn:contains(publicPropertiesAsString, 'j:function')},
-            organization: ${fn:contains(publicPropertiesAsString, 'j:organization')},
-            email: ${fn:contains(publicPropertiesAsString, 'j:email')},
-            phoneNumber: ${fn:contains(publicPropertiesAsString, 'j:phoneNumber')},
-            mobileNumber: ${fn:contains(publicPropertiesAsString, 'j:mobileNumber')},
-            altNumber: ${fn:contains(publicPropertiesAsString, 'j:altNumber')},
-            address: ${fn:contains(publicPropertiesAsString, 'j:address')},
-            zipCode: ${fn:contains(publicPropertiesAsString, 'j:zipCode')},
-            city: ${fn:contains(publicPropertiesAsString, 'j:city')},
-            country: ${fn:contains(publicPropertiesAsString, 'j:country')},
-            preferredLanguage: ${fn:contains(publicPropertiesAsString, 'preferredLanguage')}
-        };
 
         var canEditFlags = {
             picture: ${currentNode.properties['j:picture'].boolean and user:isPropertyEditable(user,'j:picture')},
@@ -239,11 +214,9 @@
         }
 
         window.userDashboardReactConfig = {
-            activeTab: 'private',
             navigationLabel: reactLabels.navigation,
             title: reactLabels.navigation,
-            privateViewLabel: reactLabels.privateView,
-            publicViewLabel: reactLabels.publicView,
+            professionAtLabel: reactLabels.at,
             privateProfile: {
                 picture: {
                     src: profileValues.pictureSrc,
@@ -454,91 +427,6 @@
                     ]
                 }
             },
-            publicProfile: {
-                labels: {
-                    empty: reactLabels.publicView,
-                    name: reactLabels.name,
-                    profession: reactLabels.profession,
-                    address: reactLabels.address,
-                    other: reactLabels.preferences
-                },
-                picture: {
-                    isPublic: publicVisibility.picture,
-                    src: profileValues.pictureSrc,
-                    alt: profileValues.pictureAlt
-                },
-                about: {
-                    isPublic: publicVisibility.about,
-                    title: reactLabels.about,
-                    value: profileValues.about
-                },
-                firstName: {
-                    isPublic: publicVisibility.firstName,
-                    value: profileValues.firstName
-                },
-                lastName: {
-                    isPublic: publicVisibility.lastName,
-                    value: profileValues.lastName
-                },
-                profession: {
-                    atLabel: reactLabels.at,
-                    functionTitle: {
-                        isPublic: publicVisibility.functionTitle,
-                        value: profileValues.functionTitle
-                    },
-                    organization: {
-                        isPublic: publicVisibility.organization,
-                        value: profileValues.organization
-                    }
-                },
-                contact: {
-                    email: {
-                        isPublic: publicVisibility.email,
-                        label: '${functions:escapeJavaScript(labelEmail)}',
-                        value: profileValues.email
-                    },
-                    phoneNumber: {
-                        isPublic: publicVisibility.phoneNumber,
-                        label: '${functions:escapeJavaScript(labelPhoneNumber)}',
-                        value: profileValues.phoneNumber
-                    },
-                    mobileNumber: {
-                        isPublic: publicVisibility.mobileNumber,
-                        label: '${functions:escapeJavaScript(labelMobileNumber)}',
-                        value: profileValues.mobileNumber
-                    },
-                    altNumber: {
-                        isPublic: publicVisibility.altNumber,
-                        label: '${functions:escapeJavaScript(labelAltNumber)}',
-                        value: profileValues.altNumber
-                    },
-                    address: {
-                        isPublic: publicVisibility.address,
-                        label: '${functions:escapeJavaScript(labelAddress)}',
-                        value: profileValues.address
-                    },
-                    zipCode: {
-                        isPublic: publicVisibility.zipCode,
-                        label: '${functions:escapeJavaScript(labelZipCode)}',
-                        value: profileValues.zipCode
-                    },
-                    city: {
-                        isPublic: publicVisibility.city,
-                        label: '${functions:escapeJavaScript(labelCity)}',
-                        value: profileValues.city
-                    },
-                    country: {
-                        isPublic: publicVisibility.country,
-                        label: '${functions:escapeJavaScript(labelCountry)}',
-                        value: profileValues.country
-                    }
-                },
-                preferredLanguage: {
-                    isPublic: publicVisibility.preferredLanguage,
-                    label: reactLabels.preferredLanguage,
-                    value: profileValues.preferredLanguageDisplay
-                }
-            }
         };
 
         var currentCssClass ="";
@@ -677,7 +565,7 @@
     </div>
 
     <div class="ud-edit-tabs">
-        <div class="ud-edit-tabPane ud-edit-tabPane--active" data-ud-tab-pane id="private">
+        <div class="ud-edit-tabPane ud-edit-tabPane--active" id="private">
             <form enctype= multipart/form-data onkeypress="return event.keyCode != 13;" id="editDetailsForm" class="ud-edit-form user-profile-table" onsubmit="return false;">
                 <div class="ud-edit-layout">
                     <div class="ud-edit-layout__content">
@@ -686,14 +574,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-
-        <div class="ud-edit-tabPane" data-ud-tab-pane id="public">
-            <div class="ud-edit-layout">
-                <div class="ud-edit-layout__content">
-                    <div id="editUserDetailsPublicReactRoot"></div>
-                </div>
-            </div>
         </div>
 
     </div>

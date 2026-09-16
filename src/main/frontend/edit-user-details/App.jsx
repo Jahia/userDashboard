@@ -9,28 +9,7 @@ import PrivatePasswordCard from './PrivatePasswordCard';
 import PrivatePasswordEditor from './PrivatePasswordEditor';
 import PrivatePreferencesCard from './PrivatePreferencesCard';
 import PrivateSummaryCard from './PrivateSummaryCard';
-import PublicProfileView from './PublicProfileView';
 import UiButton from './UiButton';
-
-const tabs = ['private', 'public'];
-
-const getInitialTab = fallbackTab => {
-  const hashTab = window.location.hash.replace('#', '');
-
-  if (tabs.includes(hashTab)) {
-    return hashTab;
-  }
-
-  return tabs.includes(fallbackTab) ? fallbackTab : 'private';
-};
-
-const syncLegacyTabs = activeTab => {
-  document.querySelectorAll('#editDetailspage [data-ud-tab-pane]').forEach(pane => {
-    const isActive = pane.id === activeTab;
-    pane.classList.toggle('ud-edit-tabPane--active', isActive);
-    pane.setAttribute('aria-hidden', String(!isActive));
-  });
-};
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -50,7 +29,7 @@ const getProfessionParts = (functionTitle, organization, atLabel) => [
   organization
 ];
 
-const getIdentityProfessionSection = (privateSections, publicProfile, identityProfessionLabel) => {
+const getIdentityProfessionSection = (privateSections, professionAtLabel, identityProfessionLabel) => {
   if (!privateSections?.identity || !privateSections?.profession) {
     return null;
   }
@@ -74,7 +53,7 @@ const getIdentityProfessionSection = (privateSections, publicProfile, identityPr
     otherErrorsHelp: privateSections.identity.otherErrorsHelp,
     startPageLabel: privateSections.identity.startPageLabel,
     emptyLabel: privateSections.identity.emptyLabel,
-    professionAtLabel: publicProfile?.profession?.atLabel || ''
+    professionAtLabel: professionAtLabel || ''
   };
 };
 
@@ -93,11 +72,9 @@ const getEditorValue = () => {
 };
 
 export default function App({config}) {
-  const [activeTab, setActiveTab] = useState(getInitialTab(config.activeTab));
   const [activeEditor, setActiveEditor] = useState(null);
   const [privateProfile, setPrivateProfile] = useState(config.privateProfile);
   const [privateSections, setPrivateSections] = useState(config.privateSections);
-  const [publicProfile, setPublicProfile] = useState(config.publicProfile);
   const picturePreviewUrlRef = useRef(null);
   const privateRoot = document.getElementById('editUserDetailsPrivateHeroRoot');
   const aboutHeaderActionRoot = document.getElementById('editUserDetailsPrivateAboutHeaderActionRoot');
@@ -110,20 +87,6 @@ export default function App({config}) {
   const passwordHeaderActionRoot = document.getElementById('editUserDetailsPrivatePasswordHeaderActionRoot');
   const preferencesRoot = document.getElementById('editUserDetailsPrivatePreferencesRoot');
   const preferencesHeaderActionRoot = document.getElementById('editUserDetailsPrivatePreferencesHeaderActionRoot');
-  const publicRoot = document.getElementById('editUserDetailsPublicReactRoot');
-
-  useEffect(() => {
-    if (!tabs.includes(activeTab)) {
-      setActiveTab('private');
-      return;
-    }
-
-    syncLegacyTabs(activeTab);
-
-    if (window.location.hash !== `#${activeTab}`) {
-      window.history.replaceState(null, '', `#${activeTab}`);
-    }
-  }, [activeTab]);
 
   useEffect(() => {
     return () => {
@@ -136,8 +99,8 @@ export default function App({config}) {
   useEffect(() => {
     const closeEditor = () => setActiveEditor(null);
     const preferencesSection = privateSections?.preferences;
-    const professionAtLabel = publicProfile?.profession?.atLabel || '';
-    const identityProfessionSection = getIdentityProfessionSection(privateSections, publicProfile, config.identityProfessionLabel);
+    const professionAtLabel = config.professionAtLabel || '';
+    const identityProfessionSection = getIdentityProfessionSection(privateSections, professionAtLabel, config.identityProfessionLabel);
 
     window.userDashboardReactActions = {
       showPictureEditor: () => setActiveEditor('picture'),
@@ -166,11 +129,6 @@ export default function App({config}) {
                 fields: updateFields(previous.identity.fields, values)
               }
             }));
-            setPublicProfile(previous => ({
-              ...previous,
-              firstName: {...previous.firstName, value: values['j:firstName']},
-              lastName: {...previous.lastName, value: values['j:lastName']}
-            }));
             closeEditor();
           }
         });
@@ -189,14 +147,6 @@ export default function App({config}) {
                 ...previous.profession,
                 parts: getProfessionParts(values['j:function'], values['j:organization'], professionAtLabel),
                 fields: updateFields(previous.profession.fields, values)
-              }
-            }));
-            setPublicProfile(previous => ({
-              ...previous,
-              profession: {
-                ...previous.profession,
-                functionTitle: {...previous.profession.functionTitle, value: values['j:function']},
-                organization: {...previous.profession.organization, value: values['j:organization']}
               }
             }));
             closeEditor();
@@ -226,16 +176,6 @@ export default function App({config}) {
                     ...previous.profession,
                     parts: getProfessionParts(values['j:function'], values['j:organization'], identityProfessionSection?.professionAtLabel || ''),
                     fields: updateFields(previous.profession.fields, values)
-                  }
-                }));
-                setPublicProfile(previous => ({
-                  ...previous,
-                  firstName: {...previous.firstName, value: values['j:firstName']},
-                  lastName: {...previous.lastName, value: values['j:lastName']},
-                  profession: {
-                    ...previous.profession,
-                    functionTitle: {...previous.profession.functionTitle, value: values['j:function']},
-                    organization: {...previous.profession.organization, value: values['j:organization']}
                   }
                 }));
                 closeEditor();
@@ -282,20 +222,6 @@ export default function App({config}) {
                 fields: updateFields(previous.contact.fields, values)
               }
             }));
-            setPublicProfile(previous => ({
-              ...previous,
-              contact: {
-                ...previous.contact,
-                email: {...previous.contact.email, value: values['j:email']},
-                phoneNumber: {...previous.contact.phoneNumber, value: values['j:phoneNumber']},
-                mobileNumber: {...previous.contact.mobileNumber, value: values['j:mobileNumber']},
-                altNumber: {...previous.contact.altNumber, value: values['j:altNumber']},
-                address: {...previous.contact.address, value: values['j:address']},
-                zipCode: {...previous.contact.zipCode, value: values['j:zipCode']},
-                city: {...previous.contact.city, value: values['j:city']},
-                country: {...previous.contact.country, value: values['j:country']}
-              }
-            }));
             closeEditor();
           }
         });
@@ -331,10 +257,6 @@ export default function App({config}) {
                 fields: updateFields(previous.preferences.fields, nextPreferenceFields)
               }
             }));
-            setPublicProfile(previous => ({
-              ...previous,
-              preferredLanguage: {...previous.preferredLanguage, value: preferredLanguageLabel}
-            }));
             closeEditor();
           }
         });
@@ -350,13 +272,6 @@ export default function App({config}) {
                 ...previous.about,
                 html: aboutValue,
                 sourceValue: aboutValue
-              }
-            }));
-            setPublicProfile(previous => ({
-              ...previous,
-              about: {
-                ...previous.about,
-                value: aboutValue
               }
             }));
             closeEditor();
@@ -386,13 +301,6 @@ export default function App({config}) {
                 src: previewUrl
               }
             }));
-            setPublicProfile(previous => ({
-              ...previous,
-              picture: {
-                ...previous.picture,
-                src: previewUrl
-              }
-            }));
             closeEditor();
           }
         });
@@ -406,13 +314,6 @@ export default function App({config}) {
         window.deletePhoto?.(privateProfile.picture.userId, {
           onSuccess: () => {
             setPrivateProfile(previous => ({
-              ...previous,
-              picture: {
-                ...previous.picture,
-                src: ''
-              }
-            }));
-            setPublicProfile(previous => ({
               ...previous,
               picture: {
                 ...previous.picture,
@@ -435,15 +336,9 @@ export default function App({config}) {
     return () => {
       delete window.userDashboardReactActions;
     };
-  }, [privateProfile.about.userId, privateProfile.picture.src, privateProfile.picture.userId, privateSections, publicProfile]);
+  }, [privateProfile.about.userId, privateProfile.picture.src, privateProfile.picture.userId, privateSections]);
 
-  const identityProfessionSection = getIdentityProfessionSection(privateSections, publicProfile, config.identityProfessionLabel);
-
-  useEffect(() => {
-    if (activeTab !== 'private') {
-      setActiveEditor(null);
-    }
-  }, [activeTab]);
+  const identityProfessionSection = getIdentityProfessionSection(privateSections, config.professionAtLabel, config.identityProfessionLabel);
 
   return (
     <>
@@ -452,7 +347,6 @@ export default function App({config}) {
           <div className="ud-react-shell__heading">
             <span className="ud-react-shell__eyebrow">{config.navigationLabel}</span>
             <h2 className="ud-react-shell__title">{config.title}</h2>
-            {activeTab === 'public' && <p className="ud-react-shell__subtitle">{config.publicViewLabel}</p>}
           </div>
         </div>
       </section>
@@ -507,10 +401,6 @@ export default function App({config}) {
       {preferencesHeaderActionRoot && privateSections?.preferences?.canEdit && activeEditor !== 'other' && createPortal(
         <UiButton label={privateSections.preferences.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showOtherEditor?.()} />,
         preferencesHeaderActionRoot
-      )}
-      {publicRoot && publicProfile && createPortal(
-        <PublicProfileView profile={publicProfile} />,
-        publicRoot
       )}
     </>
   );
