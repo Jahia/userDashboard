@@ -4,12 +4,13 @@ import {createPortal} from 'react-dom';
 import './app.css';
 import PrivateContactCard from './PrivateContactCard';
 import PrivateFieldsForm from './PrivateFieldsForm';
-import PrivateHeroSection from './PrivateHeroSection';
+import PrivateAboutSection from './PrivateAboutSection';
 import PrivatePasswordCard from './PrivatePasswordCard';
 import PrivatePasswordEditor from './PrivatePasswordEditor';
 import PrivatePreferencesCard from './PrivatePreferencesCard';
 import PrivateSection from './PrivateSection';
 import PrivateSummaryCard from './PrivateSummaryCard';
+import ProfilePicture from './ProfilePicture';
 import {Button, Typography} from '@jahia/moonstone';
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
@@ -343,17 +344,22 @@ export default function App({config}) {
             <Typography component="span" variant="caption" className="ud-react-shell__eyebrow">{config.navigationLabel}</Typography>
             <Typography component="h2" variant="title" className="ud-react-shell__title">{config.title}</Typography>
           </div>
+          {privateProfile?.picture && (
+            <div className="ud-react-shell__picture">
+              <ProfilePicture profile={privateProfile} activeEditor={activeEditor}/>
+            </div>
+          )}
         </div>
       </section>
       {privateRoot && privateProfile && createPortal(
         <PrivateSection
           id="about"
           label={privateProfile.about.title}
-          buttons={privateProfile.about.canEdit && activeEditor !== 'about' && activeEditor !== 'picture' ? (
+          buttons={privateProfile.about.canEdit && activeEditor !== 'about' ? (
             <Button label={privateProfile.about.editLabel} variant="outlined" onClick={() => window.userDashboardReactActions?.showAboutEditor?.()}/>
           ) : undefined}
         >
-          <PrivateHeroSection profile={privateProfile} activeEditor={activeEditor}/>
+          <PrivateAboutSection profile={privateProfile} activeEditor={activeEditor}/>
         </PrivateSection>,
         privateRoot
       )}

@@ -44,80 +44,30 @@
 
 
 
-.ud-private-hero {
-  display: grid;
-  grid-template-columns: minmax(144px, 192px) 1fr;
-  gap: 28px;
-  align-items: start;
-}
-
-.ud-private-hero__media {
-  display: grid;
-  gap: 16px;
-  justify-items: center;
-}
-
-.ud-private-hero__avatarButton {
-  appearance: none;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  border-radius: 28px;
-  line-height: 0;
-}
-
-.ud-private-hero__avatarButton:focus-visible {
-  outline: 2px solid #0b63ce;
-  outline-offset: 4px;
-}
-
-.ud-private-hero__avatarButton:hover .ud-private-hero__avatar,
-.ud-private-hero__avatarButton:focus-visible .ud-private-hero__avatar {
-  box-shadow: 0 20px 52px rgba(11, 99, 206, 0.22);
-  border-color: #b9d0f1;
-}
-
-.ud-private-hero__avatar {
-  width: 100%;
-  max-width: 176px;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 28px;
-  border: 1px solid #d9e0ee;
-  box-shadow: 0 18px 48px rgba(26, 42, 74, 0.14);
-}
-
-.ud-private-hero__content {
-  display: grid;
-  gap: 16px;
-}
-
-.ud-private-hero__copy {
-  display: grid;
-  gap: 12px;
-}
 
 
-.ud-private-hero__about {
+
+
+
+
+
+
+
+.ud-private-about {
   color: #46597d;
   line-height: 1.7;
 }
 
-.ud-private-hero__about > :first-child,
-.ud-private-hero__about p:first-child {
+.ud-private-about > :first-child,
+.ud-private-about p:first-child {
   margin-top: 0;
 }
 
-.ud-private-hero__about > :last-child,
-.ud-private-hero__about p:last-child {
+.ud-private-about > :last-child,
+.ud-private-about p:last-child {
   margin-bottom: 0;
 }
 
-.ud-private-hero__placeholder {
-  margin: 0;
-  line-height: 1.6;
-}
 
 
 
@@ -242,17 +192,7 @@
   gap: 12px;
 }
 
-.ud-private-heroEditor {
-  display: grid;
-  grid-template-columns: minmax(144px, 192px) 1fr;
-  gap: 24px;
-  align-items: start;
-}
 
-.ud-private-heroEditor__preview {
-  display: flex;
-  justify-content: center;
-}
 
 
 
@@ -323,16 +263,70 @@
 
 
 
-  .ud-private-hero,
-  .ud-private-heroEditor {
-    grid-template-columns: 1fr;
-  }
-
-  .ud-private-hero__avatar {
-    max-width: 148px;
-  }
 
 
 
 
+
+}
+
+.ud-react-shell__picture {
+  flex: 0 0 auto;
+}
+
+.ud-profilePicture {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 24px;
+  border: 1px solid #d9e0ee;
+  box-shadow: 0 12px 32px rgba(26, 42, 74, 0.14);
+  display: block;
+}
+
+.ud-profilePicture__button {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 24px;
+  line-height: 0;
+}
+
+.ud-profilePicture__button:focus-visible {
+  outline: 2px solid #0b63ce;
+  outline-offset: 4px;
+}
+
+.ud-profilePicture__button:hover .ud-profilePicture,
+.ud-profilePicture__button:focus-visible .ud-profilePicture {
+  box-shadow: 0 16px 40px rgba(11, 99, 206, 0.22);
+  border-color: #b9d0f1;
+}
+
+.ud-pictureEditor {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.ud-pictureEditor__preview {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 24px;
+  border: 1px solid #d9e0ee;
+}
+
+.ud-pictureEditor__form {
+  display: grid;
+  gap: 16px;
+  min-width: 260px;
+}
+
+.ud-private-about {
+  color: #46597d;
+  line-height: 1.7;
 }
