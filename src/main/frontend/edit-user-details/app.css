@@ -8,20 +8,9 @@
     linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
 }
 
-
 .hide {
   display: none !important;
 }
-
-
-
-
-
-
-
-
-
-
 
 .ud-react-shell__header {
   display: flex;
@@ -38,24 +27,17 @@
   gap: 8px;
 }
 
-
 .ud-react-shell__title {
   margin: 0;
   line-height: 1.1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 .ud-private-about {
+  /* the user's own HTML carries no typography of its own, so it would otherwise
+     inherit the host page's font; these match Moonstone's body variant, with a
+     looser line height because this block is prose rather than a field value */
+  font-family: var(--moon-font-family);
+  font-size: 14px;
   color: #46597d;
   line-height: 1.7;
 }
@@ -70,25 +52,14 @@
   margin-bottom: 0;
 }
 
-
-
-
-
-
-
 .ud-private-sectionStack {
   display: grid;
   gap: 0;
 }
 
-
 .ud-private-card {
   width: 100%;
 }
-
-
-
-
 
 .ud-private-card__value {
   margin: 0;
@@ -111,7 +82,6 @@
   gap: 8px 12px;
   margin: 0;
 }
-
 
 .ud-private-list dd {
   margin: 0;
@@ -182,20 +152,12 @@
   resize: vertical;
 }
 
-
-
-
-
 .ud-private-form__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 12px;
 }
-
-
-
-
 
 .ud-edit-tabs {
   display: grid;
@@ -230,29 +192,6 @@
   width: 100%;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @media (max-width: 768px) {
   .ud-react-shell {
     padding: 20px;
@@ -261,13 +200,6 @@
   .ud-react-shell__header {
     align-items: stretch;
   }
-
-
-
-
-
-
-
 
 }
 
@@ -325,9 +257,4 @@
   display: grid;
   gap: 16px;
   min-width: 260px;
-}
-
-.ud-private-about {
-  color: #46597d;
-  line-height: 1.7;
 }

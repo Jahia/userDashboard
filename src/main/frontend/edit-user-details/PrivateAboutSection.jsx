@@ -58,6 +58,8 @@ export default function PrivateAboutSection({profile, activeEditor}) {
     );
   }
 
+  // Typography renders children, so it cannot carry raw HTML; the class below gives
+  // this block the same font as the rest of the page instead
   return hasText(profile.about.html) ? (
     <div className="ud-private-about" dangerouslySetInnerHTML={{__html: profile.about.html}}/>
   ) : (
