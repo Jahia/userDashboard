@@ -555,7 +555,8 @@ function updatePhoto(context, userNodeIdentifier, saveOptions) {
 
         getOrCreateProfileFolder(context, userNodeIdentifier)
             .then(profileFolderId => {
-                getChildIdByPath(profileFolderId, uploadedPhoto.name)
+                // returned, so that a failure further down reaches the catch below
+                return getChildIdByPath(profileFolderId, uploadedPhoto.name)
                     .then(previousPhotoId => {
                         if (previousPhotoId) {
                             return deleteNode(previousPhotoId);
@@ -568,6 +569,12 @@ function updatePhoto(context, userNodeIdentifier, saveOptions) {
                         return handleSaveSuccess(normalizedSaveOptions);
                     });
             })
+            .catch(function(error) {
+                // without this the upload could fail server-side and the page would
+                // simply carry on, showing the editor as though nothing had happened
+                console.error('Could not update the profile picture', error);
+                showMessageForDuration(document.getElementById('imageUploadError'));
+            });
     }
 }
 
@@ -595,6 +602,10 @@ function saveCkEditorChanges(nodeIdentifier, saveOptions) {
     updateNodePropertyValue(nodeIdentifier, "j:about", editorValue)
         .then(function() {
             return handleSaveSuccess(normalizedSaveOptions);
+        })
+        .catch(function(error) {
+            console.error('Could not save the about text', error);
+            showElementsForDuration(domQueryAll('.aboutField.errorMessage'));
         });
 }
 
