@@ -1,5 +1,9 @@
 # userDashboard Changelog
 
+## 0.1.1
+
+* Added maven.jahia.com to the Maven repositories userDashboard uses to download its dependencies.
+
 ## 8.8.1
 
 ### New Features
