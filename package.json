@@ -3,7 +3,7 @@
   "private": true,
   "description": "React 18 and Moonstone scaffold for the Jahia userDashboard module",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build && vite build --mode projects"
   },
   "dependencies": {
     "@jahia/moonstone": "^2.20.3",

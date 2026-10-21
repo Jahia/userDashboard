@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
+import '../shared/pageHeader.css';
 import './app.css';
 import PrivateContactCard from './PrivateContactCard';
 import PrivateFieldsForm from './PrivateFieldsForm';
@@ -353,7 +354,7 @@ export default function App({config}) {
 
   return (
     <>
-      <div className="ud-profileHeader">
+      <div className="ud-pageHeader">
         <Header
           title={config.title}
           mainActions={privateProfile?.picture ? <ProfilePicture profile={privateProfile}/> : undefined}

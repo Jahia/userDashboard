@@ -1,0 +1,28 @@
+/* The card holding the table: the same surface as the tag manager's, so the two screens read as
+   one product. */
+.ud-projects-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(19, 28, 33, 0.2);
+}
+
+.ud-projects-table {
+  width: 100%;
+}
+
+.ud-projects-sortable {
+  cursor: pointer;
+}
+
+.ud-projects-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* A disabled button receives no pointer events, so its tooltip hangs on this wrapper instead. */
+.ud-projects-actionWrapper {
+  display: inline-flex;
+}

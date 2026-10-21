@@ -1,16 +1,3 @@
-/* full width, like the header of every other Jahia screen: the dashboard template
-   pads its whole page by 24px, so the header cancels that padding on three sides */
-.ud-profileHeader {
-  margin: -24px -24px 24px;
-}
-
-/* Moonstone's header is width: 100% plus horizontal padding, and relies on the
-   border-box sizing jContent sets globally; this page does not, so without it
-   the header overflows by its own padding and pushes the actions off-screen */
-.ud-profileHeader > * {
-  box-sizing: border-box;
-}
-
 .hide {
   display: none !important;
 }

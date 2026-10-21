@@ -30,24 +30,40 @@ function moonstoneScopedCss() {
   };
 }
 
-export default defineConfig({
-  plugins: [moonstoneScopedCss(), react()],
-  build: {
-    emptyOutDir: true,
-    outDir: path.resolve('target/frontend-dist'),
-    cssCodeSplit: false,
-    rollupOptions: {
-      input: path.resolve('src/main/frontend/edit-user-details/main.jsx'),
-      output: {
-        entryFileNames: 'edit-user-details-app.js',
-        assetFileNames: assetInfo => {
-          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
-            return 'edit-user-details-app.css';
-          }
+/**
+ * One build per app, picked by mode: `vite build` builds the profile app, `vite build --mode
+ * projects` the projects one. Two inputs in one build would share chunks loaded through
+ * `import`, which a classic <script> include cannot follow, and their CSS would collide under
+ * cssCodeSplit: false. Each build therefore emits one self-contained script and one stylesheet.
+ */
+const APPS = {
+  profile: {input: 'src/main/frontend/edit-user-details/main.jsx', name: 'edit-user-details-app'},
+  projects: {input: 'src/main/frontend/projects/main.jsx', name: 'projects-app'}
+};
 
-          return 'assets/[name]-[hash][extname]';
+export default defineConfig(({mode}) => {
+  const app = APPS[mode] || APPS.profile;
+
+  return {
+    plugins: [moonstoneScopedCss(), react()],
+    build: {
+      // Only the first build of the chain clears the output, so the second keeps its files.
+      emptyOutDir: app === APPS.profile,
+      outDir: path.resolve('target/frontend-dist'),
+      cssCodeSplit: false,
+      rollupOptions: {
+        input: path.resolve(app.input),
+        output: {
+          entryFileNames: `${app.name}.js`,
+          assetFileNames: assetInfo => {
+            if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+              return `${app.name}.css`;
+            }
+
+            return 'assets/[name]-[hash][extname]';
+          }
         }
       }
     }
-  }
+  };
 });

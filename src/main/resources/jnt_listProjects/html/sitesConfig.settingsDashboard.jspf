@@ -1,0 +1,98 @@
+<%-- One entry per site for the React app (see listProjects.sites.settingsDashboard.jsp). The rules are
+     the ones the former table rows applied: a link is only handed over when the user may follow
+     it, and an empty one tells the app to show that action as unavailable. --%>
+<c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="siteStatus">
+    <c:remove var="editUrl"/>
+    <c:remove var="previewUrl"/>
+    <c:remove var="liveUrl"/>
+    <c:remove var="filesUrl"/>
+    <c:remove var="contentUrl"/>
+    <c:remove var="jContentAccessNode"/>
+    <c:remove var="previewModeAccessNode"/>
+    <c:set var="isPublished" value="false"/>
+    <c:set var="isSelectable" value="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean) and jcr:hasPermission(node,'adminVirtualSites')}"/>
+    <c:set var="canEditProperties" value="${currentNode.properties.editproperties.boolean and jcr:hasPermission(node,'adminVirtualSites')}"/>
+    <c:set var="isWritable" value="${!renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}"/>
+    <c:choose>
+        <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
+            <c:set var="page" value="/contents"/>
+        </c:when>
+        <c:when test="${currentNode.properties.typeOfContent.string eq 'files'}">
+            <c:set var="page" value="/files"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="page" value="/${node.home.name}"/>
+        </c:otherwise>
+    </c:choose>
+    <%-- The site's own language when it does not have the current one. --%>
+    <c:set var="baseLive" value="${url.baseLive}"/>
+    <c:set var="basePreview" value="${url.basePreview}"/>
+    <c:set var="baseEdit" value="${url.baseEdit}"/>
+    <c:set var="siteLocale">${currentLocale}</c:set>
+    <c:if test="${not functions:contains(node.languages, currentLocale)}">
+        <c:set var="localeLength" value="${fn:length(currentLocale)}"/>
+        <c:set var="baseLive" value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
+        <c:set var="basePreview" value="${fn:substring(url.basePreview,-1,fn:length(url.basePreview)-localeLength)}${node.defaultLanguage}"/>
+        <c:set var="baseEdit" value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
+        <c:set var="siteLocale">${node.defaultLanguage}</c:set>
+    </c:if>
+    <c:choose>
+        <c:when test="${jcr:hasPermission(node,'jContentAccess') || jcr:hasPermission(node,'pageComposerAccess') || jcr:hasPermission(node,'contributeModeAccess')}">
+            <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
+            <c:choose>
+                <c:when test="${jcr:hasPermission(node,'jContentAccess') && isWritable && not remotelyPublished}">
+                    <c:url var="editUrl" value="/jahia/jcontent/${node.siteKey}/${siteLocale}/pages"/>
+                </c:when>
+                <c:when test="${jcr:hasPermission(node,'pageComposerAccess') && isWritable && not remotelyPublished}">
+                    <c:url var="editUrl" value="/jahia/page-composer/default/${siteLocale}${node.path}${page}.html"/>
+                </c:when>
+            </c:choose>
+            <c:if test="${jcr:hasPermission(node,'jcr:read_default') && isWritable && not remotelyPublished}">
+                <c:url var="previewUrl" value="${basePreview}${node.path}${page}.html"/>
+            </c:if>
+            <c:if test="${node.home.properties['j:published'].boolean or remotelyPublished}">
+                <c:set var="isPublished" value="true"/>
+                <c:url var="liveUrl" value="${baseLive}${node.path}${page}.html"/>
+            </c:if>
+            <c:if test="${jcr:hasPermission(node, 'jContentAccess')}">
+                <c:url var="filesUrl" value="/jahia/jcontent/${node.siteKey}/${siteLocale}/media/files?params=(sub:!t)"/>
+                <c:url var="contentUrl" value="/jahia/jcontent/${node.siteKey}/${siteLocale}/content-folders/contents"/>
+            </c:if>
+        </c:when>
+        <c:otherwise>
+            <%-- No access to the site itself: point at the first page the user may reach. --%>
+            <c:set var="jContentAccessNode" value="${jcr:getFirstAllowedNodeForPermission('jContentAccess', node, 'jnt:page')}"/>
+            <c:if test="${jcr:hasPermission(node.home, 'jcr:read_default')}">
+                <c:set var="previewModeAccessNode" value="${node.home}"/>
+            </c:if>
+            <c:if test="${empty previewModeAccessNode}">
+                <c:set var="previewModeAccessNode" value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
+            </c:if>
+            <c:if test="${not empty jContentAccessNode && isWritable}">
+                <c:url var="editUrl" value="${baseEdit}${jContentAccessNode.path}.html"/>
+            </c:if>
+            <c:if test="${not empty previewModeAccessNode && isWritable}">
+                <c:url var="previewUrl" value="${basePreview}${previewModeAccessNode.path}.html"/>
+            </c:if>
+            <c:if test="${node.home.properties['j:published'].boolean}">
+                <c:set var="isPublished" value="true"/>
+                <c:url var="liveUrl" value="${baseLive}${node.path}${page}.html"/>
+            </c:if>
+        </c:otherwise>
+    </c:choose>
+    {
+        name: '${functions:escapeJavaScript(node.name)}',
+        identifier: '${functions:escapeJavaScript(node.identifier)}',
+        title: '${functions:escapeJavaScript(node.displayableName)}',
+        isSelectable: ${isSelectable},
+        canEditProperties: ${canEditProperties},
+        isPublished: ${isPublished},
+        links: {
+            edit: '${functions:escapeJavaScript(editUrl)}',
+            preview: '${functions:escapeJavaScript(previewUrl)}',
+            live: '${functions:escapeJavaScript(liveUrl)}',
+            files: '${functions:escapeJavaScript(filesUrl)}',
+            content: '${functions:escapeJavaScript(contentUrl)}'
+        }
+    }${siteStatus.last ? '' : ','}
+</c:forEach>

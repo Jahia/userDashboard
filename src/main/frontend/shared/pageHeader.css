@@ -1,0 +1,14 @@
+/* A page's Moonstone Header, full width like the header of every other Jahia screen. Shared by
+   the profile and projects apps.
+
+   The dashboard template pads its whole page by 24px, so the header cancels that padding on
+   three sides. Moonstone's header is width: 100% plus horizontal padding, and relies on the
+   border-box sizing jContent sets globally; these pages do not, so without it the header
+   overflows by its own padding and pushes its actions off-screen. */
+.ud-pageHeader {
+  margin: -24px -24px 24px;
+}
+
+.ud-pageHeader > * {
+  box-sizing: border-box;
+}
