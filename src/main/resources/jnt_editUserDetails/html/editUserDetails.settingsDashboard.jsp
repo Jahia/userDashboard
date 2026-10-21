@@ -21,11 +21,32 @@
 <%-- deferred on purpose: the bundle is added to <head>, and Moonstone touches document.body
      when it is evaluated, which is null until the body has been parsed --%>
 <template:addResources type="javascript" resources="react-profile-app/edit-user-details-app.js" defer="true"/>
-<template:addResources type="inline">
-    <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
-    <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
-    <script src='<c:url value="/modules/ckeditor/javascript/ckeditor.js" />'></script>
-</template:addResources>
+<%-- "About me" uses CKEditor 5 when Jahia's CKEditor 5 module is installed, CKEditor 4 otherwise.
+     The CKEditor 5 build is this module's own (src/main/frontend/ckeditor5): the module ships its
+     editor only as a jContent field, nothing a page outside jContent can call. Checking the module
+     is a lookup in the template package registry, already in memory. --%>
+<%-- All three imports are needed: the bundle only imports the packages its JSPs name. --%>
+<%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
+<%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.templates.JahiaTemplateManagerService" %>
+<%
+    JahiaTemplateManagerService templateManager = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+    JahiaTemplatesPackage ckeditor5Module = templateManager.getTemplatePackageById("richtext-ckeditor5");
+    pageContext.setAttribute("hasCKEditor5", ckeditor5Module != null);
+%>
+<c:choose>
+    <c:when test="${hasCKEditor5}">
+        <template:addResources type="css" resources="react-profile-app/ckeditor5-app.css"/>
+        <template:addResources type="javascript" resources="react-profile-app/ckeditor5-app.js"/>
+    </c:when>
+    <c:otherwise>
+        <template:addResources type="inline">
+            <%-- ckeditor can't be loaded with a classic <template:addResources> as it is not declared as a dependency of userDashboard --%>
+            <%-- And we want to keep it this way to avoid a global refresh of the bundles when ckeditor is updated, see https://jira.jahia.org/browse/QA-9520 for details --%>
+            <script src='<c:url value="/modules/ckeditor/javascript/ckeditor.js" />'></script>
+        </template:addResources>
+    </c:otherwise>
+</c:choose>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addResources type="javascript" resources="api.js"/>
 

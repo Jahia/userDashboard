@@ -38,7 +38,9 @@ function moonstoneScopedCss() {
  */
 const APPS = {
   profile: {input: 'src/main/frontend/edit-user-details/main.jsx', name: 'edit-user-details-app'},
-  projects: {input: 'src/main/frontend/projects/main.jsx', name: 'projects-app'}
+  projects: {input: 'src/main/frontend/projects/main.jsx', name: 'projects-app'},
+  // Loaded by the profile page only when Jahia's CKEditor 5 module is installed.
+  ckeditor5: {input: 'src/main/frontend/ckeditor5/main.js', name: 'ckeditor5-app'}
 };
 
 export default defineConfig(({mode}) => {
@@ -54,6 +56,10 @@ export default defineConfig(({mode}) => {
       rollupOptions: {
         input: path.resolve(app.input),
         output: {
+          // Each bundle is loaded as a classic <script>, and two of them can share a page (the
+          // profile app and CKEditor 5): wrapped in a function, their minified top-level names
+          // no longer collide in the page's global scope.
+          format: 'iife',
           entryFileNames: `${app.name}.js`,
           assetFileNames: assetInfo => {
             if (assetInfo.name && assetInfo.name.endsWith('.css')) {

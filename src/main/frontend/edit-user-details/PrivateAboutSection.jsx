@@ -3,6 +3,45 @@ import {Button, Typography} from '@jahia/moonstone';
 
 const hasText = value => Boolean(value && value.trim());
 
+const destroyCKEditor4 = () => {
+  const existingEditor = window.CKEDITOR?.instances?.about_editor;
+  if (existingEditor) {
+    existingEditor.destroy(true);
+  }
+};
+
+/**
+ * Starts the rich text editor on the textarea and returns how to stop it: CKEditor 5 when the
+ * page loaded it (the JSP does when Jahia's richtext-ckeditor5 module is installed), CKEditor 4
+ * otherwise.
+ */
+const startEditor = () => {
+  const textarea = document.getElementById('about_editor');
+
+  if (window.userDashboardCKEditor5 && textarea) {
+    let editor = null;
+    let isStopped = false;
+    window.userDashboardCKEditor5.create(textarea).then(created => {
+      if (isStopped) {
+        created.destroy();
+      } else {
+        editor = created;
+      }
+    });
+
+    return () => {
+      isStopped = true;
+      editor?.destroy();
+    };
+  }
+
+  if (window.CKEDITOR && !window.CKEDITOR.instances?.about_editor) {
+    window.CKEDITOR.replace('about_editor');
+  }
+
+  return destroyCKEditor4;
+};
+
 /**
  * What the user wrote about themselves, and nothing else - the picture that used to
  * sit beside it now lives next to the page title (see ProfilePicture.jsx).
@@ -10,24 +49,11 @@ const hasText = value => Boolean(value && value.trim());
 export default function PrivateAboutSection({profile, activeEditor}) {
   useEffect(() => {
     if (activeEditor !== 'about') {
-      const existingEditor = window.CKEDITOR?.instances?.about_editor;
-      if (existingEditor) {
-        existingEditor.destroy(true);
-      }
-
-      return;
+      destroyCKEditor4();
+      return undefined;
     }
 
-    if (window.CKEDITOR && !window.CKEDITOR.instances?.about_editor) {
-      window.CKEDITOR.replace('about_editor');
-    }
-
-    return () => {
-      const existingEditor = window.CKEDITOR?.instances?.about_editor;
-      if (existingEditor) {
-        existingEditor.destroy(true);
-      }
-    };
+    return startEditor();
   }, [activeEditor]);
 
   const onCancel = () => window.userDashboardReactActions?.closeEditor?.();

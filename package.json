@@ -3,10 +3,11 @@
   "private": true,
   "description": "React 18 and Moonstone scaffold for the Jahia userDashboard module",
   "scripts": {
-    "build": "vite build && vite build --mode projects"
+    "build": "vite build && vite build --mode projects && vite build --mode ckeditor5"
   },
   "dependencies": {
     "@jahia/moonstone": "^2.20.3",
+    "ckeditor5": "47.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.0.0"
   },
