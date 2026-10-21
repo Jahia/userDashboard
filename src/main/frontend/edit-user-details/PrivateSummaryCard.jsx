@@ -11,8 +11,14 @@ const getDisplayValue = section => {
   return section.value || '';
 };
 
-export default function PrivateSummaryCard({section}) {
+// hideWhenEmpty: show nothing rather than the section's name when it holds no value, for a line
+// that only adds to another one (the profession under the user's name).
+export default function PrivateSummaryCard({section, hideWhenEmpty = false}) {
   const value = getDisplayValue(section);
+
+  if (!hasText(value) && hideWhenEmpty) {
+    return null;
+  }
 
   return hasText(value) ? (
     <Typography component="p" variant="subheading" className="ud-private-card__value">{value}</Typography>

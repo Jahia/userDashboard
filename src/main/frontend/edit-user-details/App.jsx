@@ -398,7 +398,7 @@ export default function App({config}) {
                 : <PrivateSummaryCard section={privateSections.identity}/>}
               {privateSections.profession && (activeEditor === 'profession'
                 ? <PrivateFieldsForm section={privateSections.profession}/>
-                : <PrivateSummaryCard section={privateSections.profession}/>)}
+                : <PrivateSummaryCard hideWhenEmpty section={privateSections.profession}/>)}
             </div>
           )}
         </PrivateSection>,
