@@ -10,8 +10,8 @@ import PrivatePasswordEditor from './PrivatePasswordEditor';
 import PrivatePreferencesCard from './PrivatePreferencesCard';
 import PrivateSection from './PrivateSection';
 import PrivateSummaryCard from './PrivateSummaryCard';
-import ProfilePicture from './ProfilePicture';
-import {Button, Typography} from '@jahia/moonstone';
+import ProfilePicture, {ProfilePictureEditor} from './ProfilePicture';
+import {Button, Header} from '@jahia/moonstone';
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -353,19 +353,21 @@ export default function App({config}) {
 
   return (
     <>
-      <section className="ud-react-shell">
-        <div className="ud-react-shell__header">
-          <div className="ud-react-shell__heading">
-            <Typography component="span" variant="caption" className="ud-react-shell__eyebrow">{config.navigationLabel}</Typography>
-            <Typography component="h2" variant="title" className="ud-react-shell__title">{config.title}</Typography>
+      <div className="ud-profileHeader">
+        <Header
+          title={config.title}
+          mainActions={privateProfile?.picture ? <ProfilePicture profile={privateProfile}/> : undefined}
+        />
+      </div>
+      {privateProfile?.picture && activeEditor === 'picture' && (
+        <div className="ud-edit-layout">
+          <div className="ud-edit-layout__content ud-edit-sectionWrap">
+            <PrivateSection id="picture" label={privateProfile.picture.editLabel}>
+              <ProfilePictureEditor profile={privateProfile}/>
+            </PrivateSection>
           </div>
-          {privateProfile?.picture && (
-            <div className="ud-react-shell__picture">
-              <ProfilePicture profile={privateProfile} activeEditor={activeEditor}/>
-            </div>
-          )}
         </div>
-      </section>
+      )}
       {privateRoot && privateProfile && createPortal(
         <PrivateSection
           id="about"

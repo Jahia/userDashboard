@@ -221,7 +221,6 @@
         }
 
         window.userDashboardReactConfig = {
-            navigationLabel: reactLabels.navigation,
             title: reactLabels.navigation,
             professionAtLabel: reactLabels.at,
             identityProfessionLabel: '${functions:escapeJavaScript(reactIdentityProfessionLabel)}',
@@ -571,11 +570,7 @@
     </script>
 </template:addResources>
 <div id="editDetailspage">
-    <div class="ud-edit-layout">
-        <div class="ud-edit-layout__content">
-            <div id="editUserDetailsReactRoot"></div>
-        </div>
-    </div>
+    <div id="editUserDetailsReactRoot"></div>
 
     <div class="ud-edit-tabs">
         <div class="ud-edit-tabPane ud-edit-tabPane--active" id="private">

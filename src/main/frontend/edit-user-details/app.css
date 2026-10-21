@@ -1,35 +1,18 @@
-.ud-react-shell {
-  margin: 0 0 24px;
-  padding: 24px;
-  border: 1px solid #d4dae8;
-  border-radius: 16px;
-  background:
-    radial-gradient(circle at top right, rgba(0, 135, 255, 0.12), transparent 32%),
-    linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+/* full width, like the header of every other Jahia screen: the dashboard template
+   pads its whole page by 24px, so the header cancels that padding on three sides */
+.ud-profileHeader {
+  margin: -24px -24px 24px;
+}
+
+/* Moonstone's header is width: 100% plus horizontal padding, and relies on the
+   border-box sizing jContent sets globally; this page does not, so without it
+   the header overflows by its own padding and pushes the actions off-screen */
+.ud-profileHeader > * {
+  box-sizing: border-box;
 }
 
 .hide {
   display: none !important;
-}
-
-.ud-react-shell__header {
-  display: flex;
-  flex-wrap: wrap;
-  /* top-aligned: the picture is taller than the heading, and bottom alignment
-     pushed the title down against the foot of the block */
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.ud-react-shell__heading {
-  display: grid;
-  gap: 8px;
-}
-
-.ud-react-shell__title {
-  margin: 0;
-  line-height: 1.1;
 }
 
 .ud-private-about {
@@ -192,28 +175,18 @@
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .ud-react-shell {
-    padding: 20px;
-  }
-
-  .ud-react-shell__header {
-    align-items: stretch;
-  }
-
-}
-
-.ud-react-shell__picture {
-  flex: 0 0 auto;
+.ud-profilePicture__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .ud-profilePicture {
-  width: 96px;
-  height: 96px;
+  width: 32px;
+  height: 32px;
   object-fit: cover;
   border-radius: 50%;
   border: 1px solid #d9e0ee;
-  box-shadow: 0 12px 32px rgba(26, 42, 74, 0.14);
   display: block;
 }
 
@@ -234,7 +207,6 @@
 
 .ud-profilePicture__button:hover .ud-profilePicture,
 .ud-profilePicture__button:focus-visible .ud-profilePicture {
-  box-shadow: 0 16px 40px rgba(11, 99, 206, 0.22);
   border-color: #b9d0f1;
 }
 
