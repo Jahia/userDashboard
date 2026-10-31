@@ -1,5 +1,11 @@
 # userDashboard Changelog
 
+## 0.1.1
+
+* Fixed site titles in the My web projects table so that special characters display exactly as typed.
+
+* Added maven.jahia.com to the Maven repositories userDashboard uses to download its dependencies.
+
 ## 8.8.1
 
 ### New Features
