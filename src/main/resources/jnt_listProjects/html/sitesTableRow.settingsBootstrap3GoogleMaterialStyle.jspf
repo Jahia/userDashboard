@@ -8,7 +8,7 @@
                     </label>
                 </div>
             </c:if>
-                ${node.displayableName}
+                ${fn:escapeXml(node.displayableName)}
         </td>
         <c:choose>
             <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
